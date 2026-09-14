@@ -6,6 +6,7 @@ import useFeatureGroups from './hooks/useFeatureGroups.js';
 
 /* CONSTANTS */
 import GROUP_LABELS from './constants/featureGroups.js';
+import { FEATURE_OPTIONS } from '@/config/featureOptions.js';
 
 /**
  * AddLayerPanel.jsx
@@ -15,9 +16,9 @@ import GROUP_LABELS from './constants/featureGroups.js';
  * Features:
  * - Load features from a preselect list
  */
-const AddLayerPanel = ({ featureOptions, handleAddLayer, cachedFeatures }) => {
+const AddLayerPanel = ({ handleAddLayer, cachedFeatures }) => {
 	const { groupedFeatures, openGroups, toggleGroup } =
-		useFeatureGroups(featureOptions);
+		useFeatureGroups(FEATURE_OPTIONS);
 
 	return (
 		<>

@@ -5,8 +5,13 @@
  * npm run deploy: Builds and deploys to GitHub Pages
  */
 
-import { useEffect, useState, useRef, useCallback } from 'react';
 import './App.css';
+import { useEffect, useState, useRef, useCallback } from 'react';
+
+import { BoundaryProvider } from './contexts/BoundaryContext.jsx';
+import { LayerProvider } from './contexts/LayerContext.jsx';
+import { WorkspaceProvider } from './contexts/WorkspaceContext.jsx';
+import { UIProvider } from './contexts/UIContext.jsx';
 
 /* High level components */
 import AppLayout from './layout/AppLayout.jsx';
@@ -360,7 +365,6 @@ export default function App() {
 	// ─────────────────────────────────────────
 
 	//const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
-	const hasBoundary = boundaries.length > 0;
 	const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
 	const hasSavedProjects = Object.keys(projects).length > 0;
 	const filteredLayers = useFilteredLayers(featureLayers);
@@ -395,99 +399,156 @@ export default function App() {
 		setPreviewBoundary(null);
 	}, [setPreviewBoundary, activeDrawer]);
 
+	// ─────────────────────────────────────────
+	// Context
+	// ─────────────────────────────────────────
+
+	const boundaryContextValue = {
+		boundaries,
+		hasBoundary: boundaries.length > 0,
+		previewBoundary,
+		setPreviewBoundary,
+
+		// boundary
+		boundaryResults,
+		fetchBoundaryResults,
+		clearBoundaryResults,
+		handlePreviewBoundary,
+		handleClearBoundaries,
+		selectedBoundaryIds,
+
+		// boundary handling
+		setBoundary,
+		removeBoundary,
+		clearBoundaries,
+		restoreBoundaries,
+
+		handleSelectBoundary,
+		handleRemoveBoundary,
+
+		// status
+		status: boundaryStatus,
+		error: boundaryError,
+	};
+
+	const layerContextValue = {
+		featureLayers,
+		filteredLayers,
+		loadLayer,
+		updateLayer,
+		removeLayer,
+		clearLayers,
+		updateLayerFilters,
+		commitLayer,
+		handleAddLayer,
+		toggleLayerVisibility,
+		renameLayer,
+		exportLayers,
+		restoreLayers,
+		getCachedFeatures,
+		clearCache,
+		failedFeatureKey,
+		clearStatus,
+		status: featureStatus,
+		error: featureError,
+	};
+
+	const workspaceContextValue = {
+		basemap,
+		setBasemap,
+		displayMode,
+		setDisplayMode,
+		isDirty,
+		setIsDirty,
+		project,
+		projectName,
+		sessionInfo,
+		setSessionInfo,
+		saveCurrentProject,
+		saveProjectAs,
+		handleOpenProject,
+		handleNewWorkspace,
+		handleDeleteProject,
+		loadProjects,
+		projects,
+		hasSavedProjects,
+		restoreWorkspace,
+		resetWorkspace,
+		clearSavedSession,
+		handleSaveAndContinue,
+		handleDiscardAndContinue,
+		handleCancel,
+	};
+
+	const uiContextValue = {
+		activeDrawer,
+		setActiveDrawer,
+		activeLayer,
+		setActiveLayer,
+		activeModal,
+		setActiveModal,
+		focusTrigger,
+		setFocusTrigger,
+		takeScreenshot,
+		handleScreenshotReady,
+		pendingSession,
+		setPendingSession,
+		pendingLayer,
+		setPendingLayer,
+	};
+
 	return (
 		<div className="App">
-			{/* Popups */}
-			<StatusPopup
-				trigger={statusPopup.trigger}
-				type={statusPopup.type}
-				title={statusPopup.title}
-				message={statusPopup.message}
-				drawerOpen={activeDrawer !== null}
-			/>
+			<WorkspaceProvider value={workspaceContextValue}>
+				<BoundaryProvider value={boundaryContextValue}>
+					<LayerProvider value={layerContextValue}>
+						<UIProvider value={uiContextValue}>
+							<StatusPopup
+								trigger={statusPopup.trigger}
+								type={statusPopup.type}
+								title={statusPopup.title}
+								message={statusPopup.message}
+								drawerOpen={activeDrawer !== null}
+							/>
 
-			<ModalManager
-				activeModal={activeModal}
-				setActiveModal={setActiveModal}
-				pendingSession={pendingSession}
-				setPendingSession={setPendingSession}
-				pendingLayer={pendingLayer}
-				setPendingLayer={setPendingLayer}
-				isDirty={isDirty}
-				setIsDirty={setIsDirty}
-				boundaryies={boundaries}
-				filteredLayers={filteredLayers}
-				sessionManager={sessionManager}
-				restoreWorkspace={restoreWorkspace}
-				resetWorkspace={resetWorkspace}
+							<ModalManager
+								activeModal={activeModal}
+								setActiveModal={setActiveModal}
+								pendingSession={pendingSession}
+								setPendingSession={setPendingSession}
+								pendingLayer={pendingLayer}
+								setPendingLayer={setPendingLayer}
+								isDirty={isDirty}
+								setIsDirty={setIsDirty}
+								boundaryies={boundaries}
+								filteredLayers={filteredLayers}
+								sessionManager={sessionManager}
+								restoreWorkspace={restoreWorkspace}
+								resetWorkspace={resetWorkspace}
 
-				handleSaveAndContinue={handleSaveAndContinue}
-				handleDiscardAndContinue={handleDiscardAndContinue}
-				handleCancel={handleCancel}
-				handleOpenProject={handleOpenProject}
+								handleSaveAndContinue={handleSaveAndContinue}
+								handleDiscardAndContinue={
+									handleDiscardAndContinue
+								}
+								handleCancel={handleCancel}
+								handleOpenProject={handleOpenProject}
 
-				projects={projects}
-				loadProjects={loadProjects}
-				handleDeleteProject={handleDeleteProject}
-				saveProjectAs={saveProjectAs}
-				hasSavedProjects={hasSavedProjects}
+								projects={projects}
+								loadProjects={loadProjects}
+								handleDeleteProject={handleDeleteProject}
+								saveProjectAs={saveProjectAs}
+								hasSavedProjects={hasSavedProjects}
 
-				commitLayer={commitLayer}
-				clearStatus={clearStatus}
-			/>
+								commitLayer={commitLayer}
+								clearStatus={clearStatus}
+							/>
 
-			{/* Main UI */}
-			<AppLayout
-				// toolbar
-				setActiveModal={setActiveModal}
-				handleNewWorkspace={handleNewWorkspace}
-				hasFeatures={hasFeatures}
-				hasBoundary={hasBoundary}
-				saveCurrentProject={saveCurrentProject}
-				setFocusTrigger={setFocusTrigger}
-				takeScreenshot={takeScreenshot}
-				isDirty={isDirty}
-				boundaryName={boundaryName}
-
-				projectName={projectName}
-
-				// sidebar
-				featureLayers={featureLayers}
-				activeDrawer={activeDrawer}
-				setActiveDrawer={setActiveDrawer}
-
-				// drawer
-				activeLayer={activeLayer}
-				setActiveLayer={setActiveLayer}
-				handleAddLayer={handleAddLayer}
-				updateLayer={updateLayer}
-				toggleLayerVisibility={toggleLayerVisibility}
-				renameLayer={renameLayer}
-				updateLayerFilters={updateLayerFilters}
-				selectedBoundaryIds={selectedBoundaryIds}
-				fetchBoundaryResults={fetchBoundaryResults}
-				handleSelectBoundary={handleSelectBoundary}
-				boundaryResults={boundaryResults}
-				basemap={basemap}
-				setBasemap={setBasemap}
-				displayMode={displayMode}
-				setDisplayMode={setDisplayMode}
-				clearBoundaryResults={clearBoundaryResults}
-				handleRemoveBoundary={handleRemoveBoundary}
-				handleClearBoundaries={handleClearBoundaries}
-				removeLayer={removeLayer}
-				clearLayers={clearLayers}
-				getCachedFeatures={getCachedFeatures}
-
-				// map
-				filteredLayers={filteredLayers}
-				focusTrigger={focusTrigger}
-				handleScreenshotReady={handleScreenshotReady}
-
-				boundaries={boundaries}
-				previewBoundary={previewBoundary}
-				handlePreviewBoundary={handlePreviewBoundary}
-			/>
+							{/* Main UI */}
+							<AppLayout hasFeatures={hasFeatures} />
+						</UIProvider>
+					</LayerProvider>
+				</BoundaryProvider>
+			</WorkspaceProvider>
 		</div>
 	);
 }

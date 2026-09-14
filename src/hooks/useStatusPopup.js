@@ -62,7 +62,6 @@ export default function useStatusPopup({
 		}
 
 		if (featureStatus === 'loading') {
-			console.log('[DEBUG] Popup: feature loading');
 			return {
 				trigger: true,
 				type: 'loading',

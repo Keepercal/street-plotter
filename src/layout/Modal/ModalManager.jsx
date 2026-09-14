@@ -10,46 +10,47 @@ import RestoreSessionModal from '@/layout/Modal/modals/RestoreSessionModal.jsx';
 
 import MODALS from '@/config/modalTypes.js';
 
+/* Context */
+import { useUIContext } from '@/contexts/UIContext.jsx';
+import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
+import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
+
 /**
  * ModalManager
  * ------------
  * Centralised management for modals
  */
-export default function ModalManager({
-	activeModal,
-	setActiveModal,
+export default function ModalManager() {
+	const {
+		activeModal,
+		setActiveModal,
+		pendingSession,
+		setPendingSession,
+		pendingLayer,
+		setPendingLayer,
+	} = useUIContext();
 
-	pendingSession,
-	setPendingSession,
+	const {
+		isDirty,
+		setIsDirty,
+		restoreWorkspace,
+		resetWorkspace,
+		clearSavedSession,
+		handleSaveAndContinue,
+		handleDiscardAndContinue,
+		handleCancel,
+		handleOpenProject,
+		projects,
+		loadProjects,
+		handleDeleteProject,
+		saveProjectAs,
+		hasSavedProjects,
+	} = useWorkspaceContext();
 
-	pendingLayer,
-	setPendingLayer,
+	const { boundaries } = useBoundaryContext();
+	const { filteredLayers, commitLayer, clearStatus } = useLayerContext();
 
-	isDirty,
-	setIsDirty,
-
-	boundaryGeojson,
-	filteredLayers,
-
-	sessionManager,
-	restoreWorkspace,
-	resetWorkspace,
-
-	handleSaveAndContinue,
-	handleDiscardAndContinue,
-	handleCancel,
-
-	handleOpenProject,
-
-	projects,
-	loadProjects,
-	handleDeleteProject,
-	saveProjectAs,
-	hasSavedProjects,
-
-	commitLayer,
-	clearStatus,
-}) {
 	return (
 		<>
 			{activeModal === MODALS.RESTORE_WORKSPACE && (
@@ -63,7 +64,7 @@ export default function ModalManager({
 						setActiveModal(null);
 					}}
 					onStartNew={() => {
-						sessionManager.clearSavedSession();
+						clearSavedSession();
 
 						setPendingSession(null);
 						setActiveModal(null);
@@ -111,7 +112,7 @@ export default function ModalManager({
 
 			{activeModal === MODALS.EXPORT && (
 				<ExportModal
-					boundaryGeojson={boundaryGeojson}
+					boundaryGeojson={boundaries}
 					featureLayers={filteredLayers}
 					onClose={() => setActiveModal(null)}
 				/>

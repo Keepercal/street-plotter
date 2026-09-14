@@ -16,6 +16,10 @@ import {
 	MapPinned,
 } from 'lucide-react';
 
+/* Context */
+import { useUIContext } from '@/contexts/UIContext.jsx';
+import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
+
 /**
  * Sidebar.jsx
  * ------------
@@ -25,15 +29,10 @@ import {
  * - Select a boundary
  * - Load features from a preselect list
  */
-const Sidebar = ({
-	hasBoundary,
+const Sidebar = ({ collapsed, setCollapsed }) => {
+	const { activeDrawer, setActiveDrawer } = useUIContext();
+	const { hasBoundary } = useBoundaryContext();
 
-	activeDrawer,
-	setActiveDrawer,
-
-	collapsed,
-	setCollapsed,
-}) => {
 	const openDrawer = (name) => {
 		setActiveDrawer((prev) => (prev === name ? null : name));
 	};
@@ -55,7 +54,6 @@ const Sidebar = ({
 					title="Manage boundaries within workspace"
 					icon={<LayoutDashboard />}
 					isCollapsed={collapsed}
-					//disabled={!hasBoundary}
 					active={activeDrawer === 'manageBoundary'}
 					onClick={() => openDrawer('manageBoundary')}
 				/>

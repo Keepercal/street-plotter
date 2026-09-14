@@ -4,17 +4,20 @@ import { Ghost } from 'lucide-react';
 
 import DeleteButton from '../../../../components/DeleteButton/DeleteButton.jsx';
 
-export default function ManageLayerPanel({
-	featureLayers,
-	toggleLayerVisibility,
-	updateLayer,
+/* Context */
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
 
-	updateLayerFilters,
+export default function ManageLayerPanel() {
+	const {
+		featureLayers,
+		toggleLayerVisibility,
+		updateLayer,
+		updateLayerFilters,
+		removeLayer,
+		renameLayer,
+		clearLayers,
+	} = useLayerContext();
 
-	removeLayer,
-	renameLayer,
-	clearLayers,
-}) {
 	const hasLayers = Object.keys(featureLayers).length > 0;
 
 	return (

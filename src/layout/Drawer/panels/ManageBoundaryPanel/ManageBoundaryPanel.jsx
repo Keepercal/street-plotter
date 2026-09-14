@@ -4,6 +4,8 @@ import './ManageBoundaryPanel.css';
 import DeleteButton from '@/components/DeleteButton/DeleteButton.jsx';
 import BoundaryItem from '@/components/BoundaryItem/BoundaryItem';
 
+import { useBoundaryContext } from '@/contexts/BoundaryContext';
+
 /**
  * AddBoundaryPanel
  * ------------
@@ -11,13 +13,14 @@ import BoundaryItem from '@/components/BoundaryItem/BoundaryItem';
  *
  * Selected boundaries are passed back to App, which then constructs OSM queries using the osm_id's of selected boundaries.
  */
-const ManageBoundaryPanel = ({
-	boundaries,
-	hasBoundary,
-	handlePreviewBoundary,
-	handleRemoveBoundary,
-	handleClearBoundaries,
-}) => {
+const ManageBoundaryPanel = () => {
+	const {
+		boundaries,
+		hasBoundary,
+		handlePreviewBoundary,
+		handleRemoveBoundary,
+		handleClearBoundaries,
+	} = useBoundaryContext();
 	return (
 		<>
 			<div className="panel-header">

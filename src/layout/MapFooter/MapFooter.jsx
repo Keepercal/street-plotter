@@ -1,13 +1,20 @@
 import './MapFooter.css';
 import countFeatures from '../../utils/countFeatures';
 
+/* Context */
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
+import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
+
 /**
  * MapRibbon
  * ------------
  * Displays a summary count across all loaded feature layers.
  */
-const MapFooter = ({ features, projectName }) => {
-	const { nodeCount, wayCount, relationCount } = countFeatures(features);
+const MapFooter = () => {
+	const { featureLayers } = useLayerContext();
+	const { projectName } = useWorkspaceContext();
+
+	const { nodeCount, wayCount, relationCount } = countFeatures(featureLayers);
 
 	return (
 		<div className="map-ribbon-content">

@@ -12,20 +12,26 @@ import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndica
 import { useState, useRef } from 'react';
 import { useClickOutside } from './hooks/useClickOutside';
 
+/* Context */
+import { useUIContext } from '@/contexts/UIContext.jsx';
+import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
+import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
+
 /* Config */
 import { menus } from './config/menus';
 
-export default function Toolbar({
-	onOpenModal,
-	onNewWorkspace,
-	onFocus,
-	canExport,
-	canSave,
-	onSave,
-	onScreenshot,
-	isDirty,
-	boundaryName,
-}) {
+export default function Toolbar() {
+	const { setActiveModal, setFocusTrigger, takeScreenshot } = useUIContext();
+	const { isDirty, handleNewWorkspace, saveCurrentProject } =
+		useWorkspaceContext();
+	const { hasBoundary } = useBoundaryContext();
+	const { featureLayers } = useLayerContext();
+
+	/* Derived */
+	const canSave = hasBoundary;
+	const canExport = Object.keys(featureLayers).length > 0;
+
 	/* States */
 	const [openMenu, setOpenMenu] = useState(null);
 	const toolbarRef = useRef(null);
@@ -33,19 +39,19 @@ export default function Toolbar({
 	function handleMenuItemClick(item) {
 		switch (item.action) {
 			case 'save':
-				onSave();
+				saveCurrentProject();
 				break;
 
 			case 'newWorkspace':
-				onNewWorkspace();
+				handleNewWorkspace();
 				break;
 
 			case 'openProject':
-				onOpenModal('openProject');
+				setActiveModal('openProject');
 				break;
 
 			case 'modal':
-				onOpenModal(item.modal);
+				setActiveModal(item.modal);
 				break;
 		}
 
@@ -80,15 +86,15 @@ export default function Toolbar({
 					title="Save project to file"
 					icon={<Save size={18} />}
 					indicator={isDirty}
-					disabled={!isDirty || !canSave}
-					onClick={onSave}
+					disabled={!isDirty || !hasBoundary}
+					onClick={saveCurrentProject}
 				/>
 				<ToolbarButton
 					label="Export"
 					title="Export project as geospatial data format"
 					icon={<Download size={18} />}
 					disabled={!canExport}
-					onClick={() => onOpenModal('export')}
+					onClick={() => setActiveModal('export')}
 				/>
 				{toolbarMenus.map((menu) => (
 					<ToolbarDropdown
@@ -107,14 +113,14 @@ export default function Toolbar({
 				<ToolbarButton
 					title="Refocus viewport on current boundary"
 					icon={<Focus size={18} />}
-					disabled={!canSave}
-					onClick={onFocus}
+					disabled={!hasBoundary}
+					onClick={() => setFocusTrigger((t) => t + 1)}
 				/>
 				<ToolbarButton
 					title="Take screenshot of viewport"
 					icon={<Camera size={18} />}
-					disabled={!onScreenshot}
-					onClick={onScreenshot}
+					disabled={!takeScreenshot}
+					onClick={() => takeScreenshot?.()}
 				/>
 				{/*<BoundaryIndicator boundaryName={boundaryName} />
 				<a

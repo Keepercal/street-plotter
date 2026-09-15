@@ -42,9 +42,11 @@ export default function useWorkspaceActions({
 
 			setSessionInfo(session);
 
+			console.log(session);
+
 			// If the session matches the ID of a project
-			if (session.projectId) {
-				const project = await getProject(session.projectId);
+			if (session.metadata?.projectId) {
+				const project = await getProject(session.metadata.projectId);
 
 				if (project) {
 					setProject(project);

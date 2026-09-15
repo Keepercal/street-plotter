@@ -1,4 +1,5 @@
 import './HeaderButton.css';
+import { CircleAlert } from 'lucide-react';
 
 export default function HeaderButton({
 	label,
@@ -17,7 +18,11 @@ export default function HeaderButton({
 		>
 			{label}
 			{icon}
-			{indicator && <span className="header-button-indicator" />}
+			{indicator && (
+				<div className="header-button-indicator">
+					<CircleAlert strokeWidth={3} />
+				</div>
+			)}
 		</button>
 	);
 }

@@ -2,17 +2,7 @@
     FEATURE COUNT PANEL
 ========================= */
 
-.feature-count {
-	width: 100%;
-	box-sizing: border-box;
-
-	color: #ecf0f1;
-
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
-}
-
-.map-ribbon-content {
+.map-footer-content {
 	display: flex;
 	gap: 18px;
 	align-items: center;
@@ -20,13 +10,9 @@
 }
 
 /* Text */
-.map-ribbon-content p {
+.map-footer-content p {
 	margin: 0;
 	font-size: 12px;
-}
-
-.current-project {
-	display: flex;
 }
 
 /* =========================
@@ -35,14 +21,10 @@
 
 .feature-counter {
 	display: flex;
-	align-items: center;
 	gap: 12px;
 	margin-left: auto;
 }
 
 .version-tag {
-	margin: 0;
-	font-size: 0.8rem;
 	color: #aaa;
-	gap: 12px;
 }

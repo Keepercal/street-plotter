@@ -8,28 +8,14 @@
 import './App.css';
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 
-import {
-	BoundaryProvider,
-	useBoundaryContextValue,
-} from './contexts/BoundaryContext.jsx';
-import {
-	LayerProvider,
-	useLayerContextValue,
-} from './contexts/LayerContext.jsx';
-import {
-	WorkspaceProvider,
-	useWorkspaceContextValue,
-} from './contexts/WorkspaceContext.jsx';
-import { UIProvider, useUIContextValue } from './contexts/UIContext.jsx';
-
 /* High level components */
 import AppLayout from './layout/AppLayout.jsx';
+import ModalManager from './layout/Modal/ModalManager.jsx';
 
 /* Popups */
 import StatusPopup from '@/layout/Popups/StatusPopup/StatusPopup.jsx';
 
 /* Modals */
-import ModalManager from './layout/Modal/ModalManager.jsx';
 import MODALS from '@/config/modalTypes.js';
 
 /* Hooks */
@@ -45,6 +31,21 @@ import useSession from './hooks/useSession.js';
 import useUnsavedChanges from './hooks/useUnsavedChanges.js';
 
 import useStatusPopup from './hooks/useStatusPopup.js';
+
+/* Context */
+import {
+	BoundaryProvider,
+	useBoundaryContextValue,
+} from './contexts/BoundaryContext.jsx';
+import {
+	LayerProvider,
+	useLayerContextValue,
+} from './contexts/LayerContext.jsx';
+import {
+	WorkspaceProvider,
+	useWorkspaceContextValue,
+} from './contexts/WorkspaceContext.jsx';
+import { UIProvider, useUIContextValue } from './contexts/UIContext.jsx';
 
 /* Session & Database */
 import { createSession } from './models/session.js';

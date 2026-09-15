@@ -5,6 +5,8 @@ import countFeatures from '../../utils/countFeatures';
 import { useLayerContext } from '@/contexts/LayerContext.jsx';
 import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
 
+import { TriangleAlert } from 'lucide-react';
+
 /**
  * MapRibbon
  * ------------
@@ -16,10 +18,15 @@ const MapFooter = () => {
 
 	const { nodeCount, wayCount, relationCount } = countFeatures(featureLayers);
 
+	const workspaceText =
+		projectName === 'None'
+			? 'Unsaved Workspace'
+			: `Current Project: ${projectName}`;
+
 	return (
-		<div className="map-ribbon-content">
-			<div className="current-project">
-				<p>Current Project: {projectName}</p>
+		<div className="map-footer-content">
+			<div className="workspace-indicator">
+				<p>{workspaceText}</p>
 			</div>
 
 			<div className="feature-counter">

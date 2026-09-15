@@ -62,7 +62,11 @@ export default function useWorkspaceActions({
 			// restore layers
 			restoreLayers(sessionData.layers ?? []);
 
-			setIsDirty(false);
+			if (session.metadata?.projectId === null) {
+				setIsDirty(true);
+			} else {
+				setIsDirty(false);
+			}
 		},
 		[
 			setSessionInfo,

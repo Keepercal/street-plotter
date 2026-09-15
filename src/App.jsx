@@ -181,7 +181,12 @@ export default function App() {
 		saveCurrentProject,
 		saveProjectAs,
 	} = useProjectManager({
-		workspace: { basemap, displayMode, boundaries, exportLayers },
+		workspace: {
+			basemap,
+			displayMode,
+			boundaries,
+			layers: exportLayers(featureLayers),
+		},
 		session: { sessionInfo, setSessionInfo },
 		restore: { restoreWorkspace, restoreBoundaries, restoreLayers },
 		resetWorkspace,

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 
 export default function useStatusPopup({
-	boundaryStatus,
-	boundaryError,
 	featureStatus,
 	featureError,
 	failedFeatureKey,
+	projectStatus,
+	projectError,
 }) {
 	const [dismissed, setDismissed] = useState(false);
 
@@ -14,14 +14,14 @@ export default function useStatusPopup({
 	 */
 	useEffect(() => {
 		if (
-			boundaryStatus === 'loading' ||
 			featureStatus === 'loading' ||
-			boundaryStatus === 'error' ||
-			featureStatus === 'error'
+			projectStatus === 'saved' ||
+			featureStatus === 'error' ||
+			projectStatus === 'error'
 		) {
 			setDismissed(false);
 		}
-	}, [boundaryStatus, featureStatus]);
+	}, [featureStatus, projectStatus]);
 
 	/* Handle status popup */
 	const statusPopup = useMemo(() => {
@@ -34,30 +34,6 @@ export default function useStatusPopup({
 				featureKey: null,
 				title: '',
 				message: '',
-			};
-		}
-
-		if (boundaryStatus === 'loading') {
-			console.log('[DEBUG] Popup: boundary loading');
-			return {
-				trigger: true,
-				type: 'loading',
-				source: 'boundary',
-				featureKey: null,
-				title: 'Loading',
-				message: 'Loading boundary...',
-			};
-		}
-
-		if (boundaryStatus === 'error') {
-			console.error('[DEBUG] Popup: boundary error', boundaryError);
-			return {
-				trigger: true,
-				type: 'error',
-				source: 'boundary',
-				featureKey: null,
-				title: 'Error',
-				message: boundaryError?.message,
 			};
 		}
 
@@ -84,6 +60,29 @@ export default function useStatusPopup({
 			};
 		}
 
+		if (projectStatus === 'saved') {
+			return {
+				trigger: true,
+				type: 'saved',
+				source: 'project',
+				featureKey: null,
+				title: 'Saved',
+				message: 'Project saved.',
+			};
+		}
+
+		if (projectStatus === 'error') {
+			console.error('[DEBUG] Popup: project error', projectError);
+			return {
+				trigger: true,
+				type: 'error',
+				source: 'project',
+				featureKey: null,
+				title: 'Error',
+				message: projectError?.message ?? 'Failed to save project.',
+			};
+		}
+
 		return {
 			trigger: false,
 			type: 'idle',
@@ -94,21 +93,26 @@ export default function useStatusPopup({
 		};
 	}, [
 		dismissed,
-		boundaryStatus,
-		boundaryError,
 		featureStatus,
 		featureError,
 		failedFeatureKey,
+		projectStatus,
+		projectError,
 	]);
 
 	useEffect(() => {
-		if (!statusPopup.trigger || statusPopup.type !== 'error') {
+		if (
+			!statusPopup.trigger ||
+			(statusPopup.type !== 'error' && statusPopup.type !== 'saved')
+		) {
 			return;
 		}
 
+		const delay = statusPopup.type === 'saved' ? 2500 : 5000;
+
 		const timer = setTimeout(() => {
 			setDismissed(true);
-		}, 5000);
+		}, delay);
 
 		return () => clearTimeout(timer);
 	}, [statusPopup.trigger, statusPopup.type]);

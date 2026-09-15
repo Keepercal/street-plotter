@@ -13,11 +13,12 @@ export default function useProjectManager({
 	workspace,
 	session,
 	restore,
-	//resetWorkspace,
 	onSaveAsRequested,
 	onDirtyChange,
 }) {
 	const [project, setProject] = useState(null);
+	const [projectStatus, setProjectStatus] = useState('idle');
+	const [projectError, setProjectError] = useState(null);
 
 	async function openProject(projectId) {
 		const project = await getProject(projectId);
@@ -53,56 +54,83 @@ export default function useProjectManager({
 			return;
 		}
 
-		const updatedProject = updateProjectFromWorkspace(project, workspace);
+		setProjectError(null);
 
-		await saveProjectToDB(updatedProject);
+		try {
+			const updatedProject = updateProjectFromWorkspace(
+				project,
+				workspace
+			);
 
-		console.log('[DEBUG] Saving project', updatedProject);
+			await saveProjectToDB(updatedProject);
 
-		setProject(updatedProject);
-		onDirtyChange(false);
+			console.log('[DEBUG] Saving project', updatedProject);
 
-		console.log('[DEBUG] Project saved:', updatedProject);
+			setProject(updatedProject);
+			onDirtyChange(false);
 
-		return true;
+			setProjectStatus('saved');
+			console.log('[DEBUG] Project saved:', updatedProject);
+
+			return true;
+		} catch (err) {
+			console.error('[DEBUG] Failed to save project:', err);
+			setProjectStatus('error');
+			setProjectError(err);
+			return false;
+		}
 	}
 
 	/*
 	 * Creates a brand new project
 	 */
 	async function saveProjectAs(name, description) {
-		const newProject = createProjectFromWorkspace(
-			name,
-			description,
-			workspace
-		);
+		setProjectStatus('saving');
+		setProjectError(null);
 
-		await saveProjectToDB(newProject);
+		try {
+			const newProject = createProjectFromWorkspace(
+				name,
+				description,
+				workspace
+			);
 
-		console.log('[DEBUG] Saving project', newProject);
+			await saveProjectToDB(newProject);
 
-		setProject(newProject);
+			console.log('[DEBUG] Saving project', newProject);
 
-		// Link the current session to this project
-		session.setSessionInfo((prev) => ({
-			...prev,
-			metadata: {
-				...prev.metadata,
-				projectId: newProject.metadata.id,
-				modified: new Date().toISOString(),
-			},
-		}));
+			setProject(newProject);
 
-		onDirtyChange(false);
+			session.setSessionInfo((prev) => ({
+				...prev,
+				metadata: {
+					...prev.metadata,
+					projectId: newProject.metadata.id,
+					modified: new Date().toISOString(),
+				},
+			}));
 
-		console.log('[DEBUG] Project saved:', newProject);
+			onDirtyChange(false);
 
-		return newProject;
+			setProjectStatus('saved');
+
+			console.log('[DEBUG] Project saved:', newProject);
+
+			return newProject;
+		} catch (err) {
+			console.error('[DEBUG] Failed to save project:', err);
+			setProjectStatus('error');
+			setProjectError(err);
+			return null;
+		}
 	}
 
 	return {
 		project,
 		setProject,
+
+		projectStatus,
+		projectError,
 
 		openProject,
 		saveCurrentProject,

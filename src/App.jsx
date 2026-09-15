@@ -139,14 +139,6 @@ export default function App() {
 		[boundaries]
 	);
 
-	const { statusPopup /*dismissPopup*/ } = useStatusPopup({
-		boundaryStatus: boundaryManager.status,
-		boundaryError: boundaryManager.error,
-		featureStatus: layerManager.status,
-		featureError: layerManager.error,
-		failedFeatureKey: layerManager.failedFeatureKey,
-	});
-
 	// ─────────────────────────────────────────
 	// Workspace
 	// ─────────────────────────────────────────
@@ -179,6 +171,8 @@ export default function App() {
 	const {
 		project,
 		setProject,
+		projectStatus,
+		projectError,
 		openProject,
 		saveCurrentProject,
 		saveProjectAs,
@@ -301,6 +295,17 @@ export default function App() {
 		setActiveModal,
 		modalKey: MODALS.UNSAVED_CHANGES,
 		saveCurrentProject,
+	});
+
+	const { statusPopup } = useStatusPopup({
+		boundaryStatus: boundaryManager.status,
+		boundaryError: boundaryManager.error,
+		featureStatus: layerManager.status,
+		featureError: layerManager.error,
+		failedFeatureKey: layerManager.failedFeatureKey,
+
+		projectStatus,
+		projectError,
 	});
 
 	/* Remove the preview boundary if the user closes the active drawer */

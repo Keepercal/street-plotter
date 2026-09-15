@@ -60,7 +60,7 @@ export default function useSession({
 				boundaries,
 				layers,
 			},
-			sessionInfo
+			sessionInfo.metadata
 		);
 	}, [sessionInfo, basemap, displayMode, boundaries, layers]);
 

@@ -1,17 +1,23 @@
 import Modal from '../Modal';
 
 export default function RestoreSessionModal({
+	isProject,
 	onRestore,
 	onStartNew,
 	onClose,
 }) {
+	const title = isProject ? 'Restore Project?' : 'Restore Unsaved Workspace?';
+
+	const message = isProject
+		? 'A previously open project was found. Would you like to restore it?'
+		: 'A previous unsaved workspace with data was found. Would you like to restore it?';
+
+	const buttonMessage = isProject ? 'Restore Project' : 'Restore Workspace';
+
 	return (
-		<Modal title="Restore Workspace?" onClose={onClose} canClose={false}>
+		<Modal title={title} onClose={onClose} canClose={false}>
 			<section className="modal-section">
-				<h3>
-					A previous workspace with data was found. Would you like to
-					restore it?
-				</h3>
+				<p>{message}</p>
 			</section>
 
 			<section className="modal-actions">
@@ -19,7 +25,7 @@ export default function RestoreSessionModal({
 					Start New Workspace
 				</button>
 				<button className="primary-btn" onClick={onRestore}>
-					Restore Workspace
+					{buttonMessage}
 				</button>
 			</section>
 		</Modal>

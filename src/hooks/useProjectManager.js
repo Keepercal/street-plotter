@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { getProject, saveProject as saveProjectToDB } from '../db/projectDB';
+import { createSession } from '@/models/session.js';
+import { createSessionMetadata } from '@/models/sessionMetadata';
 
 import {
 	createProjectFromWorkspace,
@@ -29,10 +31,14 @@ export default function useProjectManager({
 
 		setProject(project);
 
-		restore.restoreWorkspace({
-			projectId: project.metadata.id,
-			data: project.data,
-		});
+		restore.restoreWorkspace(
+			createSession({
+				metadata: createSessionMetadata({
+					projectId: project.metadata.id,
+				}),
+				data: project.data,
+			})
+		);
 
 		onDirtyChange(false);
 	}
@@ -80,8 +86,11 @@ export default function useProjectManager({
 		// Link the current session to this project
 		session.setSessionInfo((prev) => ({
 			...prev,
-			projectId: newProject.metadata.id,
-			modified: new Date().toISOString(),
+			metadata: {
+				...prev.metadata,
+				projectId: newProject.metadata.id,
+				modified: new Date().toISOString(),
+			},
 		}));
 
 		onDirtyChange(false);

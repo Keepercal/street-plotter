@@ -40,10 +40,6 @@ export default function useWorkspaceActions({
 					: 'Temporary session'
 			);
 
-			setSessionInfo(session);
-
-			console.log(session);
-
 			// If the session matches the ID of a project
 			if (session.metadata?.projectId) {
 				const project = await getProject(session.metadata.projectId);

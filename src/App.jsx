@@ -128,6 +128,7 @@ export default function App() {
 	const handleClearBoundaries = () => {
 		clearBoundaries();
 		clearLayers();
+		setActiveDrawer(null);
 
 		setIsDirty(false);
 	};

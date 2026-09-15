@@ -50,15 +50,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 				/>
 
 				<SidebarButton
-					label="Manage Boundaries"
-					title="Manage boundaries within workspace"
-					icon={<LayoutDashboard />}
-					isCollapsed={collapsed}
-					active={activeDrawer === 'manageBoundary'}
-					onClick={() => openDrawer('manageBoundary')}
-				/>
-
-				<SidebarButton
 					label="Add Layers"
 					title="Load an OSM feature onto the map"
 					icon={<LayersPlus />}
@@ -71,9 +62,19 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 				/>
 
 				<SidebarButton
+					label="Manage Boundaries"
+					title="Manage boundaries within workspace"
+					icon={<Map />}
+					isCollapsed={collapsed}
+					disabled={!hasBoundary}
+					active={activeDrawer === 'manageBoundary'}
+					onClick={() => openDrawer('manageBoundary')}
+				/>
+
+				<SidebarButton
 					label="Manage Layers"
 					title="Manage the feature layers within the project"
-					icon={<MapPinned />}
+					icon={<Layers />}
 					isCollapsed={collapsed}
 					disabled={!hasBoundary}
 					active={activeDrawer === 'manageLayers'}

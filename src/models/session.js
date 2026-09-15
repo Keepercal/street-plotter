@@ -3,6 +3,11 @@ import {
 	createProjectDataFromWorkspace,
 } from './projectData';
 
+import {
+	createSessionMetadata,
+	createSessionMetadataFromWorkspace,
+} from './sessionMetadata';
+
 const VERSION = 1;
 
 /**
@@ -16,14 +21,7 @@ export function createSession(overrides = {}) {
 	return {
 		version: VERSION,
 
-		metadata: {
-			id: crypto.randomUUID(),
-			projectId: null, // null means this is just a scratch session
-			created: now,
-			modified: now,
-			...overrides.metadata,
-		},
-
+		metadata: createSessionMetadata(overrides.metadata),
 		data: createProjectData(overrides.data),
 	};
 }
@@ -49,11 +47,11 @@ export function updateSession(session, changes = {}) {
 	return {
 		...session,
 
-		metadata: {
+		metadata: createSessionMetadata({
 			...session.metadata,
 			...changes.metadata,
 			modified: new Date().toISOString(),
-		},
+		}),
 
 		data: {
 			...session.data,
@@ -70,5 +68,6 @@ export function updateSession(session, changes = {}) {
 export function updateSessionFromWorkspace(session, workspace) {
 	return updateSession(session, {
 		data: createProjectDataFromWorkspace(workspace),
+		metadata: createSessionMetadataFromWorkspace(session),
 	});
 }

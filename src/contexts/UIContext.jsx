@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 const UIContext = createContext(null);
 
@@ -14,4 +14,58 @@ export function useUIContext() {
 	}
 
 	return context;
+}
+
+export function useUIContextValue(values) {
+	const {
+		activeDrawer,
+		setActiveDrawer,
+		activeLayer,
+		setActiveLayer,
+		activeModal,
+		setActiveModal,
+		focusTrigger,
+		setFocusTrigger,
+		takeScreenshot,
+		handleScreenshotReady,
+		pendingSession,
+		setPendingSession,
+		pendingLayer,
+		setPendingLayer,
+	} = values;
+
+	return useMemo(
+		() => ({
+			activeDrawer,
+			setActiveDrawer,
+			activeLayer,
+			setActiveLayer,
+			activeModal,
+			setActiveModal,
+			focusTrigger,
+			setFocusTrigger,
+			takeScreenshot,
+			handleScreenshotReady,
+			pendingSession,
+			setPendingSession,
+			pendingLayer,
+			setPendingLayer,
+		}),
+		[
+			activeDrawer,
+			setActiveDrawer,
+			activeLayer,
+			setActiveLayer,
+			activeModal,
+			setActiveModal,
+			focusTrigger,
+			setFocusTrigger,
+			takeScreenshot,
+			handleScreenshotReady,
+			pendingSession,
+			setPendingSession,
+			pendingLayer,
+			setPendingLayer,
+		]
+	);
 }

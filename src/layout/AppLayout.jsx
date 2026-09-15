@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import Map from './Map/Map.jsx';
-import Toolbar from './Toolbar/Toolbar';
+import Header from './Header/Header';
 import Sidebar from './Sidebar/Sidebar';
 import Drawer from './Drawer/Drawer';
 import MapFooter from './MapFooter/MapFooter.jsx';
@@ -11,8 +11,6 @@ import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
 import { useLayerContext } from '@/contexts/LayerContext.jsx';
 import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
 import { useUIContext } from '@/contexts/UIContext.jsx';
-
-import { FEATURE_OPTIONS } from '@/config/featureOptions.js';
 
 export default function AppLayout({ hasBoundary, hasFeatures }) {
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
@@ -27,7 +25,7 @@ export default function AppLayout({ hasBoundary, hasFeatures }) {
 	return (
 		<div className="app-layout">
 			<header className="app-header">
-				<Toolbar />
+				<Header />
 			</header>
 
 			<div

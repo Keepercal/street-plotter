@@ -27,6 +27,8 @@ const MapFooter = () => {
 				<p>Ways {wayCount}</p>
 				<p>Relations {relationCount}</p>
 			</div>
+
+			<p className="version-tag">v{__APP_VERSION__}</p>
 		</div>
 	);
 };

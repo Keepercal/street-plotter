@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 const WorkspaceContext = createContext(null);
 
@@ -20,4 +20,97 @@ export function useWorkspaceContext() {
 	}
 
 	return context;
+}
+
+/**
+ * useWorkspaceContextValue
+ * ---------------
+ * Assembles the WorkspaceContext value. Unlike Boundary/Layer,
+ * this one draws from several different hooks (useState,
+ * useProjectManager, useSession, useWorkspaceActions,
+ * useUnsavedChanges) rather than one manager object, so it takes
+ * a flat bag of values rather than a single manager + extras.
+ */
+export function useWorkspaceContextValue(values) {
+	const {
+		basemap,
+		setBasemap,
+		displayMode,
+		setDisplayMode,
+		isDirty,
+		setIsDirty,
+		project,
+		projects,
+		projectName,
+		loadProjects,
+		hasSavedProjects,
+		sessionInfo,
+		setSessionInfo,
+		saveCurrentProject,
+		saveProjectAs,
+		handleOpenProject,
+		handleDeleteProject,
+		handleNewWorkspace,
+		handleSaveAndContinue,
+		handleDiscardAndContinue,
+		handleCancel,
+		restoreWorkspace,
+		resetWorkspace,
+		clearSavedSession,
+	} = values;
+
+	return useMemo(
+		() => ({
+			basemap,
+			setBasemap,
+			displayMode,
+			setDisplayMode,
+			isDirty,
+			setIsDirty,
+			project,
+			projects,
+			projectName,
+			loadProjects,
+			hasSavedProjects,
+			sessionInfo,
+			setSessionInfo,
+			saveCurrentProject,
+			saveProjectAs,
+			handleOpenProject,
+			handleDeleteProject,
+			handleNewWorkspace,
+			handleSaveAndContinue,
+			handleDiscardAndContinue,
+			handleCancel,
+			restoreWorkspace,
+			resetWorkspace,
+			clearSavedSession,
+		}),
+		[
+			basemap,
+			setBasemap,
+			displayMode,
+			setDisplayMode,
+			isDirty,
+			setIsDirty,
+			project,
+			projects,
+			projectName,
+			loadProjects,
+			hasSavedProjects,
+			sessionInfo,
+			setSessionInfo,
+			saveCurrentProject,
+			saveProjectAs,
+			handleOpenProject,
+			handleDeleteProject,
+			handleNewWorkspace,
+			handleSaveAndContinue,
+			handleDiscardAndContinue,
+			handleCancel,
+			restoreWorkspace,
+			resetWorkspace,
+			clearSavedSession,
+		]
+	);
 }

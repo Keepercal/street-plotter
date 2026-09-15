@@ -1,5 +1,5 @@
 /* =========================
-    Toolbar Branding
+    Header Branding
 ========================= */
 
 .brand {
@@ -21,11 +21,11 @@
 	margin: 0px;
 }
 
-.version-tag {
+/*.version-tag {
 	margin: 0;
 	font-size: 0.8rem;
 	color: #aaa;
-}
+}/*
 
 .brand-logo {
 	width: auto;

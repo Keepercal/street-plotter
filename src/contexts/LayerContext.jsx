@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 const LayerContext = createContext(null);
 
@@ -16,4 +16,82 @@ export function useLayerContext() {
 	}
 
 	return context;
+}
+
+/**
+ * useLayerContextValue
+ * ---------------
+ * Assembles the LayerContext value from useLayerManager's return
+ * value plus derived/App-level extras.
+ */
+export function useLayerContextValue(layerManager, extras) {
+	const {
+		featureLayers,
+		loadLayer,
+		updateLayer,
+		removeLayer,
+		clearLayers,
+		updateLayerFilters,
+		commitLayer,
+		handleAddLayer,
+		toggleLayerVisibility,
+		renameLayer,
+		exportLayers,
+		restoreLayers,
+		getCachedFeatures,
+		clearCache,
+		failedFeatureKey,
+		clearStatus,
+		status,
+		error,
+	} = layerManager;
+
+	const { filteredLayers, hasFeatures } = extras;
+
+	return useMemo(
+		() => ({
+			featureLayers,
+			filteredLayers,
+			hasFeatures,
+			commitLayer,
+			loadLayer,
+			updateLayer,
+			removeLayer,
+			renameLayer,
+			handleAddLayer,
+			updateLayerFilters,
+			toggleLayerVisibility,
+			clearLayers,
+			restoreLayers,
+			exportLayers,
+			getCachedFeatures,
+			clearCache,
+			failedFeatureKey,
+			clearStatus,
+			status,
+			error,
+		}),
+		[
+			featureLayers,
+			filteredLayers,
+			hasFeatures,
+			commitLayer,
+			loadLayer,
+			updateLayer,
+			removeLayer,
+			renameLayer,
+			handleAddLayer,
+			updateLayerFilters,
+			toggleLayerVisibility,
+			clearLayers,
+			restoreLayers,
+			exportLayers,
+			getCachedFeatures,
+			clearCache,
+			failedFeatureKey,
+			clearStatus,
+			status,
+			error,
+		]
+	);
 }

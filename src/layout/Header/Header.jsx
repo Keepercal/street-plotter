@@ -1,11 +1,11 @@
 /* Style/UI */
-import './Toolbar.css';
+import './Header.css';
 import { Download, CirclePlus, Save, Focus, Camera } from 'lucide-react';
 
 /* Components */
 import Brand from '../../components/Brand/Brand';
-import ToolbarDropdown from './components/ToolbarDropdown/ToolbarDropdown';
-import ToolbarButton from './components/ToolbarButton/ToolbarButton';
+import HeaderDropdown from './components/HeaderDropdown/HeaderDropdown';
+import HeaderButton from './components/HeaderButton/HeaderButton';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
 /* Hooks */
@@ -21,7 +21,7 @@ import { useLayerContext } from '@/contexts/LayerContext.jsx';
 /* Config */
 import { menus } from './config/menus';
 
-export default function Toolbar() {
+export default function Header() {
 	const { setActiveModal, setFocusTrigger, takeScreenshot } = useUIContext();
 	const { isDirty, handleNewWorkspace, saveCurrentProject } =
 		useWorkspaceContext();
@@ -81,7 +81,7 @@ export default function Toolbar() {
 			<Brand />
 
 			<div className="toolbar-content" ref={toolbarRef}>
-				<ToolbarButton
+				<HeaderButton
 					label="Save"
 					title="Save project to file"
 					icon={<Save size={18} />}
@@ -89,7 +89,7 @@ export default function Toolbar() {
 					disabled={!isDirty || !hasBoundary}
 					onClick={saveCurrentProject}
 				/>
-				<ToolbarButton
+				<HeaderButton
 					label="Export"
 					title="Export project as geospatial data format"
 					icon={<Download size={18} />}
@@ -97,7 +97,7 @@ export default function Toolbar() {
 					onClick={() => setActiveModal('export')}
 				/>
 				{toolbarMenus.map((menu) => (
-					<ToolbarDropdown
+					<HeaderDropdown
 						key={menu.id}
 						label={menu.label}
 						icon={<CirclePlus size={18} />}
@@ -110,13 +110,13 @@ export default function Toolbar() {
 			</div>
 
 			<div className="toolbar-actions">
-				<ToolbarButton
+				<HeaderButton
 					title="Refocus viewport on current boundary"
 					icon={<Focus size={18} />}
 					disabled={!hasBoundary}
 					onClick={() => setFocusTrigger((t) => t + 1)}
 				/>
-				<ToolbarButton
+				<HeaderButton
 					title="Take screenshot of viewport"
 					icon={<Camera size={18} />}
 					disabled={!takeScreenshot}

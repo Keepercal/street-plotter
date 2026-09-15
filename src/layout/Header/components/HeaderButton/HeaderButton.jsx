@@ -1,6 +1,6 @@
-import './ToolbarButton.css';
+import './HeaderButton.css';
 
-export default function ToolbarButton({
+export default function HeaderButton({
 	label,
 	title,
 	icon,

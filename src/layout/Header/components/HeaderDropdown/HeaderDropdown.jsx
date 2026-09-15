@@ -1,6 +1,6 @@
-import './ToolbarDropdown.css';
+import './HeaderDropdown.css';
 
-export default function ToolbarDropdown({
+export default function HeaderDropdown({
 	label,
 	title,
 	//icon,

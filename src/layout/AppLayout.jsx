@@ -16,7 +16,7 @@ export default function AppLayout({ hasBoundary, hasFeatures }) {
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
 	/* Context */
-	const { boundaries, previewBoundary, selectedBoundaryIds } =
+	const { boundaries, previewBoundary, previewTrigger, selectedBoundaryIds } =
 		useBoundaryContext();
 	const { featureLayers, filteredLayers } = useLayerContext();
 	const { basemap, displayMode } = useWorkspaceContext();
@@ -51,6 +51,7 @@ export default function AppLayout({ hasBoundary, hasFeatures }) {
 							// boundary
 							boundaries={boundaries}
 							previewBoundary={previewBoundary}
+							previewTrigger={previewTrigger}
 							boundaryIDs={selectedBoundaryIds}
 
 							// features

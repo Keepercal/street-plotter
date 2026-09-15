@@ -24,6 +24,7 @@ export default function useBoundaryManager({
 
 	const [boundaries, setBoundaries] = useState([]); // stores the current boundaries in the application as an array
 	const [previewBoundary, setPreviewBoundary] = useState(null);
+	const [previewTrigger, setPreviewTrigger] = useState(0);
 
 	const [status, setStatus] = useState('idle');
 	const [error, setError] = useState(null);
@@ -156,10 +157,6 @@ export default function useBoundaryManager({
 		setError(null);
 	};
 
-	const handlePreviewBoundary = (boundary) => {
-		setPreviewBoundary(boundary);
-	};
-
 	/* Restore a given boundary to state */
 	const restoreBoundaries = (value) => {
 		requestId.current++;
@@ -181,6 +178,14 @@ export default function useBoundaryManager({
 
 		setStatus('success');
 		setError(null);
+	};
+
+	/**
+	 * Rerenders the map to focus on the chosen boundary
+	 */
+	const handlePreviewBoundary = (boundary) => {
+		setPreviewBoundary(boundary);
+		setPreviewTrigger((t) => t + 1);
 	};
 
 	/**
@@ -210,6 +215,7 @@ export default function useBoundaryManager({
 		boundaries,
 		previewBoundary,
 		setPreviewBoundary,
+		previewTrigger,
 
 		// boundary handling
 		setBoundary,

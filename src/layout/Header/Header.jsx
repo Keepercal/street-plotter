@@ -110,7 +110,7 @@ export default function Header() {
 
 			<div className="header-actions">
 				<HeaderButton
-					title="Refocus viewport on current boundary"
+					title="Refocus viewport on boundaries within the workspace"
 					icon={<Focus size={18} />}
 					disabled={!hasBoundary}
 					onClick={() => setFocusTrigger((t) => t + 1)}

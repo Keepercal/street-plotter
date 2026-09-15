@@ -6,7 +6,6 @@ import { Download, CirclePlus, Save, Focus, Camera } from 'lucide-react';
 import Brand from '../../components/Brand/Brand';
 import HeaderDropdown from './components/HeaderDropdown/HeaderDropdown';
 import HeaderButton from './components/HeaderButton/HeaderButton';
-import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
 /* Hooks */
 import { useState, useRef } from 'react';
@@ -77,10 +76,10 @@ export default function Header() {
 	}));
 
 	return (
-		<div className="toolbar">
+		<div className="header">
 			<Brand />
 
-			<div className="toolbar-content" ref={toolbarRef}>
+			<div className="header-content" ref={toolbarRef}>
 				<HeaderButton
 					label="Save"
 					title="Save project to file"
@@ -109,7 +108,7 @@ export default function Header() {
 				))}
 			</div>
 
-			<div className="toolbar-actions">
+			<div className="header-actions">
 				<HeaderButton
 					title="Refocus viewport on current boundary"
 					icon={<Focus size={18} />}

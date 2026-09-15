@@ -1,4 +1,4 @@
-.toolbar-button {
+.header-button {
 	height: 36px;
 
 	padding: 0 8px;
@@ -34,7 +34,7 @@
 }
 
 /* Hover */
-.toolbar-button:hover {
+.header-button:hover {
 	background: rgba(255, 255, 255, 0.16);
 
 	border-color: rgba(255, 255, 255, 0.25);
@@ -43,14 +43,14 @@
 }
 
 /* Pressed */
-.toolbar-button:active {
+.header-button:active {
 	transform: scale(0.96);
 
 	background: rgba(255, 255, 255, 0.22);
 }
 
 /* Optional active state */
-.toolbar-button.active {
+.header-button.active {
 	background: rgba(79, 195, 247, 0.2);
 
 	border-color: #4fc3f7;
@@ -59,7 +59,7 @@
 }
 
 /* Disabled */
-.toolbar-button:disabled {
+.header-button:disabled {
 	background: rgba(255, 255, 255, 0.04);
 
 	transform: scale(1);
@@ -75,20 +75,20 @@
 	opacity: 0.7;
 }
 
-.toolbar-button {
+.header-button {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
 }
 
-.toolbar-button-icon {
+.header-button-icon {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 }
 
-.toolbar-button-indicator {
+.header-button-indicator {
 	position: absolute;
 	top: -2px;
 	right: -2px;

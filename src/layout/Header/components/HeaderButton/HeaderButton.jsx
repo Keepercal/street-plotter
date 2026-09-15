@@ -10,14 +10,14 @@ export default function HeaderButton({
 }) {
 	return (
 		<button
-			className="toolbar-button"
+			className="header-button"
 			disabled={disabled}
 			onClick={onClick}
 			title={title}
 		>
 			{label}
 			{icon}
-			{indicator && <span className="toolbar-button-indicator" />}
+			{indicator && <span className="header-button-indicator" />}
 		</button>
 	);
 }

@@ -48,7 +48,7 @@ import useStatusPopup from './hooks/useStatusPopup.js';
 
 /* Session & Database */
 import { createSession } from './models/session.js';
-import { getProject, getAllProjects, deleteProject } from './db/projectDB.js';
+import { getAllProjects, deleteProject } from './db/projectDB.js';
 
 export default function App() {
 	// ─────────────────────────────────────────
@@ -100,7 +100,6 @@ export default function App() {
 
 	const {
 		boundaries,
-		previewBoundary,
 		setPreviewBoundary,
 		clearBoundaryResults,
 		clearBoundaries,
@@ -195,6 +194,20 @@ export default function App() {
 	}, [setProject, bindSetProject]);
 
 	/*
+	 * Creates a list of projects
+	 */
+	const loadProjects = useCallback(async () => {
+		const list = await getAllProjects();
+		const sorted = [...list].sort((a, b) => {
+			return (
+				new Date(b.metadata.modified) - new Date(a.metadata.modified)
+			);
+		});
+
+		setProjects(sorted);
+	}, []);
+
+	/*
 	 * Confirm unsaved changes and open project
 	 */
 	const handleOpenProject = (projectId) => {
@@ -217,20 +230,6 @@ export default function App() {
 
 		resetWorkspace();
 	}
-
-	/*
-	 * Creates a list of projects
-	 */
-	const loadProjects = useCallback(async () => {
-		const list = await getAllProjects();
-		const sorted = list.sort((a, b) => {
-			return (
-				new Date(b.metadata.modified) - new Date(a.metadata.modified)
-			);
-		});
-
-		setProjects(sorted);
-	}, []);
 
 	// ─────────────────────────────────────────
 	// Session

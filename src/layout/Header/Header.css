@@ -1,4 +1,4 @@
-.toolbar {
+.header {
 	display: flex;
 	align-items: center;
 
@@ -9,7 +9,7 @@
 	box-sizing: border-box;
 }
 
-.toolbar-content {
+.header-content {
 	display: flex;
 	flex-direction: row;
 	gap: 12px;
@@ -19,8 +19,9 @@
 	margin-left: 40px;
 }
 
-.toolbar-actions {
+.header-actions {
 	margin-left: auto;
+	gap: 12px;
 
 	display: flex;
 	align-items: center;

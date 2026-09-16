@@ -1,127 +1,65 @@
-import { useEffect, useMemo, useState } from 'react';
+// useStatusPopup.js
+import { useEffect, useReducer, useRef } from 'react';
+import { buildStatusSources } from './utils/statusPopupSources';
 
-export default function useStatusPopup({
-	featureStatus,
-	featureError,
-	failedFeatureKey,
-	projectStatus,
-	projectError,
-}) {
-	const [dismissed, setDismissed] = useState(false);
+const initialState = {
+	status: 'idle',
+	type: null,
+	title: '',
+	message: '',
+	source: null,
+};
 
-	/*
-	 * Reset status popup dismissal when loading starts
-	 */
-	useEffect(() => {
-		if (
-			featureStatus === 'loading' ||
-			projectStatus === 'saved' ||
-			featureStatus === 'error' ||
-			projectStatus === 'error'
-		) {
-			setDismissed(false);
-		}
-	}, [featureStatus, projectStatus]);
+function popupReducer(state, action) {
+	switch (action.type) {
+		case 'SHOW':
+			return { status: 'visible', ...action.payload };
+		case 'DISMISS':
+			return initialState;
+		default:
+			return state;
+	}
+}
 
-	/* Handle status popup */
-	const statusPopup = useMemo(() => {
-		if (dismissed) {
-			console.log('[DEBUG] Popup dismissed → idle state');
-			return {
-				trigger: false,
-				type: 'idle',
-				source: null,
-				featureKey: null,
-				title: '',
-				message: '',
-			};
-		}
-
-		if (featureStatus === 'loading') {
-			return {
-				trigger: true,
-				type: 'loading',
-				source: 'feature',
-				featureKey: null,
-				title: 'Loading',
-				message: 'Loading feature from Overpass...',
-			};
-		}
-
-		if (featureStatus === 'error') {
-			console.error('[DEBUG] Popup: feature error', featureError);
-			return {
-				trigger: true,
-				type: 'error',
-				source: 'feature',
-				featureKey: failedFeatureKey,
-				title: 'Error',
-				message: featureError?.message,
-			};
-		}
-
-		if (projectStatus === 'saved') {
-			return {
-				trigger: true,
-				type: 'saved',
-				source: 'project',
-				featureKey: null,
-				title: 'Saved',
-				message: 'Project saved.',
-			};
-		}
-
-		if (projectStatus === 'error') {
-			console.error('[DEBUG] Popup: project error', projectError);
-			return {
-				trigger: true,
-				type: 'error',
-				source: 'project',
-				featureKey: null,
-				title: 'Error',
-				message: projectError?.message ?? 'Failed to save project.',
-			};
-		}
-
-		return {
-			trigger: false,
-			type: 'idle',
-			source: null,
-			featureKey: null,
-			title: '',
-			message: '',
-		};
-	}, [
-		dismissed,
-		featureStatus,
-		featureError,
-		failedFeatureKey,
-		projectStatus,
-		projectError,
-	]);
+export default function useStatusPopup(sourceInputs) {
+	const [popup, dispatch] = useReducer(popupReducer, initialState);
+	const timerRef = useRef(null);
 
 	useEffect(() => {
-		if (
-			!statusPopup.trigger ||
-			(statusPopup.type !== 'error' && statusPopup.type !== 'saved')
-		) {
+		clearTimeout(timerRef.current);
+
+		const sources = buildStatusSources(sourceInputs);
+		const active = sources.find((source) => source.test());
+
+		if (!active) {
+			dispatch({ type: 'DISMISS' });
 			return;
 		}
 
-		const delay = statusPopup.type === 'saved' ? 2500 : 5000;
+		dispatch({ type: 'SHOW', payload: active.build() });
 
-		const timer = setTimeout(() => {
-			setDismissed(true);
-		}, delay);
+		if (active.dismissMs) {
+			timerRef.current = setTimeout(
+				() => dispatch({ type: 'DISMISS' }),
+				active.dismissMs
+			);
+		}
 
-		return () => clearTimeout(timer);
-	}, [statusPopup.trigger, statusPopup.type]);
+		return () => clearTimeout(timerRef.current);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		sourceInputs.featureStatus,
+		sourceInputs.featureError,
+		sourceInputs.failedFeatureKey,
+		sourceInputs.projectStatus,
+		sourceInputs.projectError,
+	]);
 
 	return {
-		statusPopup,
-
-		dismissPopup() {
-			setDismissed(true);
+		statusPopup: { trigger: popup.status === 'visible', ...popup },
+		dismissPopup: () => {
+			clearTimeout(timerRef.current);
+			dispatch({ type: 'DISMISS' });
 		},
 	};
 }

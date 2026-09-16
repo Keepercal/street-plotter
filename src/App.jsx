@@ -213,7 +213,7 @@ export default function App() {
 	 */
 	const handleOpenProject = (projectId) => {
 		confirmUnsavedChanges(() => {
-			openProject(projectId, restoreWorkspace);
+			openProject(projectId);
 			setActiveModal(null);
 		});
 	};

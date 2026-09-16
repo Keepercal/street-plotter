@@ -30,6 +30,9 @@ export default function useProjectManager({
 
 		console.log('[DEBUG] Opening project:', project);
 
+		setProjectStatus('idle');
+		setProjectError(null);
+
 		setProject(project);
 
 		restore.restoreWorkspace(
@@ -54,6 +57,7 @@ export default function useProjectManager({
 			return;
 		}
 
+		setProjectStatus('saving');
 		setProjectError(null);
 
 		try {
@@ -70,6 +74,7 @@ export default function useProjectManager({
 			onDirtyChange(false);
 
 			setProjectStatus('saved');
+
 			console.log('[DEBUG] Project saved:', updatedProject);
 
 			return true;

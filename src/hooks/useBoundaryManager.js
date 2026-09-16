@@ -146,6 +146,7 @@ export default function useBoundaryManager({
 		);
 
 		setPreviewBoundary(null);
+		setIsDirty(true);
 	};
 
 	/* Clear all boundaries from array */
@@ -155,6 +156,7 @@ export default function useBoundaryManager({
 
 		setStatus('idle');
 		setError(null);
+		setIsDirty(true);
 	};
 
 	/* Restore a given boundary to state */
@@ -194,6 +196,7 @@ export default function useBoundaryManager({
 	const handleSelectBoundary = (boundaryData) => {
 		setBoundary(boundaryData);
 		handlePreviewBoundary(null);
+		setIsDirty(true);
 	};
 
 	/**
@@ -201,8 +204,7 @@ export default function useBoundaryManager({
 	 */
 	const handleRemoveBoundary = (osmId) => {
 		removeBoundary(osmId);
-
-		setIsDirty(false);
+		setIsDirty(true);
 	};
 
 	return {

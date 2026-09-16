@@ -19,9 +19,9 @@ export default function useUnsavedChanges({
 	}
 
 	const handleSaveAndContinue = async () => {
-		await saveCurrentProject();
+		const success = await saveCurrentProject({ silent: true });
+		if (!success) return;
 		await pendingAction?.();
-
 		clearPendingAction();
 	};
 

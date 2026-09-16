@@ -121,16 +121,17 @@ export default function Header() {
 					disabled={!takeScreenshot}
 					onClick={() => takeScreenshot?.()}
 				/>
-				{/*<BoundaryIndicator boundaryName={boundaryName} />
+				{/*<BoundaryIndicator boundaryName={boundaryName} />*/}
 				<a
 					href="https://github.com/Keepercal/streets-dashboard"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="github-link"
 					aria-label="Open GitHub repository"
+					title={`Open ${__APP_NAME__} GitHub repository`}
 				>
 					<img src="./github-mark.svg" alt="GitHub" />
-				</a>*/}
+				</a>
 			</div>
 		</div>
 	);

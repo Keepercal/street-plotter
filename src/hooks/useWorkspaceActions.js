@@ -10,6 +10,7 @@ import { getProject } from '../db/projectDB.js';
 export default function useWorkspaceActions({
 	setSessionInfo,
 	setProject,
+	resetProjectStatus,
 	setBasemap,
 	setDisplayMode,
 	restoreBoundaries,
@@ -91,6 +92,7 @@ export default function useWorkspaceActions({
 			}
 
 			setProject(null);
+			resetProjectStatus?.();
 			setSessionInfo(createSession());
 
 			clearBoundaryResults();
@@ -108,6 +110,7 @@ export default function useWorkspaceActions({
 		[
 			clearSavedSession,
 			setProject,
+			resetProjectStatus,
 			setSessionInfo,
 			clearBoundaryResults,
 			clearBoundaries,

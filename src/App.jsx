@@ -88,6 +88,7 @@ export default function App() {
 	// Circular dependency breakers (see useWorkspaceActions/useProjectManager below)
 	const [stableSetProject, bindSetProject] = useLateBinding();
 	const [stableClearSavedSession, bindClearSavedSession] = useLateBinding();
+	const [stableResetProjectStatus, bindResetProjectStatus] = useLateBinding();
 
 	// ─────────────────────────────────────────
 	// Managers
@@ -146,6 +147,7 @@ export default function App() {
 	const { restoreWorkspace, resetWorkspace } = useWorkspaceActions({
 		setSessionInfo,
 		setProject: stableSetProject,
+		resetProjectStatus: stableResetProjectStatus,
 		setBasemap,
 		setDisplayMode,
 		restoreBoundaries,
@@ -173,6 +175,7 @@ export default function App() {
 		setProject,
 		projectStatus,
 		projectError,
+		resetProjectStatus,
 		openProject,
 		saveCurrentProject,
 		saveProjectAs,
@@ -192,7 +195,13 @@ export default function App() {
 
 	useEffect(() => {
 		bindSetProject(setProject);
-	}, [setProject, bindSetProject]);
+		bindResetProjectStatus(resetProjectStatus);
+	}, [
+		setProject,
+		bindSetProject,
+		resetProjectStatus,
+		bindResetProjectStatus,
+	]);
 
 	/*
 	 * Creates a list of projects

@@ -30,8 +30,7 @@ export default function useProjectManager({
 
 		console.log('[DEBUG] Opening project:', project);
 
-		setProjectStatus('idle');
-		setProjectError(null);
+		resetProjectStatus();
 
 		setProject(project);
 
@@ -130,12 +129,18 @@ export default function useProjectManager({
 		}
 	}
 
+	function resetProjectStatus() {
+		setProjectStatus('idle');
+		setProjectError(null);
+	}
+
 	return {
 		project,
 		setProject,
 
 		projectStatus,
 		projectError,
+		resetProjectStatus,
 
 		openProject,
 		saveCurrentProject,

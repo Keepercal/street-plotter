@@ -49,7 +49,9 @@ async function handleOverpassResponse(res, retryFn, retries) {
 	const data = await res.json();
 
 	if (!data?.elements?.length) {
-		throw new Error('Overpass returned an empty result');
+		throw Object.assign(new Error('Overpass returned an empty result'), {
+			notificationType: 'alert',
+		});
 	}
 
 	console.log('[DEBUG] Overpass API returned a result', data);

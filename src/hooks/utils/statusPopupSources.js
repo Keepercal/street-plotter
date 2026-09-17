@@ -1,5 +1,5 @@
-export const SAVED_DISMISS_MS = 2500;
-export const ERROR_DISMISS_MS = 5000;
+export const SHORT_DISMISS_MS = 2500;
+export const LONG_DISMISS_MS = 5000;
 
 export function buildStatusSources({
 	featureStatus,
@@ -19,6 +19,17 @@ export function buildStatusSources({
 			}),
 		},
 		{
+			test: () => featureStatus === 'alert',
+			build: () => ({
+				type: 'alert',
+				title: 'Alert',
+				message: featureError?.message,
+				source: 'feature',
+				featureKey: failedFeatureKey,
+			}),
+			dismissMs: LONG_DISMISS_MS,
+		},
+		{
 			test: () => featureStatus === 'error',
 			build: () => ({
 				type: 'error',
@@ -27,7 +38,7 @@ export function buildStatusSources({
 				source: 'feature',
 				featureKey: failedFeatureKey,
 			}),
-			dismissMs: ERROR_DISMISS_MS,
+			dismissMs: LONG_DISMISS_MS,
 		},
 		{
 			test: () => projectStatus === 'saving',
@@ -46,7 +57,7 @@ export function buildStatusSources({
 				message: 'Project saved.',
 				source: 'project',
 			}),
-			dismissMs: SAVED_DISMISS_MS,
+			dismissMs: SHORT_DISMISS_MS,
 		},
 		{
 			test: () => projectStatus === 'error',
@@ -56,7 +67,7 @@ export function buildStatusSources({
 				message: projectError?.message ?? 'Failed to save project.',
 				source: 'project',
 			}),
-			dismissMs: ERROR_DISMISS_MS,
+			dismissMs: LONG_DISMISS_MS,
 		},
 	];
 }

@@ -20,22 +20,33 @@ export default function LayerItem({
 	const [colour, setColour] = useState(layer.colour ?? '#3388ff');
 	const [showFilters, setShowFilters] = useState(false);
 
+	const [originalName, setOriginalName] = useState('');
+
 	const hasFilters = layer.filters?.length > 0;
 
 	const startEditing = (key, currentName) => {
 		setEditing(true);
 		setName(currentName);
+		setOriginalName(currentName);
 	};
 
 	const saveRename = (layerID) => {
 		const trimmedName = name.trim();
 
+		// nothing changed
+		if (trimmedName === originalName.trim()) {
+			setEditing(false);
+			return;
+		}
+
+		// Don't save an empty name
 		if (trimmedName.length > 0) {
 			renameLayer(layerID, trimmedName);
 		}
 
 		setEditing(false);
 		setName('');
+		setOriginalName('');
 	};
 
 	const debouncedUpdate = useMemo(

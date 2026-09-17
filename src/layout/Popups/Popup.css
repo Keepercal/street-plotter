@@ -30,7 +30,11 @@
 }
 
 .popup.error {
-	border-top: 3px solid var(--colour-button-danger-bg);
+	border-top: 3px solid var(--colour-danger);
+}
+
+.popup.alert {
+	border-top: 3px solid var(--colour-alert);
 }
 
 .popup.closing {
@@ -108,14 +112,11 @@
 
 .popup-title {
 	margin: 0;
+	color: #333;
 }
 
 .popup-title.error {
-	color: var(--colour-text-danger);
-}
-
-.popup-title.loading {
-	color: #333;
+	color: var(--colour-danger);
 }
 
 /* =========================

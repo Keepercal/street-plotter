@@ -368,10 +368,15 @@ export default function useLayerManager({
 		} catch (err) {
 			if (currentId !== requestId.current) return;
 
-			setFailedFeatureKey(featureKey); // pass back the feature that failed to load
+			setFailedFeatureKey(featureKey);
 
-			setError(err);
-			setStatus('error');
+			if (err?.notificationType === 'alert') {
+				setError(err);
+				setStatus('alert');
+			} else {
+				setError(err);
+				setStatus('error');
+			}
 		}
 	};
 

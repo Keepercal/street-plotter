@@ -37,6 +37,10 @@
 	border-top: 3px solid var(--colour-alert);
 }
 
+.popup.saved {
+	border-top: 3px solid var(--colour-success);
+}
+
 .popup.closing {
 	animation: slideDown 0.25s ease-in forwards;
 }

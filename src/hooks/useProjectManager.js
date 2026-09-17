@@ -21,27 +21,34 @@ export default function useProjectManager({
 	const [projectError, setProjectError] = useState(null);
 
 	async function openProject(projectId) {
-		const project = await getProject(projectId);
+		try {
+			const project = await getProject(projectId);
 
-		if (!project) {
-			console.error('Project not found');
-			return;
+			if (!project) {
+				setProjectStatus('error');
+				setProjectError(new Error('Project does not exist.'));
+				return;
+			}
+
+			resetProjectStatus();
+			setProject(project);
+
+			restore.restoreWorkspace(
+				createSession({
+					metadata: createSessionMetadata({
+						projectId: project.metadata.id,
+					}),
+					data: project.data,
+				})
+			);
+
+			onDirtyChange(false);
+		} catch (error) {
+			setProjectStatus('error');
+			setProjectError(error);
+
+			console.error('Failed to open project: ', error);
 		}
-
-		resetProjectStatus();
-
-		setProject(project);
-
-		restore.restoreWorkspace(
-			createSession({
-				metadata: createSessionMetadata({
-					projectId: project.metadata.id,
-				}),
-				data: project.data,
-			})
-		);
-
-		onDirtyChange(false);
 	}
 
 	/*
@@ -71,9 +78,10 @@ export default function useProjectManager({
 
 			return true;
 		} catch (error) {
-			console.error('[DEBUG] Failed to save project:', error);
 			setProjectStatus('error');
 			setProjectError(error);
+
+			console.error('Failed to save project:', error);
 			return false;
 		}
 	}
@@ -111,7 +119,7 @@ export default function useProjectManager({
 
 			return newProject;
 		} catch (error) {
-			console.error('[DEBUG] Failed to save project:', error);
+			console.error('Failed to save project:', error);
 			setProjectStatus('error');
 			setProjectError(error);
 			return null;

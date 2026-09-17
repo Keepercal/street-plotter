@@ -1,12 +1,10 @@
-import Brand from '../../../../../components/Brand/Brand';
-import { aboutImages } from '../config/aboutImages';
+import Brand from '@/components/Brand/Brand';
 
 export default function OverviewPage() {
 	const currentYear = new Date().getFullYear();
 	return (
 		<>
 			<Brand />
-			<>© {currentYear} Callum Stevens </>
 			<p>
 				{__APP_NAME__} is designed for transport planners, engineers,
 				GIS analysts, mapping enthusiasts, and anyone interested in
@@ -47,6 +45,8 @@ export default function OverviewPage() {
 				accurate, and in some instances may be outdated or incorrect.
 				Use data with caution.
 			</p>
+
+			<h3>© {currentYear} Callum Stevens </h3>
 		</>
 	);
 }

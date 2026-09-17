@@ -396,7 +396,6 @@ export default function useLayerManager({
 		}
 
 		commitLayer(preparedLayer);
-		//setIsDirty(true);
 	};
 
 	/* Layer inspection and updating */

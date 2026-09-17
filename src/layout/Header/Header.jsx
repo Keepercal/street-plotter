@@ -82,7 +82,7 @@ export default function Header() {
 		<div className="header">
 			<Brand />
 
-			<div className="header-content" ref={toolbarRef}>
+			<div className="header-actions-left" ref={toolbarRef}>
 				<HeaderButton
 					label="Save"
 					title="Save project to file"
@@ -111,8 +111,9 @@ export default function Header() {
 				))}
 			</div>
 
-			<div className="header-actions">
+			<div className="header-actions-right">
 				<HeaderButton
+					label="Refocus"
 					title="Refocus viewport on boundaries within the workspace"
 					icon={<Focus size={18} />}
 					disabled={!hasBoundary}

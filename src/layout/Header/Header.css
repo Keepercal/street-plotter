@@ -9,7 +9,7 @@
 	box-sizing: border-box;
 }
 
-.header-content {
+.header-actions-left {
 	display: flex;
 	flex-direction: row;
 	gap: 12px;
@@ -19,7 +19,7 @@
 	margin-left: 40px;
 }
 
-.header-actions {
+.header-actions-right {
 	margin-left: auto;
 	gap: 12px;
 

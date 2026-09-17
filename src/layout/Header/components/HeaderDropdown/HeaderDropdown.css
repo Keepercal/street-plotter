@@ -15,9 +15,11 @@
 .dropdown-button {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 0.5rem;
 
-	padding: 6px 16px;
+	height: 36px;
+
+	padding: 0px 8px;
 
 	border: 1px solid transparent;
 	border-radius: 6px;

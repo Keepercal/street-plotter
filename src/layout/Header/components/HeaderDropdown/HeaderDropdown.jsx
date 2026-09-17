@@ -38,10 +38,6 @@ export default function HeaderDropdown({
 							>
 								{item.label}
 							</button>
-
-							{/*{item.disabled && (
-								<span className="tooltip">Coming soon</span>
-							)}*/}
 						</div>
 					))}
 				</div>

@@ -35,15 +35,11 @@ export default function useBoundaryManager({
 		onChange?.();
 	}
 
-	useEffect(() => {
-		console.log('[DEBUG] boundaries changed:', boundaries);
-	}, [boundaries]);
+	useEffect(() => {}, [boundaries]);
 
 	/* Produce a list of boundaries from Nominatim from a given input */
 	const fetchBoundaryResults = async (userInput) => {
 		setBoundaryResults(null);
-
-		console.log('[DEBUG] fetchBoundaryResults ENTER:', { userInput });
 
 		const currentId = ++requestId.current;
 
@@ -57,12 +53,10 @@ export default function useBoundaryManager({
 			if (currentId !== requestId.current) return;
 
 			setBoundaryResults(result);
-
-			console.log('[DEBUG] Nominatim API returned result(s):', result);
-		} catch (err) {
+		} catch (error) {
 			if (currentId !== requestId.current) return;
 			setBoundaryResults([]);
-			console.error(err);
+			console.error(error);
 		}
 	};
 
@@ -79,16 +73,9 @@ export default function useBoundaryManager({
 	/*const loadBoundary = async (boundaryIDs, boundaryType, boundaryName) => {
 		clearBoundaries();
 
-		console.log('[DEBUG] setBoundary ENTER:', {
-			boundaryIDs,
-			boundaryType,
-			boundaryName,
-		});
-
 		const currentId = ++requestId.current;
 
 		if (boundaryIDs === 'none') {
-			console.error('[DEBUG] BoundaryID is empty:', boundaryIDs);
 			return;
 		}
 
@@ -109,16 +96,16 @@ export default function useBoundaryManager({
 			setBoundaryGeojson(geojson);
 
 			setStatus('success');
-		} catch (err) {
+		} catch (error) {
 			if (currentId !== requestId.current) return;
 
-			console.error(err);
+			console.error(error);
 
 			setBoundaryData(null);
 			setBoundaryGeojson(null);
 
 			setStatus('error');
-			setError(err);
+			setError(error);
 		}
 	};*/
 

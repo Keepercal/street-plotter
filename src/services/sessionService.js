@@ -22,7 +22,6 @@ export function loadSession() {
 		return JSON.parse(json);
 	} catch (error) {
 		console.error('[DEBUG] Failed to load session:', error);
-
 		return null;
 	}
 }

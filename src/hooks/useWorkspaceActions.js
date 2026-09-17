@@ -31,16 +31,6 @@ export default function useWorkspaceActions({
 	const restoreWorkspace = useCallback(
 		async (session) => {
 			if (!session) return;
-
-			console.log('[DEBUG] Restoring workspace:', session);
-
-			console.log(
-				'[DEBUG] Session type:',
-				session.projectId
-					? `Project (${session.projectId})`
-					: 'Temporary session'
-			);
-
 			// If the session matches the ID of a project
 			if (session.metadata?.projectId) {
 				const project = await getProject(session.metadata.projectId);
@@ -85,8 +75,6 @@ export default function useWorkspaceActions({
 	 */
 	const resetWorkspace = useCallback(
 		({ preserveAutosave = false } = {}) => {
-			console.log('[DEBUG] Resetting workspace');
-
 			if (!preserveAutosave) {
 				clearSavedSession();
 			}

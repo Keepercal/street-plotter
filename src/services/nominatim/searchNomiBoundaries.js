@@ -8,18 +8,18 @@ export default async function searchNomiBoundaries(boundaryName) {
 			polygon_geojson: 1,
 		});
 
-	const res = await fetch(url, {
+	const result = await fetch(url, {
 		headers: {
 			Accept: 'application/json',
 			Referer: window.location.origin,
 		},
 	});
 
-	if (!res.ok) {
-		throw new Error(`Nominatim HTTP error: ${res.status}`);
+	if (!result.ok) {
+		throw new Error(`Nominatim HTTP error: ${result.status}`);
 	}
 
-	const data = await res.json();
+	const data = await result.json();
 
 	return data.filter((item) => item.osm_type !== 'node');
 }

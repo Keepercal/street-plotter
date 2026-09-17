@@ -15,9 +15,6 @@ export default function ExportButton({
 	filename = 'osm-export',
 }: ExportButtonProps) {
 	function handleExport() {
-		console.log('[DEBUG] handleExport ENTER', format, geojson);
-		console.log('GeoJSON:', geojson);
-
 		const now = new Date();
 
 		const timestamp = [

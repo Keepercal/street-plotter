@@ -8,12 +8,16 @@ const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
  * Handles only transport-level concerns (fetch + status logging).
  */
 async function callOverpass(query) {
-	console.log(`[DEBUG] callOverpass ENTER with query: ${query}`);
-	const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
+	try {
+		const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
 
-	const res = await fetch(url);
+		const result = await fetch(url);
 
-	return res;
+		return result;
+	} catch (error) {
+		console.error('Overpass API call failed with error:', error);
+		return error;
+	}
 }
 
 /**
@@ -25,8 +29,8 @@ async function callOverpass(query) {
  * - Throws consistent errors for HTTP failures
  * - Validates payload shape
  */
-async function handleOverpassResponse(res, retryFn, retries) {
-	if (res.status === 504) {
+async function handleOverpassResponse(result, retryFn, retries) {
+	if (result.status === 504) {
 		if (retries <= 0) {
 			throw new Error('Overpass timed out after multiple retries');
 		}
@@ -36,25 +40,23 @@ async function handleOverpassResponse(res, retryFn, retries) {
 		return retryFn();
 	}
 
-	if (!res.ok) {
-		if (res.status === 429) {
+	if (!result.ok) {
+		if (result.status === 429) {
 			throw new Error(
-				`HTTP ${res.status}: Too Many Requests - wait before retrying`
+				`HTTP ${result.status}: Too Many Requests - wait before retrying`
 			);
 		}
 
-		throw new Error(`HTTP ${res.status} (${res.statusText})`);
+		throw new Error(`HTTP ${result.status} (${result.statusText})`);
 	}
 
-	const data = await res.json();
+	const data = await result.json();
 
 	if (!data?.elements?.length) {
 		throw Object.assign(new Error('Overpass returned an empty result'), {
 			notificationType: 'alert',
 		});
 	}
-
-	console.log('[DEBUG] Overpass API returned a result', data);
 
 	return data;
 }
@@ -67,11 +69,6 @@ async function handleOverpassResponse(res, retryFn, retries) {
 export async function fetchOSMBoundary(boundaryIDs, boundaryType, retries = 3) {
 	if (!boundaryIDs || boundaryIDs === 'none') return null;
 
-	console.log('[DEBUG] fetchOSMBoundary ENTER:', {
-		boundaryIDs,
-		boundaryType,
-	});
-
 	let query;
 
 	query = `
@@ -80,10 +77,10 @@ export async function fetchOSMBoundary(boundaryIDs, boundaryType, retries = 3) {
         out geom meta;
     `;
 
-	const res = await callOverpass(query);
+	const result = await callOverpass(query);
 
 	return handleOverpassResponse(
-		res,
+		result,
 		() => fetchOSMBoundary(boundaryIDs, boundaryType, retries - 1),
 		retries
 	);
@@ -101,13 +98,6 @@ export async function fetchOSMFeature(
 	featureType
 ) {
 	if (!boundaryIDs || boundaryIDs === 'none') return null;
-
-	console.log('[DEBUG] ENTER fetchFeatures:', {
-		boundaryIDs,
-		featureTag,
-		featureValue,
-		featureType,
-	});
 
 	const relations = [...boundaryIDs]
 		.map((id) => `  relation(${id});`)
@@ -132,11 +122,11 @@ export async function fetchOSMFeature(
 		out tags geom meta;
 	`;
 
-	const res = await callOverpass(query);
+	const result = await callOverpass(query);
 
-	console.log(res);
+	console.log(result);
 
-	return handleOverpassResponse(res, () =>
+	return handleOverpassResponse(result, () =>
 		fetchOSMFeature(boundaryIDs, featureTag, featureValue, featureType)
 	);
 }

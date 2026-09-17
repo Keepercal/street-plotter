@@ -14,8 +14,6 @@ import CheckboxItem from '@/components/CheckboxItem/CheckboxItem';
  * Modal for exporting loaded features to various formats:
  */
 export default function ExportModal({ onClose, featureLayers }) {
-	console.log('[DEBUG] ExportModal ENTER: ', featureLayers);
-
 	const [featureScope, setFeatureScope] = useState('filtered');
 	const [layerScope, setLayerScope] = useState('all');
 

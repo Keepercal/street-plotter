@@ -83,7 +83,6 @@ export default function useLayerManager({
 
 	/* Remove a single layer */
 	const removeLayer = (layerID) => {
-		console.log('[DEBUG] removing feature:', { layerID });
 		setFeatureLayers((prev) => {
 			const next = { ...prev };
 
@@ -99,8 +98,6 @@ export default function useLayerManager({
 
 	/* Remove all layers from map */
 	const clearLayers = ({ markDirty = true } = {}) => {
-		console.log('[DEBUG] clearing all map features');
-
 		setFeatureLayers({});
 
 		if (markDirty) {
@@ -301,15 +298,6 @@ export default function useLayerManager({
 		featureType,
 		featureLabel,
 	}) => {
-		console.log('[DEBUG] loadLayer ENTER:', {
-			featureKey,
-			boundaryIds,
-			featureTag,
-			featureValue,
-			featureType,
-			featureLabel,
-		});
-
 		if (!featureKey || !boundaryIds || !featureTag) {
 			throw new Error('Missing required feature parameters');
 		}
@@ -365,16 +353,16 @@ export default function useLayerManager({
 			setStatus('idle');
 
 			return preparedLayer;
-		} catch (err) {
+		} catch (error) {
 			if (currentId !== requestId.current) return;
 
 			setFailedFeatureKey(featureKey);
 
-			if (err?.notificationType === 'alert') {
-				setError(err);
+			if (error?.notificationType === 'alert') {
+				setError(error);
 				setStatus('alert');
 			} else {
-				setError(err);
+				setError(error);
 				setStatus('error');
 			}
 		}
@@ -390,10 +378,6 @@ export default function useLayerManager({
 		featureType,
 		featureLabel
 	) => {
-		console.log(
-			`Calling loadLayer with boundary ID: ${selectedBoundaryIds}`
-		);
-
 		const preparedLayer = await loadLayer({
 			featureKey,
 			boundaryIds: selectedBoundaryIds,

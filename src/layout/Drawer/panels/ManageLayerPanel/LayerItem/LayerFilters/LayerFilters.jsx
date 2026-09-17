@@ -10,7 +10,6 @@ export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
 
 	/* Creates new filter object */
 	const addFilter = () => {
-		console.log(layerID, filters);
 		const newFilter = {
 			id: crypto.randomUUID(),
 			key: '',
@@ -27,7 +26,6 @@ export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
 	};
 
 	const updateFilter = (filterID, changes) => {
-		console.log(layerID, filters);
 		const updatedFilters = filters.map((filter) =>
 			filter.id === filterID
 				? {
@@ -41,8 +39,6 @@ export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
 	};
 
 	const removeFilter = (filterID) => {
-		console.log(layerID, filters);
-
 		const updatedFilters = filters.filter(
 			(filter) => filter.id !== filterID
 		);

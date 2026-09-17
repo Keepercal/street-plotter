@@ -28,8 +28,6 @@ export default function useProjectManager({
 			return;
 		}
 
-		console.log('[DEBUG] Opening project:', project);
-
 		resetProjectStatus();
 
 		setProject(project);
@@ -51,7 +49,6 @@ export default function useProjectManager({
 	 */
 	async function saveCurrentProject() {
 		if (!project) {
-			console.log('[DEBUG] No existing project, opening Save As');
 			onSaveAsRequested?.(); // opens the Save As modal there is no existing project to overwrite
 			return;
 		}
@@ -67,20 +64,16 @@ export default function useProjectManager({
 
 			await saveProjectToDB(updatedProject);
 
-			console.log('[DEBUG] Saving project', updatedProject);
-
 			setProject(updatedProject);
 			onDirtyChange(false);
 
 			setProjectStatus('saved');
 
-			console.log('[DEBUG] Project saved:', updatedProject);
-
 			return true;
-		} catch (err) {
-			console.error('[DEBUG] Failed to save project:', err);
+		} catch (error) {
+			console.error('[DEBUG] Failed to save project:', error);
 			setProjectStatus('error');
-			setProjectError(err);
+			setProjectError(error);
 			return false;
 		}
 	}
@@ -101,8 +94,6 @@ export default function useProjectManager({
 
 			await saveProjectToDB(newProject);
 
-			console.log('[DEBUG] Saving project', newProject);
-
 			setProject(newProject);
 
 			session.setSessionInfo((prev) => ({
@@ -118,13 +109,11 @@ export default function useProjectManager({
 
 			setProjectStatus('saved');
 
-			console.log('[DEBUG] Project saved:', newProject);
-
 			return newProject;
-		} catch (err) {
-			console.error('[DEBUG] Failed to save project:', err);
+		} catch (error) {
+			console.error('[DEBUG] Failed to save project:', error);
 			setProjectStatus('error');
-			setProjectError(err);
+			setProjectError(error);
 			return null;
 		}
 	}

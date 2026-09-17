@@ -26,7 +26,6 @@ export async function getAllProjects() {
 }
 
 export async function deleteProject(id) {
-	console.log('[DEBUG] Deleted project:', id);
 	const db = await dbPromise;
 	return db.delete('projects', id);
 }

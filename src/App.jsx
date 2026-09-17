@@ -51,6 +51,8 @@ import { UIProvider, useUIContextValue } from './contexts/UIContext.jsx';
 import { createSession } from './models/session.js';
 import { getAllProjects, deleteProject } from './db/projectDB.js';
 
+console.log('App Version:', __APP_VERSION__);
+
 export default function App() {
 	// ─────────────────────────────────────────
 	// State
@@ -238,8 +240,6 @@ export default function App() {
 		await loadProjects();
 
 		if (project?.metadata.id !== id) return;
-
-		console.log('[DEBUG] Deleted active project');
 
 		resetWorkspace();
 	}

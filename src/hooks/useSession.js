@@ -70,8 +70,6 @@ export default function useSession({
 
 		// No session found
 		if (!session || !hasSessionData(session)) {
-			console.log('[DEBUG] No saved session found');
-
 			clearSession();
 
 			setHydrated(true);

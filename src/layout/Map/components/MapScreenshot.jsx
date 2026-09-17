@@ -28,11 +28,7 @@ function MapScreenshot({ onReady }) {
 
 		const takeScreenshot = async () => {
 			try {
-				console.log('Taking screenshot...');
-
 				const blob = await screenshotter.takeScreen('blob');
-
-				console.log('Screenshot created:', blob);
 
 				const url = URL.createObjectURL(blob);
 

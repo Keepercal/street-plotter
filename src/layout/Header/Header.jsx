@@ -52,6 +52,9 @@ export default function Header() {
 			case 'modal':
 				setActiveModal(item.modal);
 				break;
+			case 'reportBug':
+				open('https://forms.gle/5RPAsRZC6CRGNkcG9');
+				break;
 		}
 
 		setOpenMenu(null);

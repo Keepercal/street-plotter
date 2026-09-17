@@ -42,6 +42,12 @@ export const menus = [
 				modal: 'howTo',
 				action: 'modal',
 			},
+			{
+				id: 'reportBug',
+				label: 'Report a Bug',
+				modal: 'reportBug',
+				action: 'reportBug',
+			},
 		],
 	},
 ];

@@ -193,6 +193,29 @@ export const FEATURE_MAP = {
 		},
 	},
 
+	cycling: {
+		bicycle_parking: {
+			tag: 'amenity',
+			label: 'Bicycle Parking',
+			type: 'way',
+		},
+		bicycle_rental: {
+			tag: 'amenity',
+			label: 'Bicycle Rental',
+			type: 'way',
+		},
+		bicycle: {
+			tag: 'shop',
+			label: 'Bicycle Shops',
+			type: 'way',
+		},
+		bicycle_repair_station: {
+			tag: 'amenity',
+			label: 'Repair Stations',
+			type: 'way',
+		},
+	},
+
 	driving: {
 		parking: {
 			tag: 'amenity',
@@ -226,29 +249,6 @@ export const FEATURE_MAP = {
 		},
 	},
 
-	cycling: {
-		bicycle_parking: {
-			tag: 'amenity',
-			label: 'Bicycle Parking',
-			type: 'way',
-		},
-		bicycle_rental: {
-			tag: 'amenity',
-			label: 'Bicycle Rental',
-			type: 'way',
-		},
-		bicycle: {
-			tag: 'shop',
-			label: 'Bicycle Shops',
-			type: 'way',
-		},
-		bicycle_repair_station: {
-			tag: 'amenity',
-			label: 'Repair Stations',
-			type: 'way',
-		},
-	},
-
 	// Services & civic infrastructure
 	emergency: {
 		police: {
@@ -269,6 +269,11 @@ export const FEATURE_MAP = {
 		phone: {
 			tag: 'emergency',
 			label: 'Emergency Phones',
+			type: 'way',
+		},
+		defibrillator: {
+			tag: 'amenity',
+			label: 'Defibrillators',
 			type: 'way',
 		},
 	},
@@ -302,11 +307,6 @@ export const FEATURE_MAP = {
 		veterinary: {
 			tag: 'amenity',
 			label: 'Veterinaries',
-			type: 'way',
-		},
-		defibrillator: {
-			tag: 'amenity',
-			label: 'Defibrillators',
 			type: 'way',
 		},
 	},
@@ -350,11 +350,6 @@ export const FEATURE_MAP = {
 			label: 'Post Offices',
 			type: 'way',
 		},
-		parcel_locker: {
-			tag: 'amenity',
-			label: 'Parcel Lockers',
-			type: 'way',
-		},
 		community_centre: {
 			tag: 'amenity',
 			label: 'Community Centres',
@@ -367,12 +362,37 @@ export const FEATURE_MAP = {
 		},
 	},
 
-	streetFurniture: {
+	publicAmenities: {
+		atm: {
+			tag: 'amenity',
+			label: 'ATM',
+		},
+		parcel_locker: {
+			tag: 'amenity',
+			label: 'Parcel Lockers',
+			type: 'way',
+		},
+		post_box: {
+			tag: 'amenity',
+			label: 'Post Boxes',
+		},
 		toilets: {
 			tag: 'amenity',
 			label: 'Toilets',
 			type: 'node',
 		},
+		drinking_water: {
+			tag: 'amenity',
+			label: 'Drinking Water',
+			type: 'node',
+		},
+		telephone: {
+			tag: 'amenity',
+			label: 'Public Telephones',
+		},
+	},
+
+	streetFurniture: {
 		bench: {
 			tag: 'amenity',
 			label: 'Benches',
@@ -385,12 +405,7 @@ export const FEATURE_MAP = {
 		},
 		recycling: {
 			tag: 'amenity',
-			label: 'Recycling',
-			type: 'node',
-		},
-		drinking_water: {
-			tag: 'amenity',
-			label: 'Drinking Water',
+			label: 'Recycling Bins',
 			type: 'node',
 		},
 		picnic_site: {

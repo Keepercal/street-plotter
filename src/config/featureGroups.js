@@ -15,6 +15,7 @@ const GROUP_LABELS = {
 	healthcare: 'Healthcare',
 	education: 'Education',
 	publicServices: 'Public Services',
+	publicAmenities: 'Public Amenities',
 	streetFurniture: 'Street Furniture',
 
 	// Places & everyday destinations

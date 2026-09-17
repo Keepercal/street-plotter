@@ -5,7 +5,7 @@ import FeatureItem from './components/FeatureItem/FeatureItem.jsx';
 import useFeatureGroups from './hooks/useFeatureGroups.js';
 
 /* CONSTANTS */
-import GROUP_LABELS from './constants/featureGroups.js';
+import GROUP_LABELS from '@/config/featureGroups.js';
 import { FEATURE_OPTIONS } from '@/config/featureOptions.js';
 
 /**

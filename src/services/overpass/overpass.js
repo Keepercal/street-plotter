@@ -1,3 +1,5 @@
+import { reportError } from '@/utils/errorReporting';
+
 const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 
 /**
@@ -8,15 +10,17 @@ const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
  * Handles only transport-level concerns (fetch + status logging).
  */
 async function callOverpass(query) {
+	const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
+
 	try {
-		const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
-
-		const result = await fetch(url);
-
-		return result;
+		return await fetch(url); // return the raw response, don't classify status here
 	} catch (error) {
-		console.error('Overpass API call failed with error:', error);
-		return error;
+		// only network-level failures land here (offline, DNS, CORS)
+		reportError(error, {
+			tags: { feature: 'overpass-api', errorType: 'network' },
+			extra: { url, query },
+		});
+		throw error;
 	}
 }
 
@@ -29,33 +33,54 @@ async function callOverpass(query) {
  * - Throws consistent errors for HTTP failures
  * - Validates payload shape
  */
-async function handleOverpassResponse(result, retryFn, retries) {
+async function handleOverpassResponse(result, retryFn, retries, context = {}) {
 	if (result.status === 504) {
 		if (retries <= 0) {
-			throw new Error('Overpass timed out after multiple retries');
+			const err = new Error('Overpass timed out after multiple retries');
+			reportError(err, {
+				tags: { feature: 'overpass-api', errorType: 'timeout' },
+				extra: context,
+			});
+			throw err;
 		}
-
 		await new Promise((resolve) => setTimeout(resolve, 1000));
-
 		return retryFn();
 	}
 
 	if (!result.ok) {
 		if (result.status === 429) {
-			throw new Error(
+			const err = new Error(
 				`HTTP ${result.status}: Too Many Requests - wait before retrying`
 			);
+			reportError(err, {
+				tags: { feature: 'overpass-api', errorType: 'rate-limit' },
+				extra: context,
+			});
+			throw err;
 		}
-
-		throw new Error(`HTTP ${result.status} (${result.statusText})`);
+		const err = new Error(`HTTP ${result.status} (${result.statusText})`);
+		reportError(err, {
+			tags: { feature: 'overpass-api', errorType: 'http' },
+			extra: { status: result.status, ...context },
+		});
+		throw err;
 	}
 
 	const data = await result.json();
 
 	if (!data?.elements?.length) {
-		throw Object.assign(new Error('Overpass returned an empty result'), {
-			notificationType: 'alert',
+		const err = Object.assign(
+			new Error('Overpass returned an empty result'),
+			{
+				notificationType: 'alert',
+			}
+		);
+		reportError(err, {
+			tags: { feature: 'overpass-api', errorType: 'empty-result' },
+			extra: context,
+			level: 'warning',
 		});
+		throw err;
 	}
 
 	return data;
@@ -95,7 +120,8 @@ export async function fetchOSMFeature(
 	boundaryIDs,
 	featureTag,
 	featureValue,
-	featureType
+	featureType,
+	retries = 3
 ) {
 	if (!boundaryIDs || boundaryIDs === 'none') return null;
 
@@ -126,7 +152,17 @@ export async function fetchOSMFeature(
 
 	console.log(result);
 
-	return handleOverpassResponse(result, () =>
-		fetchOSMFeature(boundaryIDs, featureTag, featureValue, featureType)
+	return handleOverpassResponse(
+		result,
+		() =>
+			fetchOSMFeature(
+				boundaryIDs,
+				featureTag,
+				featureValue,
+				featureType,
+				retries - 1
+			),
+		retries,
+		{ boundaryIDs, featureTag, featureValue } // pass context through for Sentry
 	);
 }

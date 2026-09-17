@@ -2,11 +2,11 @@ import './Legend.css';
 
 const legendItems = [
 	{
-		label: '< 3 months',
+		label: '< 6 months',
 		color: '#5ba328',
 	},
 	{
-		label: '3-12 months',
+		label: '6-12 months',
 		color: '#e7bb2d',
 	},
 	{

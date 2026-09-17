@@ -21,6 +21,7 @@ const BASEMAPS = {
 		name: 'World Topo',
 		url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
 		attribution: 'Tiles &copy; Esri ',
+		preview: '/streets-dashboard/images/world_topo.png',
 	},
 	openstreetmap: {
 		name: 'OpenStreetMap',

@@ -14,8 +14,8 @@ function getColourByAge(days) {
 		return red;
 	}
 
-	if (days <= 92) {
-		// Less than 3 months
+	if (days <= 183) {
+		// Less than 6 months
 		return green;
 	}
 
@@ -24,7 +24,7 @@ function getColourByAge(days) {
 		return yellow;
 	}
 
-	return red;
+	return red; // greater than 1 year
 }
 
 /* Create point marker */

@@ -57,6 +57,8 @@ export function useWorkspaceContextValue(values) {
 		restoreWorkspace,
 		resetWorkspace,
 		clearSavedSession,
+		pendingAction,
+		setPendingAction,
 	} = values;
 
 	return useMemo(
@@ -85,6 +87,8 @@ export function useWorkspaceContextValue(values) {
 			restoreWorkspace,
 			resetWorkspace,
 			clearSavedSession,
+			pendingAction,
+			setPendingAction,
 		}),
 		[
 			basemap,
@@ -111,6 +115,8 @@ export function useWorkspaceContextValue(values) {
 			restoreWorkspace,
 			resetWorkspace,
 			clearSavedSession,
+			pendingAction,
+			setPendingAction,
 		]
 	);
 }

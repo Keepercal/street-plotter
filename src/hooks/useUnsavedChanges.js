@@ -1,13 +1,11 @@
-import { useState } from 'react';
-
 export default function useUnsavedChanges({
 	isDirty,
 	setActiveModal,
 	modalKey,
 	saveCurrentProject,
+	pendingAction,
+	setPendingAction,
 }) {
-	const [pendingAction, setPendingAction] = useState(null);
-
 	function confirmUnsavedChanges(action) {
 		if (!isDirty) {
 			action();

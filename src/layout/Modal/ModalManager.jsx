@@ -46,6 +46,8 @@ export default function ModalManager() {
 		handleDeleteProject,
 		saveProjectAs,
 		hasSavedProjects,
+		pendingAction,
+		setPendingAction,
 	} = useWorkspaceContext();
 
 	const { boundaries } = useBoundaryContext();
@@ -104,9 +106,13 @@ export default function ModalManager() {
 
 			{activeModal === MODALS.SAVE_PROJECT && (
 				<SaveModal
-					onSaveAs={(name, description) => {
-						saveProjectAs(name, description);
-						setActiveModal(null);
+					onSaveAs={async (name, description) => {
+						const saved = saveProjectAs(name, description);
+						if (saved) {
+							setActiveModal(null);
+							await pendingAction?.();
+							setPendingAction(null);
+						}
 					}}
 					onClose={() => setActiveModal(null)}
 				/>

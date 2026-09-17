@@ -69,8 +69,11 @@ export default function App() {
 
 	// Session
 	const [sessionInfo, setSessionInfo] = useState(createSession());
+
+	// Pending states
 	const [pendingSession, setPendingSession] = useState(null);
 	const [pendingLayer, setPendingLayer] = useState(null);
+	const [pendingAction, setPendingAction] = useState(null);
 
 	// Project
 	const [projects, setProjects] = useState([]);
@@ -221,8 +224,8 @@ export default function App() {
 	 * Confirm unsaved changes and open project
 	 */
 	const handleOpenProject = (projectId) => {
-		confirmUnsavedChanges(() => {
-			openProject(projectId);
+		confirmUnsavedChanges(async () => {
+			await openProject(projectId);
 			setActiveModal(null);
 		});
 	};
@@ -304,6 +307,8 @@ export default function App() {
 		setActiveModal,
 		modalKey: MODALS.UNSAVED_CHANGES,
 		saveCurrentProject,
+		pendingAction,
+		setPendingAction,
 	});
 
 	const { statusPopup } = useStatusPopup({
@@ -361,6 +366,8 @@ export default function App() {
 		restoreWorkspace,
 		resetWorkspace,
 		clearSavedSession,
+		pendingAction,
+		setPendingAction,
 	});
 
 	const uiContextValue = useUIContextValue({

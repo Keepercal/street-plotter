@@ -52,7 +52,7 @@ export default function useProjectManager({
 	async function saveCurrentProject() {
 		if (!project) {
 			console.log('[DEBUG] No existing project, opening Save As');
-			onSaveAsRequested?.();
+			onSaveAsRequested?.(); // opens the Save As modal there is no existing project to overwrite
 			return;
 		}
 

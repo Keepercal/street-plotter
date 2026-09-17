@@ -22,11 +22,10 @@ export default function SaveModal({ onClose, onSaveAs }) {
 		setHasTitle(true);
 
 		onSaveAs(name, description);
-		onClose();
 	};
 
 	return (
-		<Modal title="Save Project" onClose={onClose}>
+		<Modal title="Save as New Project" onClose={onClose}>
 			<section className="modal-section">
 				<h3>Project Details</h3>
 

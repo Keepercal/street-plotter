@@ -13,8 +13,9 @@ async function callOverpass(query) {
 	const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
 
 	try {
-		return await fetch(url); // return the raw response, don't classify status here
+		return await fetch(url);
 	} catch (error) {
+		// report error to Sentury if issue with Overpass API
 		reportError(error, {
 			tags: { feature: 'overpass-api', errorType: 'network' },
 			extra: { url, query },
@@ -36,10 +37,6 @@ async function handleOverpassResponse(result, retryFn, retries, context = {}) {
 	if (result.status === 504) {
 		if (retries <= 0) {
 			const err = new Error('Overpass timed out after multiple retries');
-			reportError(err, {
-				tags: { feature: 'overpass-api', errorType: 'timeout' },
-				extra: context,
-			});
 			throw err;
 		}
 		await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -51,10 +48,6 @@ async function handleOverpassResponse(result, retryFn, retries, context = {}) {
 			const err = new Error(
 				`HTTP ${result.status}: Too Many Requests - wait before retrying`
 			);
-			reportError(err, {
-				tags: { feature: 'overpass-api', errorType: 'rate-limit' },
-				extra: context,
-			});
 			throw err;
 		}
 		const err = new Error(`HTTP ${result.status} (${result.statusText})`);
@@ -74,11 +67,6 @@ async function handleOverpassResponse(result, retryFn, retries, context = {}) {
 				notificationType: 'alert',
 			}
 		);
-		reportError(err, {
-			tags: { feature: 'overpass-api', errorType: 'empty-result' },
-			extra: context,
-			level: 'warning',
-		});
 		throw err;
 	}
 

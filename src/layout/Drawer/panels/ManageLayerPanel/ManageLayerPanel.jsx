@@ -31,7 +31,7 @@ export default function ManageLayerPanel() {
 			{!hasLayers ? (
 				<div className="empty-state">
 					<Ghost size={180} />
-					<p>No feature layers loaded</p>
+					<p>No feature layers in workspace</p>
 				</div>
 			) : (
 				<div className="panel-body">

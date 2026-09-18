@@ -1,3 +1,5 @@
+import reportError from '@/utils/errorReporting';
+
 export default async function searchNomiBoundaries(boundaryName) {
 	const url =
 		`https://nominatim.openstreetmap.org/search?` +
@@ -16,6 +18,7 @@ export default async function searchNomiBoundaries(boundaryName) {
 	});
 
 	if (!result.ok) {
+		reportError(result.status);
 		throw new Error(`Nominatim HTTP error: ${result.status}`);
 	}
 

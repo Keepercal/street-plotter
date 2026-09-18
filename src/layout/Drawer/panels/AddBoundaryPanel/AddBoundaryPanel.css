@@ -42,3 +42,30 @@
 .panel-body::-webkit-scrollbar-thumb:hover {
 	background: rgba(255, 255, 255, 0.4);
 }
+
+/* =========================
+    SPINNER
+========================= */
+
+.loading-state {
+	position: absolute;
+	inset: 0;
+
+	display: flex;
+	flex-direction: column;
+
+	justify-content: center;
+	align-items: center;
+
+	color: rgba(255, 255, 255, 0.65);
+
+	font-size: 18px;
+	font-style: italic;
+	text-align: center;
+
+	gap: 8px;
+}
+
+.loading-spinner {
+	color: rgba(255, 255, 255, 0.65);
+}

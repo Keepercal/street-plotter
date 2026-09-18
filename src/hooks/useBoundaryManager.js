@@ -54,9 +54,12 @@ export default function useBoundaryManager({
 
 			setBoundaryResults(result);
 		} catch (error) {
-			if (currentId !== requestId.current) return;
-			setBoundaryResults([]);
 			console.error(error);
+			if (currentId !== requestId.current) return;
+
+			setBoundaryResults([]);
+
+			throw error;
 		}
 	};
 

@@ -103,22 +103,20 @@
 ========================= */
 
 .empty-state {
+	position: absolute;
+	inset: 0;
+
 	display: flex;
 	flex-direction: column;
-
 	justify-content: center;
 	align-items: center;
 
-	flex: 1;
-
-	padding: 30px;
+	pointer-events: none;
 
 	color: rgba(255, 255, 255, 0.65);
-
 	font-size: 18px;
 	font-style: italic;
 	text-align: center;
-
 	gap: 8px;
 }
 

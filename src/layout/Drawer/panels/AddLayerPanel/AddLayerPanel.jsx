@@ -2,10 +2,10 @@ import './AddLayerPanel.css';
 import FeatureItem from './components/FeatureItem/FeatureItem.jsx';
 
 /* HOOKS */
-import useFeatureGroups from './hooks/useFeatureGroups.js';
+import useFeatureCategories from './hooks/useFeatureCategories.js';
 
 /* CONSTANTS */
-import GROUP_LABELS from '@/config/featureGroups.js';
+import GROUP_LABELS from '@/config/featureCategories.js';
 import { FEATURE_OPTIONS } from '@/config/featureOptions.js';
 
 /**
@@ -17,21 +17,21 @@ import { FEATURE_OPTIONS } from '@/config/featureOptions.js';
  * - Load features from a preselect list
  */
 const AddLayerPanel = ({ handleAddLayer, cachedFeatures }) => {
-	const { groupedFeatures, openGroups, toggleGroup } =
-		useFeatureGroups(FEATURE_OPTIONS);
+	const { categorisedFeatures, openCategories, toggleCategory } =
+		useFeatureCategories(FEATURE_OPTIONS);
 
 	return (
 		<>
-			{Object.entries(groupedFeatures).map(([group, features]) => (
-				<div key={group} className="accordion-group">
+			{Object.entries(categorisedFeatures).map(([category, features]) => (
+				<div key={category} className="accordion-category">
 					{/* LEVEL 2 HEADER */}
 					<h4
 						className="accordion-header"
-						onClick={() => toggleGroup(group)}
+						onClick={() => toggleCategory(category)}
 					>
-						{GROUP_LABELS[group] || group}
+						{GROUP_LABELS[category] || category}
 						<span
-							className={`arrow ${openGroups[group] ? 'rotated' : ''}`}
+							className={`arrow ${openCategories[category] ? 'rotated' : ''}`}
 						>
 							▸
 						</span>
@@ -39,13 +39,22 @@ const AddLayerPanel = ({ handleAddLayer, cachedFeatures }) => {
 
 					{/* LEVEL 3 CONTENT */}
 					<div
-						className={`accordion-content ${openGroups[group] ? 'open' : ''}`}
+						className={`accordion-content ${openCategories[category] ? 'open' : ''}`}
 					>
-						<FeatureItem
-							features={features}
-							handleAddLayer={handleAddLayer}
-							cachedFeatures={cachedFeatures}
-						/>
+						{features?.map(({ key, osmKey, osmValue, label }) => {
+							const isCached = cachedFeatures?.includes(osmKey);
+
+							return (
+								<FeatureItem
+									key={key}
+									label={label}
+									onClick={() =>
+										handleAddLayer(osmKey, osmValue, label)
+									}
+									isCached={isCached}
+								/>
+							);
+						})}
 					</div>
 				</div>
 			))}

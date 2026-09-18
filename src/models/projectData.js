@@ -5,7 +5,7 @@
  */
 export function createProjectData(overrides = {}) {
 	return {
-		settings: {
+		config: {
 			basemap: 'carto',
 			displayMode: 'default',
 			...overrides.settings,
@@ -24,7 +24,7 @@ export function createProjectData(overrides = {}) {
  */
 export function createProjectDataFromWorkspace(workspace) {
 	return createProjectData({
-		settings: {
+		config: {
 			basemap: workspace.basemap,
 			displayMode: workspace.displayMode,
 		},

@@ -35,10 +35,10 @@ export default function ManageLayerPanel() {
 				</div>
 			) : (
 				<div className="panel-body">
-					{Object.entries(featureLayers).map(([layerID, layer]) => (
+					{Object.entries(featureLayers).map(([layerId, layer]) => (
 						<LayerItem
-							key={layerID}
-							layerID={layerID}
+							key={layerId}
+							layerId={layerId}
 							layer={layer}
 							toggleLayerVisibility={toggleLayerVisibility}
 							updateLayer={updateLayer}

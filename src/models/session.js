@@ -16,8 +16,6 @@ const VERSION = 1;
  * Creates a Session model from session-shaped data.
  */
 export function createSession(overrides = {}) {
-	const now = new Date().toISOString();
-
 	return {
 		version: VERSION,
 

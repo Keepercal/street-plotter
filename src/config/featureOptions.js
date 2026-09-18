@@ -1,13 +1,12 @@
-import { FEATURE_MAP } from './osmFeatureMap';
+import { OSM_FEATURE_MAP } from './osmFeatureMap';
 
-export const FEATURE_OPTIONS = Object.entries(FEATURE_MAP).flatMap(
-	([group, features]) =>
-		Object.entries(features).map(([key, feature]) => ({
-			value: key,
-			key,
-			group,
-			tag: feature.tag,
+export const FEATURE_OPTIONS = Object.entries(OSM_FEATURE_MAP).flatMap(
+	([category, features]) =>
+		Object.entries(features).map(([featureKey, feature]) => ({
+			featureKey,
+			category,
+			osmKey: feature.osmKey,
+			osmValue: feature.osmValue,
 			label: feature.label,
-			type: feature.type,
 		}))
 );

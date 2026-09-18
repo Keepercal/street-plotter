@@ -27,7 +27,6 @@ export function useLayerContext() {
 export function useLayerContextValue(layerManager, extras) {
 	const {
 		featureLayers,
-		loadLayer,
 		updateLayer,
 		removeLayer,
 		clearLayers,
@@ -54,7 +53,6 @@ export function useLayerContextValue(layerManager, extras) {
 			filteredLayers,
 			hasFeatures,
 			commitLayer,
-			loadLayer,
 			updateLayer,
 			removeLayer,
 			renameLayer,
@@ -76,7 +74,6 @@ export function useLayerContextValue(layerManager, extras) {
 			filteredLayers,
 			hasFeatures,
 			commitLayer,
-			loadLayer,
 			updateLayer,
 			removeLayer,
 			renameLayer,

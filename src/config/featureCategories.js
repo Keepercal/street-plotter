@@ -1,5 +1,5 @@
 /* Human-readable group labels */
-const GROUP_LABELS = {
+const CATEGORY_LABELS = {
 	// Transport
 	public_transport_networks: 'Public Transport Networks',
 	active_travel_networks: 'Active Travel Networks',
@@ -35,4 +35,4 @@ const GROUP_LABELS = {
 	naturalFeatures: 'Natural Features',
 };
 
-export default GROUP_LABELS;
+export default CATEGORY_LABELS;

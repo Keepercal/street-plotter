@@ -3,7 +3,7 @@ import useFilterData from '../useFilterData.js';
 import FilterRow from '../FilterRow/FilterRow.jsx';
 import FilterJoin from '../FilterJoin/FilterJoin.jsx';
 
-export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
+export default function LayerFilters({ layerId, layer, updateLayerFilters }) {
 	const filters = layer.filters ?? [];
 
 	const { tags, getValues } = useFilterData(layer.geojson, filters);
@@ -22,7 +22,7 @@ export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
 			newFilter.join = 'AND';
 		}
 
-		updateLayerFilters(layerID, [...filters, newFilter]);
+		updateLayerFilters(layerId, [...filters, newFilter]);
 	};
 
 	const updateFilter = (filterID, changes) => {
@@ -35,7 +35,7 @@ export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
 				: filter
 		);
 
-		updateLayerFilters(layerID, updatedFilters);
+		updateLayerFilters(layerId, updatedFilters);
 	};
 
 	const removeFilter = (filterID) => {
@@ -51,7 +51,7 @@ export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
 			updatedFilters[0] = cleanFirstFilter;
 		}
 
-		updateLayerFilters(layerID, updatedFilters);
+		updateLayerFilters(layerId, updatedFilters);
 	};
 
 	return (

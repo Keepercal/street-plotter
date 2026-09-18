@@ -5,7 +5,7 @@ import { useState, useMemo } from 'react';
 import LayerFilters from './LayerFilters/LayerFilters';
 
 export default function LayerItem({
-	layerID,
+	layerId,
 	layer,
 	toggleLayerVisibility,
 	updateLayer,
@@ -30,7 +30,7 @@ export default function LayerItem({
 		setOriginalName(currentName);
 	};
 
-	const saveRename = (layerID) => {
+	const saveRename = (layerId) => {
 		const trimmedName = name.trim();
 
 		// nothing changed
@@ -41,7 +41,7 @@ export default function LayerItem({
 
 		// Don't save an empty name
 		if (trimmedName.length > 0) {
-			renameLayer(layerID, trimmedName);
+			renameLayer(layerId, trimmedName);
 		}
 
 		setEditing(false);
@@ -52,9 +52,9 @@ export default function LayerItem({
 	const debouncedUpdate = useMemo(
 		() =>
 			debounce((colour) => {
-				updateLayer(layerID, { colour });
+				updateLayer(layerId, { colour });
 			}, 100),
-		[layerID, updateLayer]
+		[layerId, updateLayer]
 	);
 
 	return (
@@ -72,7 +72,7 @@ export default function LayerItem({
 								}
 								onKeyDown={(event) => {
 									if (event.key === 'Enter') {
-										saveRename(layerID);
+										saveRename(layerId);
 									}
 									if (event.key === 'Escape') {
 										setEditing(null);
@@ -83,7 +83,7 @@ export default function LayerItem({
 							<span className="layer-name">
 								{layer.displayName ??
 									layer.label ??
-									layer.sourceKey}
+									layer.osmTagValue}
 							</span>
 						)}
 					</div>
@@ -93,7 +93,7 @@ export default function LayerItem({
 						{editing ? (
 							<button
 								className="layer-action-btn  rename-confirm"
-								onClick={() => saveRename(layerID)}
+								onClick={() => saveRename(layerId)}
 								title="Save name"
 							>
 								<Check size={22} />
@@ -103,10 +103,10 @@ export default function LayerItem({
 								className="layer-action-btn rename"
 								onClick={() =>
 									startEditing(
-										layerID,
+										layerId,
 										layer.displayName ??
 											layer.label ??
-											layer.sourceKey
+											layer.osmTagValue
 									)
 								}
 								title="Rename layer"
@@ -120,7 +120,7 @@ export default function LayerItem({
 							className={`layer-action-btn ${
 								layer.visible ? 'show' : 'hide'
 							}`}
-							onClick={() => toggleLayerVisibility(layerID)}
+							onClick={() => toggleLayerVisibility(layerId)}
 							title={layer.visible ? 'Hide Layer' : 'Show Layer'}
 						>
 							{layer.visible ? (
@@ -145,7 +145,7 @@ export default function LayerItem({
 									debouncedUpdate(e.target.value);
 								}}
 								onBlur={() =>
-									updateLayer(layerID, {
+									updateLayer(layerId, {
 										colour,
 									})
 								}
@@ -155,7 +155,7 @@ export default function LayerItem({
 						{/* Delete */}
 						<button
 							className="layer-action-btn delete"
-							onClick={() => removeLayer(layerID)}
+							onClick={() => removeLayer(layerId)}
 							title="Delete layer"
 						>
 							<Trash2 size={22} />
@@ -176,7 +176,7 @@ export default function LayerItem({
 
 				{showFilters && (
 					<LayerFilters
-						layerID={layerID}
+						layerId={layerId}
 						layer={layer}
 						updateLayerFilters={updateLayerFilters}
 					/>

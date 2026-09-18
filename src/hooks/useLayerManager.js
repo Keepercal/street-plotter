@@ -2,7 +2,8 @@ import { useState, useRef, useCallback } from 'react';
 import osmtogeojson from 'osmtogeojson';
 
 import { fetchOSMFeature } from '../services/overpass/overpass';
-import generateLayerColour from '../utils/generateLayerColour';
+import generateLayerColour from './utils/generateLayerColour';
+import { generateLayerLabel } from './utils/generateLayerLabel';
 import countFeatures from '../utils/countFeatures';
 
 import MODALS from '@/config/modalTypes.js';
@@ -49,7 +50,7 @@ export default function useLayerManager({
 	/* Takes an object of layer properties and returns a new object */
 	const buildLayer = useCallback(
 		({
-			sourceKey,
+			osmTagValue, // osm value
 			label,
 			data,
 			geojson,
@@ -57,7 +58,7 @@ export default function useLayerManager({
 			visible = true,
 			filters = [],
 		}) => ({
-			sourceKey,
+			osmTagValue,
 			label,
 			data,
 			geojson,
@@ -68,159 +69,28 @@ export default function useLayerManager({
 		[]
 	);
 
-	/* Update layer and mark as changed */
-	function patchLayer(layerID, changes) {
-		setFeatureLayers((prev) => ({
-			...prev,
-			[layerID]: {
-				...prev[layerID],
-				...changes,
-			},
-		}));
-
-		markDirty();
-	}
-
-	/* Remove a single layer */
-	const removeLayer = (layerID) => {
-		setFeatureLayers((prev) => {
-			const next = { ...prev };
-
-			delete next[layerID];
-
-			return next;
-		});
-
-		setError(null);
-		setStatus('idle');
-		markDirty();
-	};
-
-	/* Remove all layers from map */
-	const clearLayers = ({ markDirty = true } = {}) => {
-		setFeatureLayers({});
-
-		if (markDirty) {
-			onChange?.();
-		}
-
-		setError(null);
-		setStatus('idle');
-	};
-
-	/* Show or hide layer on the map */
-	const toggleLayerVisibility = (layerID) => {
-		setFeatureLayers((prev) => {
-			const layer = prev[layerID];
-
-			if (!layer) return prev;
-
-			return {
-				...prev,
-				[layerID]: {
-					...layer,
-					visible: !layer.visible,
-				},
-			};
-		});
-
-		markDirty();
-	};
-
-	/* Create label for each layer with an indicator for if it's a duplicate */
-	const generateLayerLabel = (layers, featureKey, featureLabel) => {
-		let count = 0;
-
-		for (const id in layers) {
-			if (layers[id].sourceKey === featureKey) {
-				count++;
-			}
-		}
-
-		return count === 0 ? featureLabel : `${featureLabel} (${count + 1})`;
-	};
-
-	/* Update layer filter */
-	const updateLayerFilters = (layerID, filters) => {
-		patchLayer(layerID, { filters });
-	};
-
-	/* Cache a given layer */
-	function cacheLayer(cacheKey, layer) {
-		cache.current.set(cacheKey, layer);
-	}
-
-	/* Array indicating what features are in the cache */
-	// Used in the UI to indicate cached features
-	const getCachedFeatures = (boundaryIds) => {
-		return Array.from(cache.current.entries())
-			.filter(([cacheKey]) => {
-				const [cachedBoundary] = JSON.parse(cacheKey);
-
-				return cachedBoundary === boundaryIds;
-			})
-			.map(([layer]) => layer.sourceKey);
-	};
-
-	/* Load a layer from the cache */
-	function loadCachedLayer(cacheKey, layerID, featureLabel) {
-		// Check cache for stored features
-		const cached = cache.current.get(cacheKey);
-
-		if (!cached) return false;
-
-		// Load features from cache
-		setFeatureLayers((prev) => {
-			const label = generateLayerLabel(
-				prev,
-				cached.sourceKey,
-				featureLabel
-			);
-
-			return {
-				...prev,
-				[layerID]: buildLayer({
-					...cached,
-					label,
-					filters: [],
-				}),
-			};
-		});
-
-		setStatus('success');
-	}
-
-	/* Clear cache */
-	// Used when loading a new boundary, data isn't left over in the cache
-	const clearCache = () => {
-		cache.current.clear();
-	};
-
 	/* Fetches the requested layer from Overpass and prepares it as an object */
 	async function prepareLayer({
-		layerID,
+		layerId,
 		cacheKey,
-		featureKey,
 		boundaryIds,
-		featureTag,
-		featureValue,
-		featureType,
-		featureLabel,
+		osmTagKey,
+		osmTagValue,
+		osmFeatureLabel,
 	}) {
 		// Fetch OSM feature from Overpass API
 		const payload = await fetchOSMFeature(
 			boundaryIds,
-			featureTag,
-			featureValue,
-			featureType
+			osmTagKey,
+			osmTagValue
 		);
 
 		// Convert the payload into a GeoJSON format
 		const geojson = osmtogeojson(payload, {
 			meta: true,
-		}); // Convert to geoJSON
+		});
 
-		const colour = generateLayerColour(featureKey); // Assign colour
+		const colour = generateLayerColour(osmTagValue); // Assign colour
 
 		// Count the number of features within the the payload
 		const { totalCount } = countFeatures({
@@ -230,31 +100,104 @@ export default function useLayerManager({
 		});
 
 		return {
-			layerID,
+			layerId, // layer UUID
 			cacheKey,
-			sourceKey: featureKey,
-			featureLabel,
+			osmTagValue,
+			osmFeatureLabel,
 			payload,
 			geojson,
 			colour,
 			query: {
 				boundaryIds,
-				featureTag,
-				featureValue,
-				featureType,
-				featureLabel,
+				osmTagKey,
+				osmTagValue,
+				osmFeatureLabel,
 			},
 			totalCount,
 		};
 	}
 
+	/* Orchestrate loading a new map layer */
+	const loadLayer = async ({
+		boundaryIds,
+		osmTagKey,
+		osmTagValue,
+		osmFeatureLabel,
+	}) => {
+		if (!boundaryIds || !osmTagKey || !osmTagValue) {
+			throw new Error('Missing required feature parameters');
+		}
+
+		const layerId = crypto.randomUUID(); // Generate unique ID for layer
+
+		const currentId = ++requestId.current;
+
+		if (osmTagValue === null) {
+			setStatus('idle');
+			return;
+		}
+
+		// Create a cache key for the layer
+		const cacheKey = JSON.stringify([
+			boundaryIds,
+			osmTagKey,
+			osmTagValue,
+			osmFeatureLabel,
+		]);
+
+		// Check layer to see if copy stored in cache
+		if (cache.current.has(cacheKey)) {
+			loadCachedLayer(cacheKey, layerId, osmFeatureLabel);
+			return;
+		}
+
+		setFeatureLayers((prev) => {
+			const next = { ...prev };
+			delete next[osmTagValue];
+			return next;
+		});
+
+		setError(null);
+		setFailedFeatureKey(null);
+		setStatus('loading');
+
+		try {
+			const preparedLayer = await prepareLayer({
+				layerId,
+				cacheKey,
+				boundaryIds,
+				osmTagKey,
+				osmTagValue,
+				osmFeatureLabel,
+			});
+
+			if (currentId !== requestId.current) return;
+
+			setStatus('idle');
+
+			return preparedLayer;
+		} catch (error) {
+			if (currentId !== requestId.current) return;
+
+			setFailedFeatureKey(osmTagValue);
+
+			if (error?.notificationType === 'alert') {
+				setError(error);
+				setStatus('alert');
+			} else {
+				setError(error);
+				setStatus('error');
+			}
+		}
+	};
+
 	/* Take prepared layer, store in cache, update state */
 	function commitLayer(preparedLayer) {
 		const {
-			layerID,
+			layerId,
 			cacheKey,
-			sourceKey,
-			featureLabel,
+			osmTagValue,
+			osmFeatureLabel,
 			payload,
 			geojson,
 			colour,
@@ -262,7 +205,7 @@ export default function useLayerManager({
 		} = preparedLayer;
 
 		cacheLayer(cacheKey, {
-			sourceKey,
+			osmTagValue,
 			data: payload,
 			geojson,
 			colour,
@@ -270,13 +213,17 @@ export default function useLayerManager({
 		});
 
 		setFeatureLayers((prev) => {
-			const label = generateLayerLabel(prev, sourceKey, featureLabel);
+			const label = generateLayerLabel(
+				prev,
+				osmTagValue,
+				osmFeatureLabel
+			);
 
 			return {
 				// Create a new object for the feature
 				...prev,
-				[layerID]: buildLayer({
-					sourceKey,
+				[layerId]: buildLayer({
+					osmTagValue,
 					label,
 					data: payload,
 					geojson,
@@ -289,102 +236,15 @@ export default function useLayerManager({
 		markDirty();
 	}
 
-	/* Orchestrate loading a new map layer */
-	const loadLayer = async ({
-		featureKey,
-		boundaryIds,
-		featureTag,
-		featureValue,
-		featureType,
-		featureLabel,
-	}) => {
-		if (!featureKey || !boundaryIds || !featureTag) {
-			throw new Error('Missing required feature parameters');
-		}
-
-		const layerID = crypto.randomUUID(); // Generate unique ID for layer
-
-		const currentId = ++requestId.current;
-
-		if (featureValue === null) {
-			setStatus('idle');
-			return;
-		}
-
-		// Create a cache key for the layer
-		const cacheKey = JSON.stringify([
-			boundaryIds,
-			featureTag,
-			featureValue,
-			featureType,
-			featureLabel,
-		]);
-
-		// Check layer to see if copy stored in cache
-		if (cache.current.has(cacheKey)) {
-			loadCachedLayer(cacheKey, layerID, featureLabel);
-			return;
-		}
-
-		setFeatureLayers((prev) => {
-			const next = { ...prev };
-			delete next[featureKey];
-			return next;
-		});
-
-		setError(null);
-		setFailedFeatureKey(null);
-		setStatus('loading');
-
-		try {
-			const preparedLayer = await prepareLayer({
-				layerID,
-				cacheKey,
-				featureKey,
-				boundaryIds,
-				featureTag,
-				featureValue,
-				featureType,
-				featureLabel,
-			});
-
-			if (currentId !== requestId.current) return;
-
-			setStatus('idle');
-
-			return preparedLayer;
-		} catch (error) {
-			if (currentId !== requestId.current) return;
-
-			setFailedFeatureKey(featureKey);
-
-			if (error?.notificationType === 'alert') {
-				setError(error);
-				setStatus('alert');
-			} else {
-				setError(error);
-				setStatus('error');
-			}
-		}
-	};
-
 	/**
-	 * Handle feature adding to project
+	 * Handle adding feature to project
 	 */
-	const handleAddLayer = async (
-		featureKey,
-		featureTag,
-		featureValue,
-		featureType,
-		featureLabel
-	) => {
+	const handleAddLayer = async (osmTagKey, osmTagValue, osmFeatureLabel) => {
 		const preparedLayer = await loadLayer({
-			featureKey,
 			boundaryIds: selectedBoundaryIds,
-			featureTag,
-			featureValue,
-			featureType,
-			featureLabel,
+			osmTagKey,
+			osmTagValue,
+			osmFeatureLabel,
 		});
 
 		if (!preparedLayer) return;
@@ -399,8 +259,8 @@ export default function useLayerManager({
 	};
 
 	/* Layer inspection and updating */
-	const updateLayer = (layerID, changes) => {
-		patchLayer(layerID, changes);
+	const updateLayer = (layerId, changes) => {
+		patchLayer(layerId, changes);
 	};
 
 	/* Export layer as an object */
@@ -435,10 +295,125 @@ export default function useLayerManager({
 	/**
 	 * Handle renaming features
 	 */
-	const renameLayer = (layerID, newLabel) => {
-		updateLayer(layerID, {
+	const renameLayer = (layerId, newLabel) => {
+		updateLayer(layerId, {
 			displayName: newLabel,
 		});
+	};
+
+	/* Update layer and mark as changed */
+	function patchLayer(layerId, changes) {
+		setFeatureLayers((prev) => ({
+			...prev,
+			[layerId]: {
+				...prev[layerId],
+				...changes,
+			},
+		}));
+
+		markDirty();
+	}
+
+	/* Remove a single layer */
+	const removeLayer = (layerId) => {
+		setFeatureLayers((prev) => {
+			const next = { ...prev };
+
+			delete next[layerId];
+
+			return next;
+		});
+
+		setError(null);
+		setStatus('idle');
+		markDirty();
+	};
+
+	/* Remove all layers from map */
+	const clearLayers = ({ markDirty = true } = {}) => {
+		setFeatureLayers({});
+
+		if (markDirty) {
+			onChange?.();
+		}
+
+		setError(null);
+		setStatus('idle');
+	};
+
+	/* Show or hide layer on the map */
+	const toggleLayerVisibility = (layerId) => {
+		setFeatureLayers((prev) => {
+			const layer = prev[layerId];
+
+			if (!layer) return prev;
+
+			return {
+				...prev,
+				[layerId]: {
+					...layer,
+					visible: !layer.visible,
+				},
+			};
+		});
+
+		markDirty();
+	};
+
+	/* Update layer filter */
+	const updateLayerFilters = (layerId, filters) => {
+		patchLayer(layerId, { filters });
+	};
+
+	/* Cache a given layer */
+	function cacheLayer(cacheKey, layer) {
+		cache.current.set(cacheKey, layer);
+	}
+
+	/* Array indicating what features are in the cache */
+	// Used in the UI to indicate cached features
+	const getCachedFeatures = (boundaryIds) => {
+		return Array.from(cache.current.entries())
+			.filter(([cacheKey]) => {
+				const [cachedBoundary] = JSON.parse(cacheKey);
+
+				return cachedBoundary === boundaryIds;
+			})
+			.map(([layer]) => layer.osmTagValue);
+	};
+
+	/* Load a layer from the cache */
+	function loadCachedLayer(cacheKey, layerId, osmFeatureLabel) {
+		// Check cache for stored features
+		const cached = cache.current.get(cacheKey);
+
+		if (!cached) return false;
+
+		// Load features from cache
+		setFeatureLayers((prev) => {
+			const label = generateLayerLabel(
+				prev,
+				cached.osmTagValue,
+				osmFeatureLabel
+			);
+
+			return {
+				...prev,
+				[layerId]: buildLayer({
+					...cached,
+					label,
+					filters: [],
+				}),
+			};
+		});
+
+		setStatus('success');
+	}
+
+	/* Clear cache */
+	// Used when loading a new boundary, data isn't left over in the cache
+	const clearCache = () => {
+		cache.current.clear();
 	};
 
 	const clearStatus = () => {
@@ -452,7 +427,6 @@ export default function useLayerManager({
 		featureLayers,
 
 		// data operations
-		loadLayer,
 		updateLayer,
 		removeLayer,
 		clearLayers,

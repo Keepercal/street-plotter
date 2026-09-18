@@ -15,7 +15,6 @@ async function callOverpass(query) {
 	try {
 		return await fetch(url); // return the raw response, don't classify status here
 	} catch (error) {
-		// only network-level failures land here (offline, DNS, CORS)
 		reportError(error, {
 			tags: { feature: 'overpass-api', errorType: 'network' },
 			extra: { url, query },
@@ -118,9 +117,8 @@ export async function fetchOSMBoundary(boundaryIDs, boundaryType, retries = 3) {
  */
 export async function fetchOSMFeature(
 	boundaryIDs,
-	featureTag,
-	featureValue,
-	featureType,
+	osmTagKey,
+	osmTagValue,
 	retries = 3
 ) {
 	if (!boundaryIDs || boundaryIDs === 'none') return null;
@@ -138,7 +136,7 @@ export async function fetchOSMFeature(
 
 		map_to_area -> .area;
 
-		nwr(area.area)["${featureTag}"="${featureValue}"]->.features;
+		nwr(area.area)["${osmTagKey}"="${osmTagValue}"]->.features;
 
 		(
 			.features;
@@ -148,21 +146,16 @@ export async function fetchOSMFeature(
 		out tags geom meta;
 	`;
 
+	console.log(query);
+
 	const result = await callOverpass(query);
 
 	console.log(result);
 
 	return handleOverpassResponse(
 		result,
-		() =>
-			fetchOSMFeature(
-				boundaryIDs,
-				featureTag,
-				featureValue,
-				featureType,
-				retries - 1
-			),
+		() => fetchOSMFeature(boundaryIDs, osmTagKey, osmTagValue, retries - 1),
 		retries,
-		{ boundaryIDs, featureTag, featureValue } // pass context through for Sentry
+		{ boundaryIDs, osmTagKey, osmTagValue } // pass context through for Sentry
 	);
 }

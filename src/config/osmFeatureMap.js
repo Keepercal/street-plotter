@@ -1,869 +1,888 @@
-export const FEATURE_MAP = {
+export const OSM_FEATURE_MAP = {
 	// Transport
 	public_transport_networks: {
-		bus: {
-			tag: 'route',
+		bus_network: {
+			osmKey: 'route',
+			osmValue: 'bus',
 			label: 'Bus Network',
-			type: 'relation',
 		},
 
-		train: {
-			tag: 'route',
+		railway_network: {
+			osmKey: 'route',
+			osmValue: 'train',
 			label: 'Railway Network',
 		},
 
-		ferry: {
-			tag: 'route',
+		ferry_network: {
+			osmKey: 'route',
+			osmValue: 'ferry',
 			label: 'Ferry Network',
 		},
 
-		tram: {
-			tag: 'route',
+		tram_network: {
+			osmKey: 'route',
+			osmValue: 'tram',
 			label: 'Tram Network',
 		},
 	},
 
 	active_travel_networks: {
-		lcn: {
-			tag: 'network',
+		local_cycling_network: {
+			osmKey: 'network',
+			osmValue: 'lcn',
 			label: 'Local Cycling Network',
-			type: 'relation',
 		},
-		lwn: {
-			tag: 'network',
+		local_walking_network: {
+			osmKey: 'network',
+			osmValue: 'lwn',
 			label: 'Local Walking Network',
-			type: 'relation',
 		},
-		ncn: {
-			tag: 'network',
+		national_cycling_network: {
+			osmKey: 'network',
+			osmValue: 'ncn',
 			label: 'National Cycling Network',
-			type: 'relation',
 		},
 	},
 
 	vehicle_highways: {
 		motorway: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'motorway',
 			label: 'Motorways',
-			type: 'way',
 		},
-		trunk: {
-			tag: 'highway',
+		trunk_road: {
+			osmKey: 'highway',
+			osmValue: 'trunk',
 			label: 'Trunk',
-			type: 'way',
 		},
-		primary: {
-			tag: 'highway',
+		primary_road: {
+			osmKey: 'highway',
+			osmValue: 'primary',
 			label: 'Primary',
-			type: 'way',
 		},
-		secondary: {
-			tag: 'highway',
+		secondary_road: {
+			osmKey: 'highway',
+			osmValue: 'secondary',
 			label: 'Secondary',
-			type: 'way',
 		},
-		tertiary: {
-			tag: 'highway',
+		tertiary_road: {
+			osmKey: 'highway',
+			osmValue: 'tertiary',
 			label: 'Tertiary',
-			type: 'way',
 		},
-		residential: {
-			tag: 'highway',
+		residential_road: {
+			osmKey: 'highway',
+			osmValue: 'residential',
 			label: 'Residential',
-			type: 'way',
 		},
-		service: {
-			tag: 'highway',
+		service_road: {
+			osmKey: 'highway',
+			osmValue: 'service',
 			label: 'Service',
-			type: 'way',
 		},
-		unclassified: {
-			tag: 'highway',
+		unclassified_road: {
+			osmKey: 'highway',
+			osmValue: 'unclassified',
 			label: 'Unclassified',
-			type: 'way',
 		},
 	},
 
 	active_travel_highways: {
 		path: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'path',
 			label: 'Paths',
-			type: 'way',
 		},
 		footway: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'footway',
 			label: 'Footways',
-			type: 'way',
 		},
 		shared_footway: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'shared_footway',
 			label: 'Shared-Use Footways',
-			type: 'way',
 		},
 		cycleway: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'cycleway',
 			label: 'Cycle Ways',
-			type: 'way',
 		},
 		bridleway: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'bridleway',
 			label: 'Bridleway',
-			type: 'way',
 		},
 		public_footpath: {
-			tag: 'designation',
+			osmKey: 'designation',
+			osmValue: 'public_footpath',
 			label: 'Public Rights of Way',
 			type: 'way',
 		},
 		school_street: {
-			tag: 'traffic_intervention',
+			osmKey: 'traffic_intervention',
+			osmValue: 'school_street',
 			label: 'School Streets',
-			type: 'way',
 		},
 	},
 
 	crossings: {
-		unmarked: {
-			tag: 'crossing',
+		unmarked_crossing: {
+			osmKey: 'crossing',
+			osmValue: 'unmarked',
 			label: 'Unmarked Crossings',
-			type: 'node',
 		},
-		zebra: {
-			tag: 'crossing_ref',
+		zebra_crossing: {
+			osmKey: 'crossing_ref',
+			osmValue: 'zebra',
 			label: 'Zebra',
-			type: 'node',
 		},
-		tiger: {
-			tag: 'crossing_ref',
+		parallel_crossing: {
+			osmKey: 'crossing_ref',
+			osmValue: 'tiger',
 			label: 'Parallel',
-			type: 'node',
 		},
-		pelican: {
-			tag: 'crossing_ref',
+		pelican_crossing: {
+			osmKey: 'crossing_ref',
+			osmValue: 'pelican',
 			label: 'Pelican',
-			type: 'node',
 		},
-		puffin: {
-			tag: 'crossing_ref',
+		puffin_crossing: {
+			osmKey: 'crossing_ref',
+			osmValue: 'puffin',
 			label: 'Puffin',
-			type: 'node',
 		},
-		toucan: {
-			tag: 'crossing_ref',
+		toucan_crossing: {
+			osmKey: 'crossing_ref',
+			osmValue: 'toucan',
 			label: 'Toucan',
-			type: 'node',
 		},
-		pegasus: {
-			tag: 'crossing_ref',
+		pegasus_crossing: {
+			osmKey: 'crossing_ref',
+			osmValue: 'pegasus',
 			label: 'Pegasus (Equestrian)',
-			type: 'node',
 		},
 	},
 
 	transport: {
-		station: {
-			tag: 'railway',
+		railway_station: {
+			osmKey: 'railway',
+			osmValue: 'station',
 			label: 'Railway Stations',
-			type: 'node',
 		},
 		bus_station: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'bus_station',
 			label: 'Bus Stations',
-			type: 'node',
 		},
 		bus_stop: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'bus_stop',
 			label: 'Bus Stops',
-			type: 'node',
 		},
 		tram_stop: {
-			tag: 'highway',
+			osmKey: 'highway',
+			osmValue: 'tram_stop',
 			label: 'Tram Stops',
-			type: 'node',
 		},
 		airport: {
-			tag: 'aeroway',
+			osmKey: 'aeroway',
+			osmValue: 'airport',
 			label: 'Airports',
-			type: 'way',
 		},
 		taxi: {
-			tag: 'amenity',
-			label: 'Taxi Ranks',
+			osmKey: 'amenity',
+			osmValue: 'taxi',
+			label: 'Taxis',
 			type: 'node',
 		},
 	},
 
 	cycling: {
 		bicycle_parking: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'bicycle_parking',
 			label: 'Bicycle Parking',
-			type: 'way',
 		},
 		bicycle_rental: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'bicycle_rental',
 			label: 'Bicycle Rental',
-			type: 'way',
 		},
-		bicycle: {
-			tag: 'shop',
+		bicycle_shop: {
+			osmKey: 'shop',
+			osmValue: 'bicycle',
 			label: 'Bicycle Shops',
-			type: 'way',
 		},
 		bicycle_repair_station: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'bicycle_repair_station',
 			label: 'Repair Stations',
-			type: 'way',
 		},
 	},
 
 	driving: {
 		parking: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'parking',
 			label: 'Parking',
-			type: 'way',
 		},
 		fuel: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'fuel',
 			label: 'Fuel Stations',
-			type: 'way',
 		},
 		charging_station: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'charging_station',
 			label: 'EV Chargers',
-			type: 'node',
 		},
 		car_wash: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'car_wash',
 			label: 'Car Washes',
-			type: 'way',
 		},
 		car_rental: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'car_rental',
 			label: 'Car Rental',
-			type: 'way',
 		},
 		car_repair: {
-			tag: 'shop',
-			label: 'Garages',
-			type: 'way',
+			osmKey: 'shop',
+			osmValue: 'car_repair',
+			label: 'Repair Garages',
 		},
 	},
 
 	// Services & civic infrastructure
 	emergency: {
 		police: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'police',
 			label: 'Police',
-			type: 'way',
 		},
 		fire_station: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'fire_station',
 			label: 'Fire Stations',
-			type: 'way',
 		},
 		ambulance_station: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'ambulance_station',
 			label: 'Ambulance Stations',
-			type: 'way',
 		},
-		phone: {
-			tag: 'emergency',
+		emergency_phone: {
+			osmKey: 'emergency',
+			osmValue: 'phone',
 			label: 'Emergency Phones',
-			type: 'way',
 		},
 		defibrillator: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'defibrillator',
 			label: 'Defibrillators',
-			type: 'way',
 		},
 	},
 
 	healthcare: {
 		hospital: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'hospital',
 			label: 'Hospitals',
-			type: 'way',
 		},
 		clinic: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'clinic',
 			label: 'Clinics',
-			type: 'way',
 		},
 		doctors: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'doctors',
 			label: 'Doctors',
-			type: 'way',
 		},
 		dentist: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'dentist',
 			label: 'Dentist',
-			type: 'way',
 		},
 		pharmacy: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'pharmacy',
 			label: 'Pharmacies',
-			type: 'way',
 		},
 		veterinary: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'veterinary',
 			label: 'Veterinaries',
-			type: 'way',
 		},
 	},
 
 	education: {
 		school: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'school',
 			label: 'Schools',
-			type: 'way',
 		},
 		college: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'college',
 			label: 'Colleges',
-			type: 'way',
 		},
 		university: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'university',
 			label: 'Universities',
-			type: 'way',
 		},
 		library: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'library',
 			label: 'Libraries',
-			type: 'way',
 		},
 	},
 
 	publicServices: {
 		townhall: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'townhall',
 			label: 'Town Halls',
-			type: 'way',
 		},
 		courthouse: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'courthouse',
 			label: 'Court Houses',
-			type: 'way',
 		},
 		post_office: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'post_office',
 			label: 'Post Offices',
-			type: 'way',
 		},
 		community_centre: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'community_centre',
 			label: 'Community Centres',
-			type: 'way',
 		},
 		prison: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'prison',
 			label: 'Prisons',
-			type: 'way',
 		},
 	},
 
 	publicAmenities: {
 		atm: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'atm',
 			label: 'ATM',
 		},
 		parcel_locker: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'parcel_locker',
 			label: 'Parcel Lockers',
-			type: 'way',
 		},
 		post_box: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'post_box',
 			label: 'Post Boxes',
 		},
 		toilets: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'toilets',
 			label: 'Toilets',
-			type: 'node',
 		},
 		drinking_water: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'drinking_water',
 			label: 'Drinking Water',
-			type: 'node',
 		},
-		telephone: {
-			tag: 'amenity',
+		public_telephone: {
+			osmKey: 'amenity',
+			osmValue: 'telephone',
 			label: 'Public Telephones',
 		},
 	},
 
 	streetFurniture: {
 		bench: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'bench',
 			label: 'Benches',
-			type: 'node',
 		},
 		waste_basket: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'waste_basket',
 			label: 'Waste Bins',
-			type: 'node',
 		},
-		recycling: {
-			tag: 'amenity',
+		recycling_bin: {
+			osmKey: 'amenity',
+			osmValue: 'recycling',
 			label: 'Recycling Bins',
-			type: 'node',
 		},
 		picnic_site: {
-			tag: 'amenity',
-			label: 'Picnic Tables',
-			type: 'node',
+			osmKey: 'amenity',
+			osmValue: 'picnic_site',
+			label: 'Picnic Sites',
 		},
 	},
 
 	// Places & everyday destinations
 	places: {
 		city: {
-			tag: 'place',
+			osmKey: 'place',
+			osmValue: 'city',
 			label: 'Cities',
 		},
 		town: {
-			tag: 'place',
+			osmKey: 'place',
+			osmValue: 'town',
 			label: 'Towns',
 		},
 		village: {
-			tag: 'place',
+			osmKey: 'place',
+			osmValue: 'village',
 			label: 'Villages',
 		},
 		hamlet: {
-			tag: 'place',
+			osmKey: 'place',
+			osmValue: 'hamlet',
 			label: 'Hamlets',
 		},
 	},
 
 	poi: {
 		monument: {
-			tag: 'historic',
+			osmKey: 'historic',
+			osmValue: 'monument',
 			label: 'Monuments',
-			type: 'way',
 		},
 		place_of_worship: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'place_of_worship',
 			label: 'Places of Worship',
-			type: 'way',
 		},
 		artwork: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'artwork',
 			label: 'Artwork',
-			type: 'node',
 		},
 		memorial: {
-			tag: 'historic',
+			osmKey: 'historic',
+			osmValue: 'memorial',
 			label: 'Memorial',
-			type: 'node',
 		},
 	},
 
 	shopping: {
 		supermarket: {
-			tag: 'shop',
+			osmKey: 'shop',
+			osmValue: 'supermarket',
 			label: 'Supermarkets',
-			type: 'way',
 		},
-		convenience: {
-			tag: 'shop',
+		convenience_store: {
+			osmKey: 'shop',
+			osmValue: 'convenience',
 			label: 'Convenience Stores',
 			type: 'way',
 		},
-		commercial: {
-			tag: 'amenity',
+		marketplace: {
+			osmKey: 'amenity',
+			osmValue: 'marketplace',
 			label: 'Marketplace',
-			type: 'way',
 		},
 		bakery: {
-			tag: 'shop',
+			osmKey: 'shop',
+			osmValue: 'bakery',
 			label: 'Bakeries',
-			type: 'way',
 		},
 		butcher: {
-			tag: 'shop',
+			osmKey: 'shop',
+			osmValue: 'butcher',
 			label: 'Butchers',
-			type: 'way',
 		},
 		hairdresser: {
-			tag: 'shop',
+			osmKey: 'shop',
+			osmValue: 'hairdresser',
 			label: 'Hairdressers',
-			type: 'way',
 		},
 		greengrocer: {
-			tag: 'shop',
+			osmKey: 'shop',
+			osmValue: 'greengrocer',
 			label: 'Greengrocers',
-			type: 'way',
 		},
-		clothes: {
-			tag: 'shop',
+		clothes_shop: {
+			osmKey: 'shop',
+			osmValue: 'clothes',
 			label: 'Clothing',
-			type: 'way',
 		},
-		shoes: {
-			tag: 'shop',
+		shoe_shop: {
+			osmKey: 'shop',
+			osmValue: 'shoes',
 			label: 'Shoes',
-			type: 'way',
 		},
-		books: {
-			tag: 'shop',
+		book_shop: {
+			osmKey: 'shop',
+			osmValue: 'books',
 			label: 'Books',
-			type: 'way',
 		},
-		music: {
-			tag: 'shop',
+		music_shop: {
+			osmKey: 'shop',
+			osmValue: 'music',
 			label: 'Music',
-			type: 'way',
 		},
-		electronics: {
-			tag: 'shop',
+		electronics_shop: {
+			osmKey: 'shop',
+			osmValue: 'electronics',
 			label: 'Electronics',
-			type: 'way',
 		},
-		doityourself: {
-			tag: 'shop',
+		diy_shop: {
+			osmKey: 'shop',
+			osmValue: 'doityourself',
 			label: 'DIY',
-			type: 'way',
 		},
-		hardware: {
-			tag: 'shop',
+		hardware_shop: {
+			osmKey: 'shop',
+			osmValue: 'hardware',
 			label: 'Hardware',
-			type: 'way',
 		},
-		mall: {
-			tag: 'shop',
+		shopping_mall: {
+			osmKey: 'shop',
+			osmValue: 'mall',
 			label: 'Mall',
 			type: 'way',
 		},
 		department_store: {
-			tag: 'shop',
+			osmKey: 'shop',
+			osmValue: 'department_store',
 			label: 'Department Stores',
-			type: 'way',
 		},
 		kiosk: {
-			tag: 'shop',
+			osmKey: 'shop',
+			osmValue: 'kiosk',
 			label: 'Kiosks',
-			type: 'way',
 		},
 	},
 
 	fooddrink: {
 		restaurant: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'restaurant',
 			label: 'Restaurants',
-			type: 'way',
 		},
 		cafe: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'cafe',
 			label: 'Cafes',
-			type: 'way',
 		},
 		fast_food: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'fast_food',
 			label: 'Fast Food',
-			type: 'way',
 		},
 		pub: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'pub',
 			label: 'Pubs',
-			type: 'way',
 		},
 		bar: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'bar',
 			label: 'Bars',
-			type: 'way',
 		},
 	},
 
 	accommodation: {
 		hotel: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'hotel',
 			label: 'Hotels',
-			type: 'way',
 		},
 		hostel: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'hostel',
 			label: 'Hostels',
-			type: 'way',
 		},
 		camp_site: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'camp_site',
 			label: 'Camp Sites',
-			type: 'way',
 		},
 		caravan_site: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'caravan_site',
 			label: 'Caravan Sites',
-			type: 'way',
 		},
 	},
 
 	// Leisure & tourism
 	leisure: {
 		playground: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'playground',
 			label: 'Playgrounds',
-			type: 'way',
 		},
 		park: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'park',
 			label: 'Parks',
-			type: 'way',
 		},
 		garden: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'garden',
 			label: 'Gardens',
-			type: 'way',
 		},
 		dog_park: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'dog_park',
 			label: 'Dog Parks',
-			type: 'way',
 		},
 		fitness_centre: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'fitness_centre',
 			label: 'Fitness Centres',
-			type: 'way',
 		},
 		sports_centre: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'sports_centre',
 			label: 'Sports Centres',
-			type: 'way',
 		},
 		stadium: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'stadium',
 			label: 'Stadiums',
-			type: 'way',
 		},
 		swimming_pool: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'swimming_pool',
 			label: 'Swimming Pools',
-			type: 'way',
 		},
 		pitch: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'pitch',
 			label: 'Pitches',
-			type: 'way',
 		},
 		track: {
-			tag: 'leisure',
+			osmKey: 'leisure',
+			osmValue: 'track',
 			label: 'Tracks',
-			type: 'way',
 		},
 		nightclub: {
-			tag: 'amenity',
+			osmKey: 'amenity',
+			osmValue: 'nightclub',
 			label: 'Nightclub',
-			type: 'way',
 		},
 	},
 
 	tourism: {
 		museum: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'museum',
 			label: 'Museums',
-			type: 'way',
 		},
 		theatre: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'theatre',
 			label: 'Theatre',
 			type: 'way',
 		},
 		attraction: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'attraction',
 			label: 'Attractions',
-			type: 'way',
 		},
 		information: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'information',
 			label: 'Information',
-			type: 'node',
 		},
 		viewpoint: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'viewpoint',
 			label: 'Viewpoints',
-			type: 'node',
 		},
 		zoo: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'zoo',
 			label: 'Zoos',
-			type: 'way',
 		},
 		aquarium: {
-			tag: 'tourism',
+			osmKey: 'tourism',
+			osmValue: 'aquarium',
 			label: 'Aquarium',
-			type: 'way',
 		},
 	},
 
 	// Physical environment
 	landuse: {
-		residential: {
-			tag: 'landuse',
+		landuse_residential: {
+			osmKey: 'landuse',
+			osmValue: 'residential',
 			label: 'Residential',
-			type: 'way',
 		},
-		commercial: {
-			tag: 'landuse',
+		landuse_commercial: {
+			osmKey: 'landuse',
+			osmValue: 'commercial',
 			label: 'Commercial',
-			type: 'way',
 		},
-		industrial: {
-			tag: 'landuse',
+		landuse_industrial: {
+			osmKey: 'landuse',
+			osmValue: 'industrial',
 			label: 'Industrial',
-			type: 'way',
 		},
-		retail: {
-			tag: 'landuse',
+		landuse_retail: {
+			osmKey: 'landuse',
+			osmValue: 'retail',
 			label: 'Retail',
-			type: 'way',
 		},
 		recreation_ground: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'recreation_ground',
 			label: 'Recreation Ground',
-			type: 'way',
 		},
 		farmland: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'farmland',
 			label: 'Farmland',
-			type: 'way',
 		},
 		allotment: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'allotment',
 			label: 'Allotment',
-			type: 'way',
 		},
 		meadow: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'meadow',
 			label: 'Meadow',
-			type: 'way',
 		},
 		orchard: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'orchard',
 			label: 'Orchard',
-			type: 'way',
 		},
 		vineyard: {
-			tag: 'landuse',
+			osmKey: 'landuse',
 			label: 'Vineyard',
 			type: 'way',
 		},
 		quarry: {
-			tag: 'landuse',
+			osmKey: 'landuse',
 			label: 'Quarry',
 			type: 'way',
 		},
 		military: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'military',
 			label: 'Military',
 			type: 'way',
 		},
 		construction: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'construction',
 			label: 'Construction',
 			type: 'way',
 		},
 	},
 
 	buildings: {
-		residential: {
-			tag: 'building',
+		building_residential: {
+			osmKey: 'building',
+			osmValue: 'residential',
 			label: 'Residential',
-			type: 'way',
 		},
-		house: {
-			tag: 'building',
+		building_house: {
+			osmKey: 'building',
+			osmValue: 'house',
 			label: 'House',
-			type: 'way',
 		},
-		apartments: {
-			tag: 'building',
+		building_apartments: {
+			osmKey: 'building',
+			osmValue: 'apartments',
 			label: 'Apartments',
-			type: 'way',
 		},
-		commercial: {
-			tag: 'building',
+		building_commercial: {
+			osmKey: 'building',
+			osmValue: 'commercial',
 			label: 'Commercial',
-			type: 'way',
 		},
-		industrial: {
-			tag: 'building',
+		building_industrial: {
+			osmKey: 'building',
+			osmValue: 'industrial',
 			label: 'Industrial',
-			type: 'way',
 		},
-		retail: {
-			tag: 'building',
+		building_retail: {
+			osmKey: 'building',
+			osmValue: 'retail',
 			label: 'Retail',
-			type: 'way',
 		},
 		office: {
-			tag: 'building',
+			osmKey: 'building',
+			osmValue: 'office',
 			label: 'Offices',
-			type: 'way',
 		},
 		civic: {
-			tag: 'building',
+			osmKey: 'building',
+			osmValue: 'civic',
 			label: 'Civic',
 			type: 'way',
 		},
 		government: {
-			tag: 'building',
+			osmKey: 'building',
+			osmValue: 'government',
 			label: 'Government',
-			type: 'way',
 		},
 	},
 
 	naturalFeatures: {
-		wood: {
-			tag: 'natural',
+		woodland: {
+			osmKey: 'natural',
+			osmValue: 'wood',
 			label: 'Woodland',
-			type: 'way',
 		},
 		forest: {
-			tag: 'landuse',
+			osmKey: 'landuse',
+			osmValue: 'forest',
 			label: 'Forest',
-			type: 'way',
 		},
 		grassland: {
-			tag: 'natural',
+			osmKey: 'natural',
+			osmValue: 'grassland',
 			label: 'Grassland',
-			type: 'way',
 		},
 		beach: {
-			tag: 'natural',
+			osmKey: 'natural',
+			osmValue: 'beach',
 			label: 'Beach',
-			type: 'way',
 		},
 		water: {
-			tag: 'natural',
+			osmKey: 'natural',
+			osmValue: 'water',
 			label: 'Water',
-			type: 'way',
 		},
 		river: {
-			tag: 'waterway',
+			osmKey: 'waterway',
+			osmValue: 'river',
 			label: 'River',
-			type: 'way',
 		},
 		stream: {
-			tag: 'waterway',
+			osmKey: 'waterway',
+			osmValue: 'stream',
 			label: 'Stream',
-			type: 'way',
 		},
 		peak: {
-			tag: 'natural',
+			osmKey: 'natural',
+			osmValue: 'peak',
 			label: 'Peak',
-			type: 'node',
 		},
 		cliff: {
-			tag: 'natural',
+			osmKey: 'natural',
+			osmValue: 'cliff',
 			label: 'Cliff',
-			type: 'way',
 		},
 		cave_entrance: {
-			tag: 'natural',
+			osmKey: 'natural',
+			osmValue: 'cave_entrance',
 			label: 'Cave',
-			type: 'node',
 		},
 		tree: {
-			tag: 'natural',
+			osmKey: 'natural',
+			osmValue: 'tree',
 			label: 'Trees',
 		},
 	},

@@ -1,12 +1,12 @@
 /* =========================
-    ACCORDION GROUPS
+    ACCORDION CATEGORIES
 ========================= */
 
-.accordion-group {
+.accordion-category {
 	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* Group heading */
+/* Category heading */
 .accordion-header {
 	display: flex;
 	justify-content: space-between;

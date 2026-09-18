@@ -1,5 +1,5 @@
 /* Generate a colour for feature data, colour will be consistent across projects */
-export default function generatteLayerColour(key) {
+const generateLayerColour = (key) => {
 	key = String(key ?? '');
 
 	let hash = 0;
@@ -11,4 +11,6 @@ export default function generatteLayerColour(key) {
 	const colour = (hash & 0x00ffffff).toString(16).padStart(6, '0');
 
 	return `#${colour}`;
-}
+};
+
+export default generateLayerColour;

@@ -23,10 +23,9 @@ import useBoundaryManager from './hooks/useBoundaryManager.js';
 import useLayerManager from './hooks/useLayerManager.js';
 import useWorkspaceActions from './hooks/useWorkspaceActions.js';
 import useProjectManager from './hooks/useProjectManager.js';
-import { useLateBinding } from './hooks/useLateBinding.js';
 
+import useLateBinding from './hooks/useLateBinding.js';
 import useFilteredLayers from './hooks/useFilteredLayers.js';
-
 import useSession from './hooks/useSession.js';
 import useUnsavedChanges from './hooks/useUnsavedChanges.js';
 
@@ -140,11 +139,6 @@ export default function App() {
 		setIsDirty(false);
 	};
 
-	const selectedBoundaryIds = useMemo(
-		() => new Set(Array.from(boundaries, (boundary) => boundary.osm_id)),
-		[boundaries]
-	);
-
 	// ─────────────────────────────────────────
 	// Workspace
 	// ─────────────────────────────────────────
@@ -152,17 +146,21 @@ export default function App() {
 	const { restoreWorkspace, resetWorkspace } = useWorkspaceActions({
 		setSessionInfo,
 		setProject: stableSetProject,
-		resetProjectStatus: stableResetProjectStatus,
 		setBasemap,
 		setDisplayMode,
+		setIsDirty,
+
+		resetProjectStatus: stableResetProjectStatus,
+
 		restoreBoundaries,
 		restoreLayers,
-		setIsDirty,
+
 		clearSavedSession: stableClearSavedSession,
 		clearBoundaryResults,
 		clearBoundaries,
 		clearLayers,
 		clearCache,
+
 		setActiveModal,
 		setActiveDrawer,
 	});
@@ -171,7 +169,7 @@ export default function App() {
 		confirmUnsavedChanges(resetWorkspace);
 	};
 
-	// ─────────────────────────────────────────
+	// ─────────────────────────────────────────x
 	// Projects
 	// ─────────────────────────────────────────
 
@@ -289,6 +287,11 @@ export default function App() {
 	const hasSavedProjects = Object.keys(projects).length > 0;
 	const filteredLayers = useFilteredLayers(featureLayers);
 	const projectName = project?.metadata.name ?? 'None';
+
+	const selectedBoundaryIds = useMemo(
+		() => new Set(Array.from(boundaries, (boundary) => boundary.osm_id)),
+		[boundaries]
+	);
 
 	// ─────────────────────────────────────────
 	// Managers

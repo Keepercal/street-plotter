@@ -58,7 +58,6 @@ export default function ModalManager() {
 			{activeModal === MODALS.RESTORE_WORKSPACE && (
 				<RestoreSessionModal
 					isProject={Boolean(pendingSession?.metadata?.projectId)}
-					//project=
 					onRestore={() => {
 						if (!pendingSession) return;
 

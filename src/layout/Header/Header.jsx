@@ -22,7 +22,7 @@ import { menus } from './config/menus';
 
 export default function Header() {
 	const { setActiveModal, setFocusTrigger, takeScreenshot } = useUIContext();
-	const { isDirty, handleNewWorkspace, saveCurrentProject } =
+	const { isDirty, sessionInfo, handleNewWorkspace, saveCurrentProject } =
 		useWorkspaceContext();
 	const { hasBoundary } = useBoundaryContext();
 	const { featureLayers } = useLayerContext();
@@ -30,6 +30,7 @@ export default function Header() {
 	/* Derived */
 	const canSave = hasBoundary;
 	const canExport = Object.keys(featureLayers).length > 0;
+	const isProject = Boolean(sessionInfo.metadata.projectId != null);
 
 	/* States */
 	const [openMenu, setOpenMenu] = useState(null);
@@ -88,6 +89,7 @@ export default function Header() {
 					title="Save project to file"
 					icon={<Save size={18} />}
 					indicator={isDirty}
+					isProject={isProject}
 					disabled={!isDirty || !hasBoundary}
 					onClick={saveCurrentProject}
 				/>

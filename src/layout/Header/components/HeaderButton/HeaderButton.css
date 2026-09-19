@@ -90,17 +90,18 @@
 
 .header-button-indicator {
 	position: absolute;
-	top: -6px;
-	right: -6px;
+
+	top: -8px;
+	right: -8px;
 
 	display: flex;
 	align-items: center;
 	justify-content: center;
 
-	color: orange;
+	color: var(--colour-alert);
 }
 
 .header-button-indicator svg {
-	width: 16px;
-	height: 16px;
+	width: 18px;
+	height: 18px;
 }

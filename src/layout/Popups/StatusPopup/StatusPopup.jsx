@@ -17,7 +17,6 @@ export default function StatusPopup({
 	title,
 	message,
 	//onClose,
-	children,
 	drawerOpen,
 }) {
 	const [rendered, setRendered] = useState(trigger);
@@ -43,7 +42,6 @@ export default function StatusPopup({
 					<BarLoader width="100%" />
 				</div>
 			)}
-			{children}
 		</Popup>
 	);
 }

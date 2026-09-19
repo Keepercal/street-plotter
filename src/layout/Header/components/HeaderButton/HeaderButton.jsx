@@ -6,6 +6,7 @@ export default function HeaderButton({
 	title,
 	icon,
 	indicator = false,
+	isProject = false,
 	onClick,
 	disabled = false,
 }) {
@@ -20,7 +21,15 @@ export default function HeaderButton({
 			{icon}
 			{indicator && (
 				<div className="header-button-indicator">
-					<CircleAlert strokeWidth={3} />
+					<CircleAlert strokeWidth={3} color="red" />
+				</div>
+			)}
+			{indicator && (
+				<div className="header-button-indicator">
+					<CircleAlert
+						strokeWidth={3}
+						color={isProject ? undefined : 'var(--color-danger)'}
+					/>
 				</div>
 			)}
 		</button>

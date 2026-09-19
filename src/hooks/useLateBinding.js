@@ -16,7 +16,7 @@ import { useRef, useCallback } from 'react';
  * refs must not be written synchronously in the render body.
  */
 
-export function useLateBinding() {
+export default function useLateBinding() {
 	const ref = useRef(() => {});
 
 	const stableFn = useCallback((...args) => ref.current(...args), []);

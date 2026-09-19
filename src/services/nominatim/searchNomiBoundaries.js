@@ -1,4 +1,4 @@
-import reportError from '@/utils/errorReporting';
+import { reportError } from '@/utils/errorReporting';
 
 export default async function searchNomiBoundaries(boundaryName) {
 	const url =

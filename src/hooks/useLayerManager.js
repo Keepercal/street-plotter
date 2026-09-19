@@ -1,5 +1,8 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef } from 'react';
+import useCache from './useCache';
 import osmtogeojson from 'osmtogeojson';
+
+import { createLayer, applyLayerChanges } from '@/models/layer';
 
 import { fetchOSMFeature } from '../services/overpass/overpass';
 import generateLayerColour from './utils/generateLayerColour';
@@ -16,9 +19,7 @@ const LARGE_DATASET_LIMIT = 5000;
  * Manages loading and display of layers within the application
  *
  * Includes:
- * - request deduplication via cache
- * - request cancellation
- * - GeoJSON conversion
+ * - Load previously loaded layer from cache
  */
 export default function useLayerManager({
 	onChange = () => {},
@@ -34,7 +35,6 @@ export default function useLayerManager({
 
 	/* Cacheing */
 	const requestId = useRef(0);
-	const cache = useRef(new Map());
 
 	/* Flags */
 	const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup
@@ -47,27 +47,12 @@ export default function useLayerManager({
 		onChange?.();
 	}
 
-	/* Takes an object of layer properties and returns a new object */
-	const buildLayer = useCallback(
-		({
-			osmTagValue, // osm value
-			label,
-			data,
-			geojson,
-			colour,
-			visible = true,
-			filters = [],
-		}) => ({
-			osmTagValue,
-			label,
-			data,
-			geojson,
-			colour,
-			visible,
-			filters,
-		}),
-		[]
-	);
+	const {
+		//get: getCachedLayer,
+		set: cacheLayer,
+		entries: getCacheEntries,
+		clear: clearCache,
+	} = useCache();
 
 	/* Fetches the requested layer from Overpass and prepares it as an object */
 	async function prepareLayer({
@@ -90,8 +75,6 @@ export default function useLayerManager({
 			meta: true,
 		});
 
-		const colour = generateLayerColour(osmTagValue); // Assign colour
-
 		// Count the number of features within the the payload
 		const { totalCount } = countFeatures({
 			temp: {
@@ -106,7 +89,7 @@ export default function useLayerManager({
 			osmFeatureLabel,
 			payload,
 			geojson,
-			colour,
+			colour: generateLayerColour(osmTagValue), // assign colour
 			query: {
 				boundaryIds,
 				osmTagKey,
@@ -145,11 +128,13 @@ export default function useLayerManager({
 			osmFeatureLabel,
 		]);
 
+		//const cached = getCachedLayer(cacheKey);
+
 		// Check layer to see if copy stored in cache
-		if (cache.current.has(cacheKey)) {
-			loadCachedLayer(cacheKey, layerId, osmFeatureLabel);
+		/*if (cached) {
+			loadCachedLayer(cached, layerId, osmFeatureLabel);
 			return;
-		}
+		}*/
 
 		setFeatureLayers((prev) => {
 			const next = { ...prev };
@@ -191,6 +176,32 @@ export default function useLayerManager({
 		}
 	};
 
+	/* Load a layer from the cache */
+	/*function loadCachedLayer(cached, layerId, osmFeatureLabel) {
+		// Check cache for stored features
+		if (!cached) return false;
+
+		// Load features from cache
+		setFeatureLayers((prev) => {
+			const label = generateLayerLabel(
+				prev,
+				cached.osmTagValue,
+				osmFeatureLabel
+			);
+
+			return {
+				...prev,
+				[layerId]: createLayer({
+					...cached,
+					label,
+					filters: [],
+				}),
+			};
+		});
+
+		setStatus('success');
+	}*/
+
 	/* Take prepared layer, store in cache, update state */
 	function commitLayer(preparedLayer) {
 		const {
@@ -222,7 +233,7 @@ export default function useLayerManager({
 			return {
 				// Create a new object for the feature
 				...prev,
-				[layerId]: buildLayer({
+				[layerId]: createLayer({
 					osmTagValue,
 					label,
 					data: payload,
@@ -258,11 +269,6 @@ export default function useLayerManager({
 		commitLayer(preparedLayer);
 	};
 
-	/* Layer inspection and updating */
-	const updateLayer = (layerId, changes) => {
-		patchLayer(layerId, changes);
-	};
-
 	/* Export layer as an object */
 	const exportLayers = () => {
 		return Object.entries(featureLayers).map(([id, layer]) => ({
@@ -280,7 +286,7 @@ export default function useLayerManager({
 		const restored = {};
 
 		layers.forEach((layer) => {
-			restored[layer.id] = buildLayer({
+			restored[layer.id] = createLayer({
 				...layer,
 				filters: layer.filters ?? [],
 			});
@@ -292,23 +298,11 @@ export default function useLayerManager({
 		setError(null);
 	};
 
-	/**
-	 * Handle renaming features
-	 */
-	const renameLayer = (layerId, newLabel) => {
-		updateLayer(layerId, {
-			displayName: newLabel,
-		});
-	};
-
 	/* Update layer and mark as changed */
-	function patchLayer(layerId, changes) {
+	function updateLayer(layerId, changes) {
 		setFeatureLayers((prev) => ({
 			...prev,
-			[layerId]: {
-				...prev[layerId],
-				...changes,
-			},
+			[layerId]: applyLayerChanges(prev[layerId], changes),
 		}));
 
 		markDirty();
@@ -329,7 +323,7 @@ export default function useLayerManager({
 		markDirty();
 	};
 
-	/* Remove all layers from map */
+	/* Clear all layers from map */
 	const clearLayers = ({ markDirty = true } = {}) => {
 		setFeatureLayers({});
 
@@ -339,6 +333,15 @@ export default function useLayerManager({
 
 		setError(null);
 		setStatus('idle');
+	};
+
+	/**
+	 * Handle renaming features
+	 */
+	const renameLayer = (layerId, newLabel) => {
+		updateLayer(layerId, {
+			displayName: newLabel,
+		});
 	};
 
 	/* Show or hide layer on the map */
@@ -362,58 +365,19 @@ export default function useLayerManager({
 
 	/* Update layer filter */
 	const updateLayerFilters = (layerId, filters) => {
-		patchLayer(layerId, { filters });
+		updateLayer(layerId, { filters });
 	};
-
-	/* Cache a given layer */
-	function cacheLayer(cacheKey, layer) {
-		cache.current.set(cacheKey, layer);
-	}
 
 	/* Array indicating what features are in the cache */
 	// Used in the UI to indicate cached features
 	const getCachedFeatures = (boundaryIds) => {
-		return Array.from(cache.current.entries())
+		return getCacheEntries()
 			.filter(([cacheKey]) => {
 				const [cachedBoundary] = JSON.parse(cacheKey);
 
 				return cachedBoundary === boundaryIds;
 			})
-			.map(([layer]) => layer.osmTagValue);
-	};
-
-	/* Load a layer from the cache */
-	function loadCachedLayer(cacheKey, layerId, osmFeatureLabel) {
-		// Check cache for stored features
-		const cached = cache.current.get(cacheKey);
-
-		if (!cached) return false;
-
-		// Load features from cache
-		setFeatureLayers((prev) => {
-			const label = generateLayerLabel(
-				prev,
-				cached.osmTagValue,
-				osmFeatureLabel
-			);
-
-			return {
-				...prev,
-				[layerId]: buildLayer({
-					...cached,
-					label,
-					filters: [],
-				}),
-			};
-		});
-
-		setStatus('success');
-	}
-
-	/* Clear cache */
-	// Used when loading a new boundary, data isn't left over in the cache
-	const clearCache = () => {
-		cache.current.clear();
+			.map(([, layer]) => layer.osmTagValue);
 	};
 
 	const clearStatus = () => {

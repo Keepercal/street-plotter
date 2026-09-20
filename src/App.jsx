@@ -45,6 +45,10 @@ import {
 	useWorkspaceContextValue,
 } from './contexts/WorkspaceContext.jsx';
 import { UIProvider, useUIContextValue } from './contexts/UIContext.jsx';
+import {
+	ProjectProvider,
+	useProjectContextValue,
+} from './contexts/ProjectContext.jsx';
 
 /* Session & Database */
 import { createSession } from './models/session.js';
@@ -362,18 +366,10 @@ export default function App() {
 		setDisplayMode,
 		isDirty,
 		setIsDirty,
-		project,
-		projects,
-		projectName,
-		loadProjects,
-		hasSavedProjects,
+
 		sessionInfo,
 		setSessionInfo,
-		saveCurrentProject,
-		saveProjectAs,
-		handleOpenProject,
-		handleDeleteProject,
-		handleUpdateProject,
+
 		handleNewWorkspace,
 		handleSaveAndContinue,
 		handleDiscardAndContinue,
@@ -383,6 +379,19 @@ export default function App() {
 		clearSavedSession,
 		pendingAction,
 		setPendingAction,
+	});
+
+	const projectContextValue = useProjectContextValue({
+		project,
+		projects,
+		projectName,
+		loadProjects,
+		hasSavedProjects,
+		saveCurrentProject,
+		saveProjectAs,
+		handleOpenProject,
+		handleDeleteProject,
+		handleUpdateProject,
 	});
 
 	const uiContextValue = useUIContextValue({
@@ -407,20 +416,22 @@ export default function App() {
 			<WorkspaceProvider value={workspaceContextValue}>
 				<BoundaryProvider value={boundaryContextValue}>
 					<LayerProvider value={layerContextValue}>
-						<UIProvider value={uiContextValue}>
-							<StatusPopup
-								trigger={statusPopup.trigger}
-								type={statusPopup.type}
-								title={statusPopup.title}
-								message={statusPopup.message}
-								drawerOpen={activeDrawer !== null}
-							/>
+						<ProjectProvider value={projectContextValue}>
+							<UIProvider value={uiContextValue}>
+								<StatusPopup
+									trigger={statusPopup.trigger}
+									type={statusPopup.type}
+									title={statusPopup.title}
+									message={statusPopup.message}
+									drawerOpen={activeDrawer !== null}
+								/>
 
-							<ModalManager />
+								<ModalManager />
 
-							{/* Main UI */}
-							<AppLayout hasFeatures={hasFeatures} />
-						</UIProvider>
+								{/* Main UI */}
+								<AppLayout hasFeatures={hasFeatures} />
+							</UIProvider>
+						</ProjectProvider>
 					</LayerProvider>
 				</BoundaryProvider>
 			</WorkspaceProvider>

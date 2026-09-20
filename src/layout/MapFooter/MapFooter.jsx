@@ -3,7 +3,7 @@ import countFeatures from '../../utils/countFeatures';
 
 /* Context */
 import { useLayerContext } from '@/contexts/LayerContext.jsx';
-import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
+import { useProjectContext } from '@/contexts/ProjectContext.jsx';
 
 import { TriangleAlert } from 'lucide-react';
 
@@ -14,7 +14,7 @@ import { TriangleAlert } from 'lucide-react';
  */
 const MapFooter = () => {
 	const { featureLayers } = useLayerContext();
-	const { projectName } = useWorkspaceContext();
+	const { projectName } = useProjectContext();
 
 	const { nodeCount, wayCount, relationCount } = countFeatures(featureLayers);
 

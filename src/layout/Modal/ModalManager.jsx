@@ -15,6 +15,7 @@ import { useUIContext } from '@/contexts/UIContext.jsx';
 import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
 import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
 import { useLayerContext } from '@/contexts/LayerContext.jsx';
+import { useProjectContext } from '../../contexts/ProjectContext';
 
 /**
  * ModalManager
@@ -40,16 +41,19 @@ export default function ModalManager() {
 		handleSaveAndContinue,
 		handleDiscardAndContinue,
 		handleCancel,
-		handleOpenProject,
-		handleUpdateProject,
-		projects,
-		loadProjects,
-		handleDeleteProject,
-		saveProjectAs,
-		hasSavedProjects,
 		pendingAction,
 		setPendingAction,
 	} = useWorkspaceContext();
+
+	const {
+		projects,
+		loadProjects,
+		saveProjectAs,
+		hasSavedProjects,
+		handleOpenProject,
+		handleUpdateProject,
+		handleDeleteProject,
+	} = useProjectContext();
 
 	const { boundaries } = useBoundaryContext();
 	const { filteredLayers, commitLayer, clearStatus } = useLayerContext();

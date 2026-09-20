@@ -16,16 +16,17 @@ import { useUIContext } from '@/contexts/UIContext.jsx';
 import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
 import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
 import { useLayerContext } from '@/contexts/LayerContext.jsx';
+import { useProjectContext } from '../../contexts/ProjectContext';
 
 /* Config */
 import { menus } from './config/menus';
 
 export default function Header() {
 	const { setActiveModal, setFocusTrigger, takeScreenshot } = useUIContext();
-	const { isDirty, sessionInfo, handleNewWorkspace, saveCurrentProject } =
-		useWorkspaceContext();
+	const { isDirty, sessionInfo, handleNewWorkspace } = useWorkspaceContext();
 	const { hasBoundary } = useBoundaryContext();
 	const { featureLayers } = useLayerContext();
+	const { saveCurrentProject } = useProjectContext();
 
 	/* Derived */
 	const canSave = hasBoundary;

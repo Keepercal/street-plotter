@@ -37,7 +37,7 @@ export function createSessionFromWorkspace(workspace, metadata = {}) {
 }
 
 /**
- * updateProject
+ * updateSession
  * -----------
  * Updates a Session model from session-shaped data.
  */
@@ -59,7 +59,7 @@ export function updateSession(session, changes = {}) {
 }
 
 /**
- * updateProjectFromWorkspace
+ * updateSessionFromWorkspace
  * -----------
  * Updates a Session model from workspace state.
  */

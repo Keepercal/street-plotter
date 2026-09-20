@@ -17,6 +17,7 @@ export default function OpenProjectModal({
 	loadProjects,
 	handleDeleteProject,
 	hasSavedProjects,
+	handleUpdateProject,
 }) {
 	useEffect(() => {
 		loadProjects();
@@ -45,6 +46,7 @@ export default function OpenProjectModal({
 									project={project}
 									onOpen={onOpen}
 									confirmDelete={confirmDelete}
+									handleUpdateProject={handleUpdateProject}
 								/>
 							);
 						})}

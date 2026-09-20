@@ -24,7 +24,7 @@ export default function LayerItem({
 
 	const hasFilters = layer.filters?.length > 0;
 
-	const startEditing = (key, currentName) => {
+	const startEditing = (currentName) => {
 		setEditing(true);
 		setName(currentName);
 		setOriginalName(currentName);

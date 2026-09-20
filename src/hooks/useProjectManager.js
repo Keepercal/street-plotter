@@ -1,6 +1,10 @@
 import { useState } from 'react';
 
-import { getProject, saveProject as saveProjectToDB } from '../db/projectDB';
+import {
+	getProject,
+	saveProject as saveProjectToDB,
+	updateStoredProject,
+} from '../db/projectDB';
 import { createSession } from '@/models/session.js';
 import { createSessionMetadata } from '@/models/sessionMetadata';
 
@@ -126,6 +130,12 @@ export default function useProjectManager({
 		}
 	}
 
+	const updateProjectMetadata = (projectId, changes) => {
+		return updateStoredProject(projectId, {
+			metadata: changes,
+		});
+	};
+
 	function resetProjectStatus() {
 		setProjectStatus('idle');
 		setProjectError(null);
@@ -142,5 +152,6 @@ export default function useProjectManager({
 		openProject,
 		saveCurrentProject,
 		saveProjectAs,
+		updateProjectMetadata,
 	};
 }

@@ -237,7 +237,7 @@
     MASTER BUTTON STYLING
 ========================= */
 
-.close-btn {
+.modal-close {
 	border: none;
 
 	background: transparent;
@@ -252,7 +252,7 @@
 	transition: color 0.2s ease;
 }
 
-.close-btn:hover {
+.modal-close:hover {
 	color: #000;
 }
 

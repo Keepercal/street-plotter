@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import { updateProject } from '../models/project';
 
 const dbPromise = openDB('MapProjects', 1, {
 	upgrade(db) {
@@ -28,4 +29,16 @@ export async function getAllProjects() {
 export async function deleteProject(id) {
 	const db = await dbPromise;
 	return db.delete('projects', id);
+}
+
+export async function updateStoredProject(id, changes) {
+	const project = await getProject(id);
+
+	if (!project) {
+		throw new Error(`Project "${id}" not found`);
+	}
+
+	const updatedProject = updateProject(project, changes);
+
+	return saveProject(updatedProject);
 }

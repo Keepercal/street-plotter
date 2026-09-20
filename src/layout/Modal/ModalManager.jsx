@@ -41,6 +41,7 @@ export default function ModalManager() {
 		handleDiscardAndContinue,
 		handleCancel,
 		handleOpenProject,
+		handleUpdateProject,
 		projects,
 		loadProjects,
 		handleDeleteProject,
@@ -99,6 +100,7 @@ export default function ModalManager() {
 					projects={projects}
 					loadProjects={loadProjects}
 					saveProjectAs={saveProjectAs}
+					handleUpdateProject={handleUpdateProject}
 					hasSavedProjects={hasSavedProjects}
 				/>
 			)}

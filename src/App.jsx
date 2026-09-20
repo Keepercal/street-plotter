@@ -182,6 +182,7 @@ export default function App() {
 		openProject,
 		saveCurrentProject,
 		saveProjectAs,
+		updateProjectMetadata,
 	} = useProjectManager({
 		workspace: {
 			basemap,
@@ -229,6 +230,16 @@ export default function App() {
 			setActiveModal(null);
 		});
 	};
+
+	/*
+	 * Reset workspace when active project deleted
+	 */
+	async function handleUpdateProject(id, changes) {
+		await updateProjectMetadata(id, changes);
+		await loadProjects();
+
+		if (project?.metadata.id !== id) return;
+	}
 
 	/*
 	 * Reset workspace when active project deleted
@@ -362,6 +373,7 @@ export default function App() {
 		saveProjectAs,
 		handleOpenProject,
 		handleDeleteProject,
+		handleUpdateProject,
 		handleNewWorkspace,
 		handleSaveAndContinue,
 		handleDiscardAndContinue,

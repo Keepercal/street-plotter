@@ -45,7 +45,7 @@ export default function LayerItem({
 		}
 
 		setEditing(false);
-		setName('');
+		setName(trimmedName);
 		setOriginalName('');
 	};
 
@@ -81,6 +81,7 @@ export default function LayerItem({
 							/>
 						) : (
 							<span className="layer-name">
+								{console.log(layer)}
 								{layer.displayName ??
 									layer.label ??
 									layer.osmTagValue}
@@ -103,7 +104,6 @@ export default function LayerItem({
 								className="layer-action-btn rename"
 								onClick={() =>
 									startEditing(
-										layerId,
 										layer.displayName ??
 											layer.label ??
 											layer.osmTagValue

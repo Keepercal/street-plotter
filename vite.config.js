@@ -10,7 +10,7 @@ export default defineConfig({
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
 		},
 	},
-	base: '/streets-dashboard/',
+	base: '/streets-plotter/',
 	define: {
 		__APP_NAME__: JSON.stringify(pkg.displayName),
 		__APP_VERSION__: JSON.stringify(pkg.version),

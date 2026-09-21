@@ -1,9 +1,9 @@
 {
-	"name": "streets-dashboard",
-	"displayName": "Streets Dashboard",
+	"name": "street-plotter",
+	"displayName": "Street Plotter",
 	"version": "1.0.0-beta",
 	"private": true,
-	"homepage": "https://keepercal.github.io/streets-dashboard/",
+	"homepage": "https://keepercal.github.io/street-plotter/",
 	"type": "module",
 	"scripts": {
 		"build": "vite build",

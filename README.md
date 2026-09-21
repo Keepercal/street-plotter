@@ -1,6 +1,6 @@
 ###### v1.0.0-beta
 
-# Streets Dashboard
+# Street Plotter
 
 This web application is build for transport planners, engineers, or any public or private sector professionals involved with the built environment to search for particular features on streets.
 
@@ -10,6 +10,6 @@ All data is from OpenStreetMap, an open-source map of the world powered powered 
 
 **NOTE! The data shown within this application is sourced from OpenStreetMap and therefore may not be 100% accurate.**
 
-_Live prototype_ 👉 https://keepercal.github.io/streets-dashboard/
+_Live prototype_ 👉 https://keepercal.github.io/street-plotter/
 <br>_Overpass API repo_ 👉 https://github.com/drolbr/Overpass-API
 <br>_Overpass Turbo_ 👉 https://overpass-turbo.eu/

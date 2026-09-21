@@ -128,8 +128,8 @@ export default function Header() {
 					disabled={!takeScreenshot}
 					onClick={() => takeScreenshot?.()}
 				/>
-				{/*<a
-					href="https://github.com/Keepercal/streets-dashboard"
+				<a
+					href="https://github.com/Keepercal/street-plotter"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="github-link"
@@ -137,7 +137,7 @@ export default function Header() {
 					title={`Open ${__APP_NAME__} GitHub repository`}
 				>
 					<img src="./github-mark.svg" alt="GitHub" />
-				</a>*/}
+				</a>
 			</div>
 		</div>
 	);

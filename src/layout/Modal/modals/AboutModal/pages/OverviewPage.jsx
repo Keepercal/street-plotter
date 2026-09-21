@@ -28,9 +28,9 @@ export default function OverviewPage() {
 			<p>
 				All data used by this application is sourced from OpenStreetMap,
 				an open map of the world powered by a global community of
-				contributors. Data is extracted using the Overpass API. Streets
-				Dashboard provides access to OpenStreetMap data and does not
-				modify the underlying OSM database.
+				contributors. Data is extracted using the Overpass API.{' '}
+				{__APP_NAME__} provides access to OpenStreetMap data and does
+				not modify the underlying OSM database.
 			</p>
 			<p>
 				This application is inspired by

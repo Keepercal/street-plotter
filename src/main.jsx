@@ -19,7 +19,7 @@ Sentry.init({
 		Sentry.replayIntegration(),
 	],
 
-	allowUrls: [/https:\/\/keepercal\.github\.io\/streets-dashboard/],
+	allowUrls: [/https:\/\/keepercal\.github\.io\/street-plotter/],
 
 	// Tracing
 	tracesSampleRate: 1.0, //  capture 100% of the transactions

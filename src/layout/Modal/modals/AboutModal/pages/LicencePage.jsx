@@ -4,7 +4,7 @@ export default function LicencePage() {
 			<h2>Licence Information</h2>
 			<h3>{__APP_NAME__}</h3>
 			<p>
-				Streets Dashboard is an independent application that provides a
+				{__APP_NAME__} is an independent application that provides a
 				graphical interface for exploring and exporting OpenStreetMap
 				data. It is not affiliated with or endorsed by the OpenStreetMap
 				Foundation. The licence for the application is separate from the
@@ -52,7 +52,7 @@ export default function LicencePage() {
 				excluded under applicable UK law.
 			</p>
 			<h3>OpenStreetMap Data</h3>
-			<p>Streets Dashboard uses data from OpenStreetMap.</p>
+			<p>{__APP_NAME__} uses data from OpenStreetMap.</p>
 			<p>
 				OpenStreetMap data is made available under the{' '}
 				<strong>Open Database Licence (ODbL) v1.0</strong>, which allows
@@ -64,7 +64,7 @@ export default function LicencePage() {
 			<p>© OpenStreetMap contributors.</p>
 			<h3>Third-Party Software</h3>
 			<p>
-				Streets Dashboard makes use of a number of open-source libraries
+				{__APP_NAME__} makes use of a number of open-source libraries
 				and frameworks. These components remain subject to their own
 				individual licences.
 			</p>

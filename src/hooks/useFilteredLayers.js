@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
-import evaluateFeature from '../utils/evaluateFeatures';
+import evaluateFeature from '@/utils/evaluateFeature';
 
 /**
- * useMapFeatures
+ * useFilteredLayers
  * ------------
- * Fetches OSM map features for a selected boundary and filter.
+ * Applies each layer's filters to its GeoJSON features.
  *
- * Includes:
- * - request deduplication via cache
- * - request cancellation
- * - GeoJSON conversion
+ * For each feature, evaluates the configured filters and adds
+ * a _matchesFilters flag indicating whether the feature matches.
+ *
+ * The transformed layers are memoized and recalculated when
+ * featureLayers changes.
  */
 export default function useFilteredLayers(featureLayers) {
 	return useMemo(() => {

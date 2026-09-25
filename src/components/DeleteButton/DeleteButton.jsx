@@ -3,13 +3,14 @@ import { Trash2 } from 'lucide-react';
 
 export default function DeleteButton({
 	label,
-	//icon,
+	title,
 	onClick,
 	disabled = false,
 }) {
 	return (
 		<button
 			className="delete-boundary-btn"
+			title={title}
 			disabled={disabled}
 			type="button"
 			onClick={onClick}

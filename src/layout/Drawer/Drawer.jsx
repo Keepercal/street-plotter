@@ -1,46 +1,41 @@
 import './Drawer.css';
 
-import BoundaryPanel from './panels/BoundaryPanel/BoundaryPanel';
-import AddLayersPanel from './panels/AddLayersPanel/AddLayersPanel';
-import ManageLayersPanel from './panels/ManageLayersPanel/ManageLayersPanel';
+import AddBoundaryPanel from './panels/AddBoundaryPanel/AddBoundaryPanel';
+import ManageBoundaryPanel from './panels/ManageBoundaryPanel/ManageBoundaryPanel';
+import AddLayerPanel from './panels/AddLayerPanel/AddLayerPanel';
+import ManageLayerPanel from './panels/ManageLayerPanel/ManageLayerPanel';
 import DisplayPanel from './panels/DisplayPanel/DisplayPanel';
+import BasemapPanel from './panels/BasemapPanel/BasemapPanel';
 
-function Drawer({
-	hasBoundary,
-	activeDrawer,
-	setActiveDrawer,
+/* Context */
+import { useUIContext } from '@/contexts/UIContext.jsx';
+import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
 
-	featureLayers,
-	handleAddLayer,
-	updateLayer,
-	toggleLayerVisibility,
-	renameLayer,
+function Drawer() {
+	const { activeDrawer, setActiveDrawer } = useUIContext();
 
-	updateLayerFilters,
+	const {
+		boundaryResults,
+		fetchBoundaryResults,
+		clearBoundaryResults,
+		handlePreviewBoundary,
+		handleSelectBoundary,
+		selectedBoundaryIds,
+	} = useBoundaryContext();
 
-	selectedBoundaryKey,
-	loadBoundaryResults,
-	handleSelectBoundary,
-	boundaryResults,
+	const { handleAddLayer, clearLayers, getCachedFeatures } =
+		useLayerContext();
 
-	featureOptions,
+	const cachedFeatures = getCachedFeatures(selectedBoundaryIds);
 
-	basemap,
-	setBasemap,
-	displayMode,
-	setDisplayMode,
-
-	clearBoundaryResults,
-	handleClearBoundary,
-	removeLayer,
-	clearLayers,
-	cachedFeatures,
-}) {
 	const DRAWER_TITLES = {
-		boundary: 'Search for Boundary',
-		addLayers: 'Add Layers',
+		addBoundary: 'Search for Boundary',
+		manageBoundary: 'Manage Active Boundaries',
+		addLayers: 'Add Layer',
 		manageLayers: 'Manage Layers',
 		display: 'Display',
+		basemapSwitcher: 'Switch Basemap',
 	};
 
 	return (
@@ -58,49 +53,44 @@ function Drawer({
 			</div>
 
 			<div className="drawer-content">
-				{activeDrawer === 'boundary' && (
-					<BoundaryPanel
-						hasBoundary={hasBoundary}
-						loadBoundaryResults={loadBoundaryResults}
+				{activeDrawer === 'addBoundary' && (
+					<AddBoundaryPanel
+						fetchBoundaryResults={fetchBoundaryResults}
 						clearBoundaryResults={clearBoundaryResults}
-						handleClearBoundary={handleClearBoundary}
 						clearLayers={clearLayers}
 
 						boundaryResults={boundaryResults}
-						selectedBoundaryKey={selectedBoundaryKey}
-						onSelectBoundary={handleSelectBoundary}
+						handlePreviewBoundary={handlePreviewBoundary}
+						handleSelectBoundary={handleSelectBoundary}
+						selectedBoundaryIds={selectedBoundaryIds}
 					/>
 				)}
 
+				{activeDrawer === 'manageBoundary' && (
+					/*context driven */
+					<ManageBoundaryPanel />
+				)}
+
 				{activeDrawer === 'addLayers' && (
-					<AddLayersPanel
-						featureOptions={featureOptions}
+					<AddLayerPanel
 						handleAddLayer={handleAddLayer}
 						cachedFeatures={cachedFeatures}
 					/>
 				)}
 
 				{activeDrawer === 'manageLayers' && (
-					<ManageLayersPanel
-						featureLayers={featureLayers}
-						toggleLayerVisibility={toggleLayerVisibility}
-						updateLayer={updateLayer}
-
-						updateLayerFilters={updateLayerFilters}
-
-						removeLayer={removeLayer}
-						renameLayer={renameLayer}
-						clearLayers={clearLayers}
-					/>
+					/*context driven */
+					<ManageLayerPanel />
 				)}
 
 				{activeDrawer === 'display' && (
-					<DisplayPanel
-						basemap={basemap}
-						setBasemap={setBasemap}
-						displayMode={displayMode}
-						setDisplayMode={setDisplayMode}
-					/>
+					/*context driven */
+					<DisplayPanel />
+				)}
+
+				{activeDrawer === 'basemapSwitcher' && (
+					/*context driven */
+					<BasemapPanel />
 				)}
 			</div>
 		</div>

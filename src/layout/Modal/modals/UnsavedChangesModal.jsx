@@ -2,9 +2,9 @@ import Modal from '../Modal';
 
 export default function UnsavedChangesModal({ onSave, onDiscard, onClose }) {
 	return (
-		<Modal title="Unsaved Changes" onClose={onClose} canClose={false}>
+		<Modal title="Unsaved Changes!" onClose={onClose} canClose={false}>
 			<section className="modal-section">
-				<h3>You have unsaved changes.</h3>
+				<h3>You have unsaved changes in your workspace.</h3>
 				<p>Would you like to save them before continuing?</p>
 			</section>
 

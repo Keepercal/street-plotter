@@ -13,7 +13,7 @@
 
 	cursor: pointer;
 
-	font-size: 14px;
+	font-size: 0.875rem;
 
 	user-select: none;
 }
@@ -106,7 +106,7 @@
 
 	color: white;
 
-	font-size: 14px;
+	font-size: 0.875rem;
 
 	font-weight: 700;
 

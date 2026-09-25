@@ -1,0 +1,107 @@
+.header-button {
+	height: 2.25rem;
+
+	padding: 0 0.5rem;
+
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+
+	border: 1px solid rgba(255, 255, 255, 0.12);
+
+	border-radius: 6px;
+
+	background: rgba(255, 255, 255, 0.08);
+
+	color: #ecf0f1;
+
+	font-family: var(--default-font);
+
+	font-size: 0.85rem;
+	font-weight: 500;
+
+	cursor: pointer;
+
+	backdrop-filter: blur(6px);
+
+	transition:
+		background-color 0.15s ease,
+		border-color 0.15s ease,
+		transform 0.1s ease,
+		box-shadow 0.15s ease;
+}
+
+/* Hover */
+.header-button:hover {
+	background: rgba(255, 255, 255, 0.16);
+
+	border-color: rgba(255, 255, 255, 0.25);
+
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Pressed */
+.header-button:active {
+	transform: scale(0.96);
+
+	background: rgba(255, 255, 255, 0.22);
+}
+
+/* Optional active state */
+.header-button.active {
+	background: rgba(79, 195, 247, 0.2);
+
+	border-color: #4fc3f7;
+
+	color: white;
+}
+
+/* Disabled */
+.header-button:disabled {
+	background: rgba(255, 255, 255, 0.04);
+
+	transform: scale(1);
+
+	border-color: rgba(255, 255, 255, 0.05);
+
+	color: rgba(255, 255, 255, 0.35);
+
+	cursor: not-allowed;
+
+	box-shadow: none;
+
+	opacity: 0.7;
+}
+
+.header-button {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.header-button-icon {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.header-button-indicator {
+	position: absolute;
+
+	top: -8px;
+	right: -8px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	color: var(--colour-alert);
+}
+
+.header-button-indicator svg {
+	width: 18px;
+	height: 18px;
+}

@@ -10,60 +10,69 @@ import RestoreSessionModal from '@/layout/Modal/modals/RestoreSessionModal.jsx';
 
 import MODALS from '@/config/modalTypes.js';
 
+/* Context */
+import { useUIContext } from '@/contexts/UIContext.jsx';
+import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
+import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
+import { useProjectContext } from '../../contexts/ProjectContext';
+
 /**
  * ModalManager
  * ------------
  * Centralised management for modals
  */
-export default function ModalManager({
-	activeModal,
-	setActiveModal,
+export default function ModalManager() {
+	const {
+		activeModal,
+		setActiveModal,
+		pendingSession,
+		setPendingSession,
+		pendingLayer,
+		setPendingLayer,
+	} = useUIContext();
 
-	pendingSession,
-	setPendingSession,
+	const {
+		isDirty,
+		setIsDirty,
+		restoreWorkspace,
+		resetWorkspace,
+		clearSavedSession,
+		handleSaveAndContinue,
+		handleDiscardAndContinue,
+		handleCancel,
+		pendingAction,
+		setPendingAction,
+	} = useWorkspaceContext();
 
-	pendingLayer,
-	setPendingLayer,
+	const {
+		projects,
+		loadProjects,
+		saveProjectAs,
+		hasSavedProjects,
+		handleOpenProject,
+		handleUpdateProject,
+		handleDeleteProject,
+	} = useProjectContext();
 
-	isDirty,
-	setIsDirty,
+	const { boundaries } = useBoundaryContext();
+	const { filteredLayers, commitLayer, clearStatus } = useLayerContext();
 
-	boundaryGeojson,
-	filteredLayers,
-
-	sessionManager,
-	restoreSession,
-	resetWorkspace,
-
-	handleSaveAndContinue,
-	handleDiscardAndContinue,
-	handleCancel,
-
-	handleOpenProject,
-
-	projects,
-	loadProjects,
-	handleDeleteProject,
-	saveProjectAs,
-	hasSavedProjects,
-
-	commitLayer,
-	clearStatus,
-}) {
 	return (
 		<>
-			{activeModal === MODALS.RESTORE_SESSION && (
+			{activeModal === MODALS.RESTORE_WORKSPACE && (
 				<RestoreSessionModal
+					isProject={Boolean(pendingSession?.metadata?.projectId)}
 					onRestore={() => {
 						if (!pendingSession) return;
 
-						restoreSession(pendingSession);
+						restoreWorkspace(pendingSession);
 
 						setPendingSession(null);
 						setActiveModal(null);
 					}}
 					onStartNew={() => {
-						sessionManager.clearSavedSession();
+						clearSavedSession();
 
 						setPendingSession(null);
 						setActiveModal(null);
@@ -95,15 +104,20 @@ export default function ModalManager({
 					projects={projects}
 					loadProjects={loadProjects}
 					saveProjectAs={saveProjectAs}
+					handleUpdateProject={handleUpdateProject}
 					hasSavedProjects={hasSavedProjects}
 				/>
 			)}
 
 			{activeModal === MODALS.SAVE_PROJECT && (
 				<SaveModal
-					onSaveAs={(name, description) => {
-						saveProjectAs(name, description);
-						setActiveModal(null);
+					onSaveAs={async (name, description) => {
+						const saved = saveProjectAs(name, description);
+						if (saved) {
+							setActiveModal(null);
+							await pendingAction?.();
+							setPendingAction(null);
+						}
 					}}
 					onClose={() => setActiveModal(null)}
 				/>
@@ -111,7 +125,7 @@ export default function ModalManager({
 
 			{activeModal === MODALS.EXPORT && (
 				<ExportModal
-					boundaryGeojson={boundaryGeojson}
+					boundaryGeojson={boundaries}
 					featureLayers={filteredLayers}
 					onClose={() => setActiveModal(null)}
 				/>

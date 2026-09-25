@@ -31,7 +31,8 @@ export default function FeaturePopup({ feature, exclude }) {
 						rel="noopener noreferrer"
 						title="Show in OpenStreetMap"
 					>
-						{capitaliseString(featureType)}: {osmID}
+						{/*capitaliseString(featureType)}: {osmID}*/}
+						View in OSM
 					</a>
 
 					<a

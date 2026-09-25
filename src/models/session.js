@@ -1,32 +1,71 @@
-// models/session.js
+import {
+	createProjectData,
+	createProjectDataFromWorkspace,
+} from './projectData';
 
+import {
+	createSessionMetadata,
+	createSessionMetadataFromWorkspace,
+} from './sessionMetadata';
+
+const VERSION = 1;
+
+/**
+ * createSession
+ * -----------
+ * Creates a Session model from session-shaped data.
+ */
 export function createSession(overrides = {}) {
-	const now = new Date().toISOString();
-
 	return {
-		id: crypto.randomUUID(),
+		version: VERSION,
 
-		// null means this is just a scratch session
-		projectId: null,
+		metadata: createSessionMetadata(overrides.metadata),
+		data: createProjectData(overrides.data),
+	};
+}
 
-		created: now,
-		modified: now,
+/**
+ * createSessionFromWorkspace
+ * -----------
+ * Creates a Session model from workspace state.
+ */
+export function createSessionFromWorkspace(workspace, metadata = {}) {
+	return createSession({
+		metadata,
+		data: createProjectDataFromWorkspace(workspace),
+	});
+}
+
+/**
+ * updateSession
+ * -----------
+ * Updates a Session model from session-shaped data.
+ */
+export function updateSession(session, changes = {}) {
+	return {
+		...session,
+
+		metadata: createSessionMetadata({
+			...session.metadata,
+			...changes.metadata,
+			modified: new Date().toISOString(),
+		}),
 
 		data: {
-			settings: {
-				basemap: 'carto',
-				displayMode: 'default',
-			},
-
-			boundary: {
-				selectedBoundaryKey: 'none',
-				data: null,
-				geojson: null,
-			},
-
-			layers: [],
+			...session.data,
+			...changes.data,
 		},
-
-		...overrides,
 	};
+}
+
+/**
+ * updateSessionFromWorkspace
+ * -----------
+ * Updates a Session model from workspace state.
+ */
+export function updateSessionFromWorkspace(session, workspace) {
+	return updateSession(session, {
+		data: createProjectDataFromWorkspace(workspace),
+		metadata: createSessionMetadataFromWorkspace(session),
+	});
 }

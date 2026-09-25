@@ -1,130 +1,45 @@
 import { useState } from 'react';
 
 import Map from './Map/Map.jsx';
-import Toolbar from './Toolbar/Toolbar';
+import Header from './Header/Header';
 import Sidebar from './Sidebar/Sidebar';
 import Drawer from './Drawer/Drawer';
-import MapRibbon from './MapRibbon/MapRibbon.jsx';
-
+import MapFooter from './MapFooter/MapFooter.jsx';
 import Legend from '@/components/Legend/Legend.jsx';
 
-import { FEATURE_OPTIONS } from '@/config/featureOptions.js';
+import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
+import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
+import { useUIContext } from '@/contexts/UIContext.jsx';
 
-export default function AppLayout({
-	// toolbar
-	setActiveModal,
-	handleNewWorkspace,
-	hasFeatures,
-	hasBoundary,
-	saveCurrentProject,
-	setFocusTrigger,
-	takeScreenshot,
-	isDirty,
-	boundaryName,
-
-	// sidebar
-	boundaryData,
-	featureLayers,
-	activeDrawer,
-	setActiveDrawer,
-
-	// drawer
-	activeLayer,
-	setActiveLayer,
-	handleAddLayer,
-	updateLayer,
-	toggleLayerVisibility,
-	renameLayer,
-	updateLayerFilters,
-	selectedBoundaryKey,
-	loadBoundaryResults,
-	handleSelectBoundary,
-	boundaryResults,
-	basemap,
-	setBasemap,
-	displayMode,
-	setDisplayMode,
-	clearBoundaryResults,
-	handleClearBoundary,
-	removeLayer,
-	clearLayers,
-	getCachedFeatures,
-
-	// map
-	boundaryGeojson,
-	filteredLayers,
-	focusTrigger,
-	handleScreenshotReady,
-
-	projectName,
-}) {
+export default function AppLayout({ hasBoundary, hasFeatures }) {
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+
+	/* Context */
+	const { boundaries, previewBoundary, previewTrigger, selectedBoundaryIds } =
+		useBoundaryContext();
+	const { featureLayers, filteredLayers } = useLayerContext();
+	const { basemap, displayMode } = useWorkspaceContext();
+	const { focusTrigger, handleScreenshotReady } = useUIContext();
 
 	return (
 		<div className="app-layout">
 			<header className="app-header">
-				<Toolbar
-					onOpenModal={setActiveModal}
-					onNewWorkspace={handleNewWorkspace}
-					canExport={hasFeatures}
-					canSave={hasBoundary}
-					onSave={saveCurrentProject}
-					onFocus={() => setFocusTrigger((t) => t + 1)}
-					onScreenshot={() => takeScreenshot?.()}
-					isDirty={isDirty}
-					boundaryName={boundaryName}
-				/>
+				<Header />
 			</header>
 
 			<div
 				className={`app-body ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
 			>
 				<Sidebar
-					boundaryData={boundaryData}
+					hasBoundary={hasBoundary}
 					featureLayers={featureLayers}
-
-					activeDrawer={activeDrawer}
-					setActiveDrawer={setActiveDrawer}
 
 					collapsed={sidebarCollapsed}
 					setCollapsed={setSidebarCollapsed}
 				/>
 
-				<Drawer
-					hasBoundary={hasBoundary}
-					activeDrawer={activeDrawer}
-					setActiveDrawer={setActiveDrawer}
-
-					featureLayers={featureLayers}
-					activeLayer={activeLayer}
-					setActiveLayer={setActiveLayer}
-					handleAddLayer={handleAddLayer}
-
-					updateLayer={updateLayer}
-					toggleLayerVisibility={toggleLayerVisibility}
-					renameLayer={renameLayer}
-
-					updateLayerFilters={updateLayerFilters}
-
-					selectedBoundaryKey={selectedBoundaryKey}
-
-					loadBoundaryResults={loadBoundaryResults}
-					handleSelectBoundary={handleSelectBoundary}
-					boundaryResults={boundaryResults}
-
-					featureOptions={FEATURE_OPTIONS}
-
-					basemap={basemap}
-					setBasemap={setBasemap}
-					displayMode={displayMode}
-					setDisplayMode={setDisplayMode}
-
-					clearBoundaryResults={clearBoundaryResults}
-					handleClearBoundary={handleClearBoundary}
-					removeLayer={removeLayer}
-					clearLayers={clearLayers}
-					cachedFeatures={getCachedFeatures(selectedBoundaryKey)}
-				/>
+				<Drawer hasBoundary={hasBoundary} />
 
 				<div className="main-content">
 					<div className="map-container">
@@ -134,8 +49,10 @@ export default function AppLayout({
 
 						<Map
 							// boundary
-							boundary={boundaryGeojson}
-							boundaryKey={selectedBoundaryKey}
+							boundaries={boundaries}
+							previewBoundary={previewBoundary}
+							previewTrigger={previewTrigger}
+							boundaryIDs={selectedBoundaryIds}
 
 							// features
 							featureLayers={filteredLayers}
@@ -149,10 +66,7 @@ export default function AppLayout({
 					</div>
 
 					<div className="map-ribbon">
-						<MapRibbon
-							features={featureLayers}
-							projectName={projectName}
-						/>
+						<MapFooter features={featureLayers} />
 					</div>
 				</div>
 			</div>

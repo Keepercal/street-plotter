@@ -56,14 +56,11 @@ export default function GettingStartedPage() {
 
 			<p>
 				When you have found your desired boundary, simply type it into
-				the search box and click search. After a loading period your
-				boundary should then appear in the list. Click on it to load it,
-				and if successful your boundary will be highlighted on the map.
+				the search box and click search. Your boundary should then
+				appear in a list. Click the plus button to add the boundary to
+				your workspace, or you can see a preview of the boundary by
+				clicking on the list item.
 				<br />
-				<br />
-				Clicking the <strong>Remove Boundary</strong> button will delete
-				the current boundary, as well as any layers you have loaded, so
-				be careful!
 			</p>
 
 			<img
@@ -71,12 +68,12 @@ export default function GettingStartedPage() {
 				alt={`A screenshot of the ${__APP_NAME__} interface, showing the boundary select drawer and Bristol as the selected boundary`}
 			/>
 
-			<p>
-				When trying to load boundaries and layers, you may encounter
-				timeout errors. As {__APP_NAME__} uses an API to interact with
-				the OpenStreetMap server, the request may timeout due to a lack
-				of bandwidth. Simply try loading the boundary or layer again.
-			</p>
+			<p>You can also add multiple boundaries into the workspace.</p>
+
+			<img
+				src={helpImages.searchBoundaryMultiple}
+				alt={`A screenshot of the ${__APP_NAME__} interface, showing the boundary select drawer and Bristol as the selected boundary, with a preview of Keynsham's boundary`}
+			/>
 		</>
 	);
 }

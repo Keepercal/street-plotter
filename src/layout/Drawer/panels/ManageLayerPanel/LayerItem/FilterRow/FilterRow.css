@@ -1,0 +1,99 @@
+.filter-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+}
+
+/* Shared filter control styling */
+.filter-row select,
+.filter-row input {
+	box-sizing: border-box;
+
+	flex: 1 1 0;
+	width: 0;
+	min-width: 0;
+
+	height: 28px;
+	padding: 0 8px;
+
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+
+	background: #fff;
+	color: #333;
+
+	font-family: inherit;
+	font-size: 0.75rem;
+	line-height: 1;
+}
+
+/* Select */
+.filter-row select {
+	cursor: pointer;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	appearance: auto;
+}
+
+/* Number/text input */
+.filter-row input {
+	cursor: text;
+}
+
+/* Hover */
+.filter-row select:hover,
+.filter-row input:hover {
+	border-color: #b6bcc5;
+}
+
+/* Focus */
+.filter-row select:focus,
+.filter-row input:focus {
+	outline: none;
+	border-color: #3388ff;
+	box-shadow: 0 0 0 2px rgba(51, 136, 255, 0.15);
+}
+
+/* Number input spinners */
+.filter-row input[type='number']::-webkit-inner-spin-button,
+.filter-row input[type='number']::-webkit-outer-spin-button {
+	margin: 0;
+}
+
+/* Remove button */
+.remove-filter-btn {
+	flex: 0 0 24px;
+
+	width: 24px;
+	height: 28px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 0;
+
+	border: none;
+	border-radius: 6px;
+
+	background: transparent;
+	color: #777;
+
+	cursor: pointer;
+
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
+}
+
+.remove-filter-btn:hover {
+	background: #fdecea;
+	color: #d83f29;
+}
+
+.remove-filter-btn:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(51, 136, 255, 0.2);
+}

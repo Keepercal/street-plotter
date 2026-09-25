@@ -1,124 +1,65 @@
-import { useEffect, useMemo, useState } from 'react';
+// useStatusPopup.js
+import { useEffect, useReducer, useRef } from 'react';
+import { buildStatusSources } from './utils/statusPopupSources';
 
-export default function useStatusPopup({
-	boundaryStatus,
-	boundaryError,
-	featureStatus,
-	featureError,
-	failedFeatureKey,
-}) {
-	const [dismissed, setDismissed] = useState(false);
+const initialState = {
+	status: 'idle',
+	type: null,
+	title: '',
+	message: '',
+	source: null,
+};
 
-	/*
-	 * Reset status popup dismissal when loading starts
-	 */
-	useEffect(() => {
-		if (
-			boundaryStatus === 'loading' ||
-			featureStatus === 'loading' ||
-			boundaryStatus === 'error' ||
-			featureStatus === 'error'
-		) {
-			setDismissed(false);
-		}
-	}, [boundaryStatus, featureStatus]);
+function popupReducer(state, action) {
+	switch (action.type) {
+		case 'SHOW':
+			return { status: 'visible', ...action.payload };
+		case 'DISMISS':
+			return initialState;
+		default:
+			return state;
+	}
+}
 
-	/* Handle status popup */
-	const statusPopup = useMemo(() => {
-		if (dismissed) {
-			console.log('[DEBUG] Popup dismissed → idle state');
-			return {
-				trigger: false,
-				type: 'idle',
-				source: null,
-				featureKey: null,
-				title: '',
-				message: '',
-			};
-		}
-
-		if (boundaryStatus === 'loading') {
-			console.log('[DEBUG] Popup: boundary loading');
-			return {
-				trigger: true,
-				type: 'loading',
-				source: 'boundary',
-				featureKey: null,
-				title: 'Loading',
-				message: 'Loading boundary...',
-			};
-		}
-
-		if (boundaryStatus === 'error') {
-			console.error('[DEBUG] Popup: boundary error', boundaryError);
-			return {
-				trigger: true,
-				type: 'error',
-				source: 'boundary',
-				featureKey: null,
-				title: 'Error',
-				message: boundaryError?.message,
-			};
-		}
-
-		if (featureStatus === 'loading') {
-			console.log('[DEBUG] Popup: feature loading');
-			return {
-				trigger: true,
-				type: 'loading',
-				source: 'feature',
-				featureKey: null,
-				title: 'Loading',
-				message: 'Loading feature data from Overpass API...',
-			};
-		}
-
-		if (featureStatus === 'error') {
-			console.error('[DEBUG] Popup: feature error', featureError);
-			return {
-				trigger: true,
-				type: 'error',
-				source: 'feature',
-				featureKey: failedFeatureKey,
-				title: 'Error',
-				message: featureError?.message,
-			};
-		}
-
-		return {
-			trigger: false,
-			type: 'idle',
-			source: null,
-			featureKey: null,
-			title: '',
-			message: '',
-		};
-	}, [
-		dismissed,
-		boundaryStatus,
-		boundaryError,
-		featureStatus,
-		featureError,
-		failedFeatureKey,
-	]);
+export default function useStatusPopup(sourceInputs) {
+	const [popup, dispatch] = useReducer(popupReducer, initialState);
+	const timerRef = useRef(null);
 
 	useEffect(() => {
-		if (!statusPopup.trigger || statusPopup.type !== 'error') {
+		clearTimeout(timerRef.current);
+
+		const sources = buildStatusSources(sourceInputs);
+		const active = sources.find((source) => source.test());
+
+		if (!active) {
+			dispatch({ type: 'DISMISS' });
 			return;
 		}
 
-		const timer = setTimeout(() => {
-			setDismissed(true);
-		}, 5000);
+		dispatch({ type: 'SHOW', payload: active.build() });
 
-		return () => clearTimeout(timer);
-	}, [statusPopup.trigger, statusPopup.type]);
+		if (active.dismissMs) {
+			timerRef.current = setTimeout(
+				() => dispatch({ type: 'DISMISS' }),
+				active.dismissMs
+			);
+		}
+
+		return () => clearTimeout(timerRef.current);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		sourceInputs.featureStatus,
+		sourceInputs.featureError,
+		sourceInputs.failedFeatureKey,
+		sourceInputs.projectStatus,
+		sourceInputs.projectError,
+	]);
 
 	return {
-		statusPopup,
-
-		dismissPopup() {
-			setDismissed(true);
+		statusPopup: { trigger: popup.status === 'visible', ...popup },
+		dismissPopup: () => {
+			clearTimeout(timerRef.current);
+			dispatch({ type: 'DISMISS' });
 		},
 	};
 }

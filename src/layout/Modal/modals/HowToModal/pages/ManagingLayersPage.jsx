@@ -36,16 +36,40 @@ export default function ManagingLayersPage() {
 				<strong> MISSING</strong>
 			</p>
 			<dl className="list">
-				<dt>EQUALS</dt>
+				<dt>EQUALS ( = )</dt>
 				<dd>
 					Returns results where the selected field or tag exactly
 					matches the specified value.
 				</dd>
 
-				<dt>NOT EQUALS</dt>
+				<dt>NOT EQUALS ( != )</dt>
 				<dd>
 					Returns results where the selected field or tag does not
 					match the specified value.
+				</dd>
+
+				<dt>GREATER THAN ( &gt; )</dt>
+				<dd>
+					Returns results where the selected field or tag is larger
+					than a given numerical value
+				</dd>
+
+				<dt>GREATER THAN OR EQUAL TO ( &gt;= )</dt>
+				<dd>
+					Returns results where the selected field or tag is larger
+					than or equal to a given numerical value
+				</dd>
+
+				<dt>LESS THAN ( &lt; )</dt>
+				<dd>
+					Returns results where the selected field or tag is smaller
+					than a given numerical value
+				</dd>
+
+				<dt>LESS THAN OR EQUAL TO ( &lt;= )</dt>
+				<dd>
+					Returns results where the selected field or tag is smaller
+					than or equal to a given numerical value
 				</dd>
 
 				<dt>EXISTS</dt>
@@ -98,7 +122,7 @@ export default function ManagingLayersPage() {
 			<p>
 				You can add multiple filters using a join operator. In this
 				example, I am showing all pubs where wheelchair equals yes and
-				an indoor_seating tag exists
+				an outdoor_seating tag exists
 			</p>
 
 			<img

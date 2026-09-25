@@ -2,6 +2,7 @@ import './SidebarButton.css';
 
 const SidebarButton = ({
 	label,
+	title,
 	icon,
 	isCollapsed,
 	active,
@@ -13,6 +14,7 @@ const SidebarButton = ({
             ${active ? 'active' : ''}
             ${disabled ? 'disabled' : ''}
         `}
+		title={title}
 		disabled={disabled}
 		onClick={onClick}
 	>

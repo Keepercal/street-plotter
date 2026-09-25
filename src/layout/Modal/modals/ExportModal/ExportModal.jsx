@@ -14,8 +14,6 @@ import CheckboxItem from '@/components/CheckboxItem/CheckboxItem';
  * Modal for exporting loaded features to various formats:
  */
 export default function ExportModal({ onClose, featureLayers }) {
-	console.log('[DEBUG] ExportModal ENTER: ', featureLayers);
-
 	const [featureScope, setFeatureScope] = useState('filtered');
 	const [layerScope, setLayerScope] = useState('all');
 
@@ -25,13 +23,13 @@ export default function ExportModal({ onClose, featureLayers }) {
 		Object.keys(featureLayers);
 	}, [featureLayers]);
 
-	const toggleLayer = (layerID) => {
+	const toggleLayer = (layerId) => {
 		setSelectedLayers((prev) => {
-			if (prev.includes(layerID)) {
-				return prev.filter((id) => id !== layerID);
+			if (prev.includes(layerId)) {
+				return prev.filter((id) => id !== layerId);
 			}
 
-			return [...prev, layerID];
+			return [...prev, layerId];
 		});
 	};
 
@@ -118,27 +116,27 @@ export default function ExportModal({ onClose, featureLayers }) {
 							<h3>Available Layers</h3>
 
 							{Object.entries(featureLayers).map(
-								([layerID, layer]) => (
+								([layerId, layer]) => (
 									<CheckboxItem
 										className="export-checkbox"
-										key={layerID}
+										key={layerId}
 										label={
 											layer.displayName ??
 											layer.label ??
-											layer.sourceKey
+											layer.osmTagValue
 										}
 										checked={
 											layerScope !== 'selected'
 												? false
 												: selectedLayers.includes(
-														layerID
+														layerId
 													)
 										}
 										indeterminate={
 											layerScope !== 'selected'
 										}
 										disabled={layerScope !== 'selected'}
-										onChange={() => toggleLayer(layerID)}
+										onChange={() => toggleLayer(layerId)}
 									/>
 								)
 							)}

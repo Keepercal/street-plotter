@@ -1,12 +1,12 @@
 /* =========================
-    Toolbar Branding
+    Header Branding
 ========================= */
 
 .brand {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: 4px;
+	gap: 10.5px;
 	width: fit-content;
 	text-decoration: none;
 	color: inherit;
@@ -15,21 +15,17 @@
 .brand-text {
 	display: flex;
 	flex-direction: column;
+	font-size: 15px;
+	line-height: 1;
 }
 
 .brand-title {
 	margin: 0px;
 }
 
-.version-tag {
-	margin: 0;
-	font-size: 0.8rem;
-	color: #aaa;
-}
-
 .brand-logo {
 	width: auto;
-	height: 35px;
+	height: 40px;
 	flex-shrink: 0;
 	border: 0px;
 
@@ -49,6 +45,8 @@
 	}
 }
 
-.toolbar-actions {
-	gap: 12px;
-}
+/*.version-tag {
+	margin: 0;
+	font-size: 0.8rem;
+	color: #aaa;
+}*/

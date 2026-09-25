@@ -1,41 +1,58 @@
 import { useState } from 'react';
 
-import { getProject, saveProject as saveProjectToDB } from '../db/projectDB';
+import {
+	getProject,
+	saveProject as saveProjectToDB,
+	updateStoredProject,
+} from '../db/projectDB';
+import { createSession } from '@/models/session.js';
+import { createSessionMetadata } from '@/models/sessionMetadata';
 
-import { createProject } from '../models/project';
+import {
+	createProjectFromWorkspace,
+	updateProjectFromWorkspace,
+} from '../models/project';
 
 export default function useProjectManager({
 	workspace,
 	session,
 	restore,
-	resetWorkspace,
 	onSaveAsRequested,
 	onDirtyChange,
 }) {
 	const [project, setProject] = useState(null);
+	const [projectStatus, setProjectStatus] = useState('idle');
+	const [projectError, setProjectError] = useState(null);
 
 	async function openProject(projectId) {
-		const project = await getProject(projectId);
+		try {
+			const project = await getProject(projectId);
 
-		if (!project) {
-			console.error('Project not found');
-			return;
+			if (!project) {
+				setProjectStatus('error');
+				setProjectError(new Error('Project does not exist.'));
+				return;
+			}
+
+			resetProjectStatus();
+			setProject(project);
+
+			restore.restoreWorkspace(
+				createSession({
+					metadata: createSessionMetadata({
+						projectId: project.metadata.id,
+					}),
+					data: project.data,
+				})
+			);
+
+			onDirtyChange(false);
+		} catch (error) {
+			setProjectStatus('error');
+			setProjectError(error);
+
+			console.error('Failed to open project: ', error);
 		}
-
-		console.log('[DEBUG] Opening project:', project);
-
-		setProject(project);
-
-		restore.restoreSession({
-			projectId: project.metadata.id,
-			data: {
-				settings: project.settings,
-				boundary: project.boundary,
-				layers: project.layers,
-			},
-		});
-
-		onDirtyChange(false);
 	}
 
 	/*
@@ -43,95 +60,98 @@ export default function useProjectManager({
 	 */
 	async function saveCurrentProject() {
 		if (!project) {
-			console.log('[DEBUG] No existing project, opening Save As');
-			onSaveAsRequested?.();
+			onSaveAsRequested?.(); // opens the Save As modal there is no existing project to overwrite
 			return;
 		}
 
-		const updatedProject = {
-			...project,
+		setProjectStatus('saving');
+		setProjectError(null);
 
-			metadata: {
-				...project.metadata,
-				modified: new Date().toISOString(),
-			},
+		try {
+			const updatedProject = updateProjectFromWorkspace(
+				project,
+				workspace
+			);
 
-			settings: {
-				basemap: workspace.basemap,
-				displayMode: workspace.displayMode,
-			},
+			await saveProjectToDB(updatedProject);
 
-			boundary: {
-				selectedBoundaryKey: workspace.selectedBoundaryKey,
-				data: workspace.boundaryData,
-				geojson: workspace.boundaryGeojson,
-			},
+			setProject(updatedProject);
+			onDirtyChange(false);
 
-			layers: workspace.exportLayers(),
-		};
+			setProjectStatus('saved');
 
-		await saveProjectToDB(updatedProject);
+			return true;
+		} catch (error) {
+			setProjectStatus('error');
+			setProjectError(error);
 
-		console.log('[DEBUG] Saving project', updatedProject);
-
-		setProject(updatedProject);
-		onDirtyChange(false);
-
-		console.log('[DEBUG] Project saved:', project);
-
-		return true;
+			console.error('Failed to save project:', error);
+			return false;
+		}
 	}
 
 	/*
 	 * Creates a brand new project
 	 */
 	async function saveProjectAs(name, description) {
-		const newProject = createProject({
-			metadata: {
+		setProjectStatus('saving');
+		setProjectError(null);
+
+		try {
+			const newProject = createProjectFromWorkspace(
 				name,
 				description,
-			},
+				workspace
+			);
 
-			settings: {
-				basemap: workspace.basemap,
-				displayMode: workspace.displayMode,
-			},
+			await saveProjectToDB(newProject);
 
-			boundary: {
-				selectedBoundaryKey: workspace.selectedBoundaryKey,
-				data: workspace.boundaryData,
-				geojson: workspace.boundaryGeojson,
-			},
+			setProject(newProject);
 
-			layers: workspace.exportLayers(),
+			session.setSessionInfo((prev) => ({
+				...prev,
+				metadata: {
+					...prev.metadata,
+					projectId: newProject.metadata.id,
+					modified: new Date().toISOString(),
+				},
+			}));
+
+			onDirtyChange(false);
+
+			setProjectStatus('saved');
+
+			return newProject;
+		} catch (error) {
+			console.error('Failed to save project:', error);
+			setProjectStatus('error');
+			setProjectError(error);
+			return null;
+		}
+	}
+
+	const updateProjectMetadata = (projectId, changes) => {
+		return updateStoredProject(projectId, {
+			metadata: changes,
 		});
+	};
 
-		await saveProjectToDB(newProject);
-
-		console.log('[DEBUG] Saving project', newProject);
-
-		setProject(newProject);
-
-		// Link the current session to this project
-		session.setSessionInfo((prev) => ({
-			...prev,
-			projectId: newProject.metadata.id,
-			modified: new Date().toISOString(),
-		}));
-
-		onDirtyChange(false);
-
-		console.log('[DEBUG] Project saved:', project);
-
-		return newProject;
+	function resetProjectStatus() {
+		setProjectStatus('idle');
+		setProjectError(null);
 	}
 
 	return {
 		project,
 		setProject,
 
+		projectStatus,
+		projectError,
+		resetProjectStatus,
+
 		openProject,
 		saveCurrentProject,
 		saveProjectAs,
+		updateProjectMetadata,
 	};
 }

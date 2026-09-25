@@ -1,11 +1,9 @@
 import './OpenProjectModal.css';
-import { Trash2 } from 'lucide-react';
 
 import { useEffect } from 'react';
 
 import Modal from '../../Modal';
-
-import { timeAgo } from '@/utils/timeAgo';
+import ProjectCard from './ProjectCard/ProjectCard';
 
 /**
  * OpenProjectModal
@@ -19,6 +17,7 @@ export default function OpenProjectModal({
 	loadProjects,
 	handleDeleteProject,
 	hasSavedProjects,
+	handleUpdateProject,
 }) {
 	useEffect(() => {
 		loadProjects();
@@ -32,7 +31,7 @@ export default function OpenProjectModal({
 	};
 
 	return (
-		<Modal title="Open project" onClose={onClose}>
+		<Modal title="Open Project" onClose={onClose}>
 			<section className="modal-section">
 				{!hasSavedProjects ? (
 					<div className="no-projects">
@@ -40,49 +39,17 @@ export default function OpenProjectModal({
 					</div>
 				) : (
 					<div className="project-list">
-						{projects.map((project) => (
-							<div
-								key={project.metadata.id}
-								className="project-item"
-							>
-								<button
-									className="project-card"
-									onClick={() => onOpen(project.metadata.id)}
-								>
-									<div className="project-card-content">
-										<h3>{project.metadata.name}</h3>
-
-										<div className="project-meta">
-											<span>
-												{project?.boundary.data
-													.elements?.[0]?.tags
-													?.name ?? 'None'}
-											</span>
-										</div>
-
-										{project.metadata.description && (
-											<p className="project-description">
-												{project.metadata.description}
-											</p>
-										)}
-
-										<span className="project-updated">
-											<strong>Last modified: </strong>
-											{timeAgo(
-												project?.metadata.modified
-											)}
-										</span>
-									</div>
-								</button>
-								<button
-									className="project-card-delete"
-									onClick={() => confirmDelete(project)}
-									aria-label={`Delete ${project.metadata.name}`}
-								>
-									<Trash2 size={22} />
-								</button>
-							</div>
-						))}
+						{projects.map((project) => {
+							return (
+								<ProjectCard
+									key={project.metadata.id}
+									project={project}
+									onOpen={onOpen}
+									confirmDelete={confirmDelete}
+									handleUpdateProject={handleUpdateProject}
+								/>
+							);
+						})}
 					</div>
 				)}
 			</section>

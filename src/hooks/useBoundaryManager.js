@@ -1,8 +1,8 @@
-import { useState, useRef } from 'react';
-import osmtogeojson from 'osmtogeojson';
+import { useState, useRef, useEffect } from 'react';
+//import osmtogeojson from 'osmtogeojson';
 
-import { fetchOSMBoundary } from '../services/overpass/overpass';
-import searchBoundaries from '../services/nominatim/searchBoundaries';
+//import { fetchOSMBoundary } from '../services/overpass/overpass';
+import searchNomiBoundaries from '../services/nominatim/searchNomiBoundaries';
 
 /**
  * useBoundaryManager
@@ -16,11 +16,15 @@ import searchBoundaries from '../services/nominatim/searchBoundaries';
  * - resetting state
  * - exporting and restoring boundaries
  */
-export default function useBoundaryManager({ onChange = () => {} } = {}) {
+export default function useBoundaryManager({
+	onChange = () => {},
+	setIsDirty,
+} = {}) {
 	const [boundaryResults, setBoundaryResults] = useState([]);
 
-	const [boundaryData, setBoundaryData] = useState(null);
-	const [boundaryGeojson, setBoundaryGeojson] = useState(null);
+	const [boundaries, setBoundaries] = useState([]); // stores the current boundaries in the application as an array
+	const [previewBoundary, setPreviewBoundary] = useState(null);
+	const [previewTrigger, setPreviewTrigger] = useState(0);
 
 	const [status, setStatus] = useState('idle');
 	const [error, setError] = useState(null);
@@ -31,52 +35,50 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 		onChange?.();
 	}
 
-	/* Find a list of boundaries from Nominatim from a given boundary name */
-	const loadBoundaryResults = async (boundaryName) => {
-		setBoundaryResults(null);
+	useEffect(() => {}, [boundaries]);
 
-		console.log('[DEBUG] loadBoundaryResults ENTER:', { boundaryName });
+	/* Produce a list of boundaries from Nominatim from a given input */
+	const fetchBoundaryResults = async (userInput) => {
+		setBoundaryResults(null);
 
 		const currentId = ++requestId.current;
 
-		if (boundaryName === 'none') {
+		if (userInput === 'none') {
 			return;
 		}
 
 		try {
-			const result = await searchBoundaries(boundaryName);
+			const result = await searchNomiBoundaries(userInput);
 
 			if (currentId !== requestId.current) return;
 
 			setBoundaryResults(result);
-
-			console.log('[DEBUG] Nominatim API returned result(s):', result);
-		} catch (err) {
+		} catch (error) {
+			console.error(error);
 			if (currentId !== requestId.current) return;
+
 			setBoundaryResults([]);
-			console.error(err);
+
+			throw error;
 		}
 	};
 
-	/* Clear array of boundary results */
+	/* Remove all Nominatim results from array */
 	const clearBoundaryResults = () => {
 		setBoundaryResults([]);
 	};
 
-	/* Load boundary by fetching from Overpass API */
-	const loadBoundary = async (boundaryID, boundaryType, boundaryName) => {
-		clearBoundary();
+	/*
+	 * THIS COMMENTED SECTION OF CODE RETURNS A BOUNDARY RELATION FROM THE OVERPASS API.
+	 */
 
-		console.log('[DEBUG] loadBoundary ENTER:', {
-			boundaryID,
-			boundaryType,
-			boundaryName,
-		});
+	/* Load boundary by fetching from Overpass API */
+	/*const loadBoundary = async (boundaryIDs, boundaryType, boundaryName) => {
+		clearBoundaries();
 
 		const currentId = ++requestId.current;
 
-		if (boundaryID === 'none') {
-			console.error('[DEBUG] BoundaryID is empty:', boundaryID);
+		if (boundaryIDs === 'none') {
 			return;
 		}
 
@@ -85,7 +87,7 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 		try {
 			const result = await fetchOSMBoundary(
 				// Fetch boundary from Overpass API
-				boundaryID,
+				boundaryIDs,
 				boundaryType
 			);
 
@@ -97,68 +99,125 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 			setBoundaryGeojson(geojson);
 
 			setStatus('success');
-		} catch (err) {
+		} catch (error) {
 			if (currentId !== requestId.current) return;
 
-			console.error(err);
+			console.error(error);
 
 			setBoundaryData(null);
 			setBoundaryGeojson(null);
 
 			setStatus('error');
-			setError(err);
+			setError(error);
 		}
-	};
+	};*/
 
-	/* Clear the current boundary  from state */
-	const clearBoundary = () => {
-		setBoundaryData(null);
-		setBoundaryGeojson(null);
-
-		setStatus('idle');
-		setError(null);
-		markDirty(false);
-	};
-
-	/* Export the boundary data as an object */
-	function exportBoundary() {
-		return {
-			data: boundaryData,
-			geojson: boundaryGeojson,
-		};
-	}
-
-	/* Restore a given boundary to state */
-	function restoreBoundary(boundary) {
-		requestId.current++;
-
-		if (!boundary) {
-			clearBoundary();
+	/* Add a boundary into array */
+	const setBoundary = (boundary) => {
+		if (!boundary || boundary.osm_id === 'none') {
 			return;
 		}
 
-		setBoundaryData(boundary.data);
-		setBoundaryGeojson(boundary.geojson);
+		setBoundaries((prev) => {
+			if (prev.some((item) => item.osm_id === boundary.osm_id)) {
+				return prev;
+			}
+
+			return [...prev, boundary];
+		});
+
+		setStatus('success');
+	};
+
+	/* Remove singular boundary from array */
+	const removeBoundary = (osmId) => {
+		setBoundaries((prev) =>
+			prev.filter((boundary) => boundary.osm_id !== osmId)
+		);
+
+		setPreviewBoundary(null);
+		setIsDirty(true);
+	};
+
+	/* Clear all boundaries from array */
+	const clearBoundaries = () => {
+		setBoundaries([]);
+		setPreviewBoundary(null);
+
+		setStatus('idle');
+		setError(null);
+		setIsDirty(true);
+	};
+
+	/* Restore a given boundary to state */
+	const restoreBoundaries = (value) => {
+		requestId.current++;
+
+		if (!value) {
+			clearBoundaries();
+			return;
+		}
+
+		if (!Array.isArray(value)) {
+			console.error(
+				'[ERROR] restoreBoundaries expected an array:',
+				value
+			);
+			return;
+		}
+
+		setBoundaries(value);
 
 		setStatus('success');
 		setError(null);
-	}
+	};
+
+	/**
+	 * Rerenders the map to focus on the chosen boundary
+	 */
+	const handlePreviewBoundary = (boundary) => {
+		setPreviewBoundary(boundary);
+		setPreviewTrigger((t) => t + 1);
+	};
+
+	/**
+	 * Handle input for boundary search
+	 */
+	const handleSelectBoundary = (boundaryData) => {
+		setBoundary(boundaryData);
+		handlePreviewBoundary(null);
+		setIsDirty(true);
+	};
+
+	/**
+	 * Removes a single boundary from the workspace
+	 */
+	const handleRemoveBoundary = (osmId) => {
+		removeBoundary(osmId);
+		setIsDirty(true);
+	};
 
 	return {
-		// boundary data
-		boundaryData,
-		boundaryGeojson,
-
 		// boundary results
 		boundaryResults,
-		loadBoundaryResults,
+		fetchBoundaryResults,
 		clearBoundaryResults,
 
+		// boundary data
+		boundaries,
+		previewBoundary,
+		setPreviewBoundary,
+		previewTrigger,
+
 		// boundary handling
-		loadBoundary,
-		clearBoundary,
-		restoreBoundary,
-		exportBoundary,
+		setBoundary,
+		removeBoundary,
+		clearBoundaries,
+		restoreBoundaries,
+		handlePreviewBoundary,
+
+		handleSelectBoundary,
+		handleRemoveBoundary,
 
 		// status
 		status,

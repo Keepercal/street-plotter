@@ -1,13 +1,11 @@
-import { useState } from 'react';
-
 export default function useUnsavedChanges({
 	isDirty,
 	setActiveModal,
 	modalKey,
 	saveCurrentProject,
+	pendingAction,
+	setPendingAction,
 }) {
-	const [pendingAction, setPendingAction] = useState(null);
-
 	function confirmUnsavedChanges(action) {
 		if (!isDirty) {
 			action();
@@ -19,9 +17,9 @@ export default function useUnsavedChanges({
 	}
 
 	const handleSaveAndContinue = async () => {
-		await saveCurrentProject();
+		const success = await saveCurrentProject({ silent: true });
+		if (!success) return;
 		await pendingAction?.();
-
 		clearPendingAction();
 	};
 

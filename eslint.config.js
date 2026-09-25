@@ -44,4 +44,10 @@ export default defineConfig([
 			},
 		},
 	},
+	{
+		files: ['**/contexts/**/*.{js,jsx}'],
+		rules: {
+			'react-refresh/only-export-components': 'off',
+		},
+	},
 ]);

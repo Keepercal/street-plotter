@@ -14,7 +14,7 @@
 
 	color: var(--colour-button-danger-text);
 	font-family: var(--default-font);
-	font-size: 14px;
+	font-size: 0.875rem;
 	font-weight: 400;
 
 	cursor: pointer;

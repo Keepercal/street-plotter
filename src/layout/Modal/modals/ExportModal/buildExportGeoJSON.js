@@ -16,7 +16,7 @@ export default function buildExportGeoJSON({
 	}
 
 	// Feature filtering
-	const features = layers.flatMap(([layerID, layer]) => {
+	const features = layers.flatMap(([layerId, layer]) => {
 		let layerFeatures = layer.geojson?.features ?? [];
 
 		if (featureScope === 'filtered') {
@@ -30,7 +30,7 @@ export default function buildExportGeoJSON({
 
 			properties: {
 				...feature.properties,
-				_layer: layerID,
+				_layer: layerId,
 			},
 		}));
 	});

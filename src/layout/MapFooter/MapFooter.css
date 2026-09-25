@@ -1,0 +1,30 @@
+/* =========================
+    FEATURE COUNT PANEL
+========================= */
+
+.map-footer-content {
+	display: flex;
+	gap: 18px;
+	align-items: center;
+	width: 100%;
+}
+
+/* Text */
+.map-footer-content p {
+	margin: 0;
+	font-size: 12px;
+}
+
+/* =========================
+    ITEM ROW
+========================= */
+
+.feature-counter {
+	display: flex;
+	gap: 12px;
+	margin-left: auto;
+}
+
+.version-tag {
+	color: #ddd;
+}

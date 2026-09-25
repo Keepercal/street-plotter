@@ -1,98 +1,116 @@
-const LARGE_DATASET_LIMIT = 5000;
-import MODALS from '@/config/modalTypes.js';
+import { useCallback } from 'react';
+import { createSession } from '../models/session.js';
+import { getProject } from '../db/projectDB.js';
 
+/**
+ * useWorkspaceActions
+ * ---------
+ * Restoring and resetting the workspace (project, map settings, boundaries, layers).
+ */
 export default function useWorkspaceActions({
-	// boundary
-	selectedBoundaryKey,
-	setSelectedBoundaryKey,
-	loadBoundary,
-	clearBoundary,
-
-	// layers
-	clearLayers,
-	updateLayer,
-	loadLayer,
-	commitLayer,
-
-	// UI
-	setPendingLayer,
-	setActiveModal,
+	setSessionInfo,
+	setProject,
+	resetProjectStatus,
+	setBasemap,
+	setDisplayMode,
+	restoreBoundaries,
+	restoreLayers,
 	setIsDirty,
+
+	clearSavedSession,
+	clearBoundaryResults,
+	clearBoundaries,
+	clearLayers,
+	clearCache,
+	setActiveModal,
+	setActiveDrawer,
 }) {
-	/**
-	 * Handle input for boundary search
+	/*
+	 * Restores a saved workspace, including the project, map settings, boundaries, and layers.
 	 */
-	const handleSelectBoundary = (result) => {
-		console.log('[DEBUG] handleSelectBoundary ENTER:', result);
+	const restoreWorkspace = useCallback(
+		async (session) => {
+			if (!session) return;
+			// If the session matches the ID of a project
+			if (session.metadata?.projectId) {
+				const project = await getProject(session.metadata.projectId);
 
-		const {
-			osm_id: boundaryID,
-			osm_type: boundaryType,
-			display_name: boundaryName,
-		} = result;
+				if (project) {
+					setProject(project);
+				}
+			}
 
-		setSelectedBoundaryKey(boundaryID);
+			const sessionData = session.data ?? {};
+			setSessionInfo(session);
 
-		loadBoundary(boundaryID, boundaryType, boundaryName);
-	};
+			// restore workspace settings
+			setBasemap(sessionData.settings?.basemap ?? 'carto');
+			setDisplayMode(sessionData.settings?.displayMode ?? 'default');
 
-	/**
-	 * Handle resetting boundary and wiping features
+			// restore boundary
+			restoreBoundaries(sessionData.boundaries);
+
+			// restore layers
+			restoreLayers(sessionData.layers ?? []);
+
+			if (session.metadata?.projectId === null) {
+				setIsDirty(true);
+			} else {
+				setIsDirty(false);
+			}
+		},
+		[
+			setSessionInfo,
+			setProject,
+			setBasemap,
+			setDisplayMode,
+			restoreBoundaries,
+			restoreLayers,
+			setIsDirty,
+		]
+	);
+
+	/*
+	 * Creates a blank workspace
 	 */
-	const handleClearBoundary = () => {
-		setSelectedBoundaryKey('none');
-		clearBoundary();
-		clearLayers();
-	};
+	const resetWorkspace = useCallback(
+		({ preserveAutosave = false } = {}) => {
+			if (!preserveAutosave) {
+				clearSavedSession();
+			}
 
-	/**
-	 * Handle renaming features
-	 */
-	const renameLayer = (layerID, newLabel) => {
-		updateLayer(layerID, {
-			displayName: newLabel,
-		});
-	};
+			setProject(null);
+			resetProjectStatus?.();
+			setSessionInfo(createSession());
 
-	/**
-	 * Handle feature adding to project
-	 */
-	const handleAddLayer = async (
-		featureKey,
-		featureTag,
-		featureValue,
-		featureType,
-		featureLabel
-	) => {
-		console.log(
-			`Calling loadLayer with boundary key: ${selectedBoundaryKey}`
-		);
+			clearBoundaryResults();
+			clearBoundaries();
+			clearLayers();
+			clearCache();
 
-		const preparedLayer = await loadLayer({
-			featureKey,
-			boundaryKey: selectedBoundaryKey,
-			featureTag,
-			featureValue,
-			featureType,
-			featureLabel,
-		});
+			setBasemap('carto');
+			setDisplayMode('default');
 
-		if (!preparedLayer) return;
+			setActiveModal(null);
+			setActiveDrawer(null);
+			setIsDirty(false);
+		},
+		[
+			clearSavedSession,
+			setProject,
+			resetProjectStatus,
+			setSessionInfo,
+			clearBoundaryResults,
+			clearBoundaries,
+			clearLayers,
+			clearCache,
+			setBasemap,
+			setDisplayMode,
+			setActiveModal,
+			setActiveDrawer,
+			setIsDirty,
+		]
+	);
 
-		if (preparedLayer.totalCount > LARGE_DATASET_LIMIT) {
-			setPendingLayer(preparedLayer);
-			setActiveModal(MODALS.LARGE_DATASET);
-			return;
-		}
-
-		commitLayer(preparedLayer);
-		setIsDirty(true);
-	};
-
-	return {
-		handleSelectBoundary,
-		handleClearBoundary,
-		renameLayer,
-		handleAddLayer,
-	};
+	return { restoreWorkspace, resetWorkspace };
 }

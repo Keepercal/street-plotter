@@ -7,13 +7,13 @@
 	--default-font: font-family: 'Google Sans Flex', sans-serif;
 
 	/* Header */
-	--header-height: 60px;
+	--header-height: 3.75rem;
 	--colour-header-bg: #1f2d3d;
 
 	/* Sidebar */
-	--sidebar-width: 160px;
-	--sidebar-collapsed-width: 60px;
-	/* --sidebar-width: 140px; */
+	--sidebar-width: 10rem;
+	--sidebar-collapsed-width: 3.75rem;
+	/* --sidebar-width: 8.75rem; */
 	--colour-sidebar-bg: #223d57;
 
 	/* Drawer */
@@ -28,6 +28,9 @@
 
 	/* Box Shadow */
 	--colour-box-shadow: rgba(0, 0, 0, 0.25);
+
+	--surface-colour: rgba(255, 255, 255, 0.04);
+	--border-colour: rgba(255, 255, 255, 0.15);
 
 	/* =========================
         MODALS
@@ -45,8 +48,15 @@
 	/* Inline Text */
 	--colour-text-strong: rgb(161, 84, 84);
 
-	/* Danger */
-	--colour-text-danger: #d93025;
+	--colour-success: rgba(111, 233, 18);
+	--colour-success-dim: rgba(111, 233, 18, 0.2);
+
+	--colour-alert: rgba(245, 158, 11, 1);
+	--colour-alert-dim: rgba(245, 159, 11, 0.257);
+
+	--colour-danger: #d93025;
+	--colour-danger-light: #fef2f2;
+	--colour-danger-dim: #dc262650;
 
 	/* =========================
         Buttons

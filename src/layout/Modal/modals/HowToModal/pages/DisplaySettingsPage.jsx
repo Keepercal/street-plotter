@@ -8,16 +8,6 @@ export default function DisplaySettingsPage() {
 				{__APP_NAME__} comes with settings for customising the
 				presentation of the map and date displayed on it.
 			</p>
-			<h2>Basemap</h2>
-			<p>
-				There are several different basemaps to choose from which will
-				alter how the map appears within your workspace. Here is an
-				example of the dark CARTO basemap.
-			</p>
-			<img
-				src={helpImages.basemapExample}
-				alt={`A screenshot of the ${__APP_NAME__} interface with the Display drawer open showing a dark basemap`}
-			/>
 			<h2>Map Content</h2>
 			<p>
 				You can change how the data is displayed on map by
@@ -67,6 +57,16 @@ export default function DisplaySettingsPage() {
 			<img
 				src={helpImages.heatmap}
 				alt={`A screenshot of the ${__APP_NAME__} interface showing pubs displayed as a heatmap`}
+			/>
+			<h2>Basemap</h2>
+			<p>
+				There are several different basemaps to choose from which will
+				alter how the map appears within your workspace. Here is an
+				example of the dark CARTO basemap.
+			</p>
+			<img
+				src={helpImages.basemapExample}
+				alt={`A screenshot of the ${__APP_NAME__} interface with the Display drawer open showing a dark basemap`}
 			/>
 		</>
 	);

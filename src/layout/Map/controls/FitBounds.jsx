@@ -9,22 +9,24 @@ import L from 'leaflet';
  *
  * Triggers whenever `boundary` changes.
  */
-export default function FitBounds({ boundary, trigger }) {
+export default function FitBounds({ boundaries, trigger }) {
 	const map = useMap();
 
 	useEffect(() => {
-		if (!boundary) return;
+		if (!boundaries) return;
 
 		// Create bounds directly from GeoJSON without rendering a layer
-		const bounds = L.geoJSON(boundary).getBounds();
+		const bounds = L.geoJSON(boundaries).getBounds();
 
 		if (bounds.isValid()) {
 			map.fitBounds(bounds, {
 				padding: [20, 20],
-				maxZoom: 16,
+				maxZoom: 14,
+				animate: true,
+				duration: 0.6,
 			});
 		}
-	}, [boundary, trigger, map]);
+	}, [boundaries, trigger, map]);
 
 	return null;
 }

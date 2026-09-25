@@ -3,7 +3,7 @@ const MODALS = {
 	UNSAVED_CHANGES: 'unsavedChanges',
 	SAVE_PROJECT: 'saveProject',
 	OPEN_PROJECT: 'openProject',
-	RESTORE_SESSION: 'restoreSession',
+	RESTORE_WORKSPACE: 'restoreWorkspace',
 	LARGE_DATASET: 'largeDataset',
 	HOW_TO: 'howTo',
 	ABOUT: 'about',

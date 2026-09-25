@@ -1,5 +1,13 @@
-// models/project.js
+import {
+	createProjectData,
+	createProjectDataFromWorkspace,
+} from './projectData';
 
+/**
+ * createProject
+ * -----------
+ * Creates a Project model from project-shaped data.
+ */
 export function createProject(overrides = {}) {
 	const now = new Date().toISOString();
 
@@ -15,19 +23,54 @@ export function createProject(overrides = {}) {
 			...overrides.metadata,
 		},
 
-		settings: {
-			basemap: 'carto',
-			displayMode: 'default',
-			...overrides.settings,
-		},
-
-		boundary: {
-			selectedBoundaryKey: 'none',
-			data: null,
-			geojson: null,
-			...overrides.boundary,
-		},
-
-		layers: overrides.layers ?? [],
+		data: createProjectData(overrides.data),
 	};
+}
+
+/**
+ * createProjectFromWorkspace
+ * -----------
+ * Creates a Project model from workspace state.
+ */
+export function createProjectFromWorkspace(name, description, workspace) {
+	return createProject({
+		metadata: {
+			name,
+			description,
+		},
+		data: createProjectDataFromWorkspace(workspace),
+	});
+}
+
+/**
+ * updateProject
+ * -----------
+ * Updates a Project model from project-shaped data.
+ */
+export function updateProject(project, changes = {}) {
+	return {
+		...project,
+
+		metadata: {
+			...project.metadata,
+			...changes.metadata,
+			modified: new Date().toISOString(),
+		},
+
+		data: {
+			...project.data,
+			...changes.data,
+		},
+	};
+}
+
+/**
+ * updateProjectFromWorkspace
+ * -----------
+ * Updates a Project model from workspace state.
+ */
+export function updateProjectFromWorkspace(project, workspace) {
+	return updateProject(project, {
+		data: createProjectDataFromWorkspace(workspace),
+	});
 }

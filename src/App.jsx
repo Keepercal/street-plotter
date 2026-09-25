@@ -5,32 +5,56 @@
  * npm run deploy: Builds and deploys to GitHub Pages
  */
 
-import { useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import './App.css';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 
 /* High level components */
 import AppLayout from './layout/AppLayout.jsx';
+import ModalManager from './layout/Modal/ModalManager.jsx';
 
 /* Popups */
 import StatusPopup from '@/layout/Popups/StatusPopup/StatusPopup.jsx';
 
 /* Modals */
-import ModalManager from './layout/Modal/ModalManager.jsx';
-import MODALS from './config/modalTypes.js';
+import MODALS from '@/config/modalTypes.js';
 
 /* Hooks */
 import useBoundaryManager from './hooks/useBoundaryManager.js';
 import useLayerManager from './hooks/useLayerManager.js';
-import useFilteredLayers from './hooks/useFilteredLayers.js';
-import useStatusPopup from './hooks/useStatusPopup.js';
-import useSession from './hooks/useSession.js';
-import useProjectManager from './hooks/useProjectManager.js';
-import useUnsavedChanges from './hooks/useUnsavedChanges.js';
 import useWorkspaceActions from './hooks/useWorkspaceActions.js';
+import useProjectManager from './hooks/useProjectManager.js';
+
+import useLateBinding from './hooks/useLateBinding.js';
+import useFilteredLayers from './hooks/useFilteredLayers.js';
+import useSession from './hooks/useSession.js';
+import useUnsavedChanges from './hooks/useUnsavedChanges.js';
+
+import useStatusPopup from './hooks/useStatusPopup.js';
+
+/* Context */
+import {
+	BoundaryProvider,
+	useBoundaryContextValue,
+} from './contexts/BoundaryContext.jsx';
+import {
+	LayerProvider,
+	useLayerContextValue,
+} from './contexts/LayerContext.jsx';
+import {
+	WorkspaceProvider,
+	useWorkspaceContextValue,
+} from './contexts/WorkspaceContext.jsx';
+import { UIProvider, useUIContextValue } from './contexts/UIContext.jsx';
+import {
+	ProjectProvider,
+	useProjectContextValue,
+} from './contexts/ProjectContext.jsx';
 
 /* Session & Database */
 import { createSession } from './models/session.js';
-import { getProject, getAllProjects, deleteProject } from './db/projectDB.js';
+import { getAllProjects, deleteProject } from './db/projectDB.js';
+
+console.log('App Version:', __APP_VERSION__);
 
 export default function App() {
 	// ─────────────────────────────────────────
@@ -41,7 +65,6 @@ export default function App() {
 	const [isDirty, setIsDirty] = useState(false);
 	const [basemap, setBasemap] = useState('carto');
 	const [displayMode, setDisplayMode] = useState('default');
-	const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
 
 	// UI
 	const [activeDrawer, setActiveDrawer] = useState(null);
@@ -51,8 +74,11 @@ export default function App() {
 
 	// Session
 	const [sessionInfo, setSessionInfo] = useState(createSession());
+
+	// Pending states
 	const [pendingSession, setPendingSession] = useState(null);
 	const [pendingLayer, setPendingLayer] = useState(null);
+	const [pendingAction, setPendingAction] = useState(null);
 
 	// Project
 	const [projects, setProjects] = useState([]);
@@ -67,247 +93,169 @@ export default function App() {
 		setTakeScreenshot(() => fn);
 	}, []);
 
+	// Circular dependency breakers (see useWorkspaceActions/useProjectManager below)
+	const [stableSetProject, bindSetProject] = useLateBinding();
+	const [stableClearSavedSession, bindClearSavedSession] = useLateBinding();
+	const [stableResetProjectStatus, bindResetProjectStatus] = useLateBinding();
+
 	// ─────────────────────────────────────────
 	// Managers
 	// ─────────────────────────────────────────
 
 	/* Manages states for boundaries */
-	const {
-		// boundary data
-		boundaryData,
-		boundaryGeojson,
-		boundaryName = boundaryData?.elements?.[0]?.tags?.name ?? 'None', // human readable name
-
-		// boundary
-		boundaryResults,
-		loadBoundaryResults,
-		clearBoundaryResults,
-
-		// boundary handling
-		loadBoundary,
-		clearBoundary,
-		restoreBoundary,
-		//exportBoundary,
-
-		// status
-		status: boundaryStatus,
-		error: boundaryError,
-	} = useBoundaryManager({
+	const boundaryManager = useBoundaryManager({
 		onChange: () => setIsDirty(true),
+		setIsDirty,
 	});
+
+	const {
+		boundaries,
+		setPreviewBoundary,
+		clearBoundaryResults,
+		clearBoundaries,
+		restoreBoundaries,
+	} = boundaryManager;
 
 	/* Manages states for data displayed on map */
+	const layerManager = useLayerManager({
+		onChange: () => setIsDirty(true),
+		boundaries,
+		setPendingLayer,
+		setActiveModal,
+	});
+
 	const {
-		//state
 		featureLayers,
-
-		// data operations
-		loadLayer,
-		commitLayer,
 		clearLayers,
-		removeLayer,
-
-		// layer editing
-		toggleLayerVisibility,
-		updateLayer,
-		updateLayerFilters,
-
-		// persistence
+		clearCache,
 		exportLayers,
 		restoreLayers,
+	} = layerManager;
 
-		// cache
-		getCachedFeatures,
-		clearCache,
-
-		// status
-		failedFeatureKey,
-		clearStatus,
-		status: featureStatus,
-		error: featureError,
-	} = useLayerManager({
-		onChange: () => setIsDirty(true),
-	});
-
-	const { statusPopup /*dismissPopup*/ } = useStatusPopup({
-		boundaryStatus,
-		boundaryError,
-
-		featureStatus,
-		featureError,
-		failedFeatureKey,
-	});
-
-	/*
-	 * Memorises the current boundary
+	/**
+	 * Removes all boundaries from the workspace
 	 */
-	const boundaryState = useMemo(
-		() => ({
-			selectedBoundaryKey,
-			data: boundaryData,
-			geojson: boundaryGeojson,
-		}),
-		[selectedBoundaryKey, boundaryData, boundaryGeojson]
-	);
+	const handleClearBoundaries = () => {
+		clearBoundaries();
+		clearLayers();
+		setActiveDrawer(null);
+
+		setIsDirty(false);
+	};
 
 	// ─────────────────────────────────────────
 	// Workspace
 	// ─────────────────────────────────────────
 
-	/*
-	 * Restores a saved session, including the project, map settings, boundaries, and layers.
-	 */
-	async function restoreSession(session) {
-		if (!session) return;
+	const { restoreWorkspace, resetWorkspace } = useWorkspaceActions({
+		setSessionInfo,
+		setProject: stableSetProject,
+		setBasemap,
+		setDisplayMode,
+		setIsDirty,
 
-		console.log('[DEBUG] Restoring session:', session);
+		resetProjectStatus: stableResetProjectStatus,
 
-		console.log(
-			'[DEBUG] Session type:',
-			session.projectId
-				? `Project (${session.projectId})`
-				: 'Temporary session'
-		);
+		restoreBoundaries,
+		restoreLayers,
 
-		setSessionInfo(session);
+		clearSavedSession: stableClearSavedSession,
+		clearBoundaryResults,
+		clearBoundaries,
+		clearLayers,
+		clearCache,
 
-		// If the session matches the ID of a project
-		if (session.projectId) {
-			const project = await getProject(session.projectId);
-
-			if (project) {
-				setProject(project);
-			}
-		}
-
-		const sessionData = session.data ?? {};
-		setSessionInfo(session);
-
-		// restore workspace settings
-		setBasemap(sessionData.settings?.basemap ?? 'carto');
-		setDisplayMode(sessionData.settings?.displayMode ?? 'default');
-		setSelectedBoundaryKey(
-			sessionData.boundary?.selectedBoundaryKey ?? 'none'
-		);
-
-		restoreBoundary(sessionData.boundary);
-		restoreLayers(sessionData.layers ?? []);
-
-		setIsDirty(false);
-	}
-
-	/*
-	 * Creates a blank workspace
-	 */
-	const resetWorkspace = ({ preserveAutosave = false } = {}) => {
-		console.log('[DEBUG] Resetting workspace');
-
-		if (!preserveAutosave) {
-			clearSavedSession(); // If resetting the session should keep the autosave for any reason
-		}
-
-		// clear states
-		setProject(null);
-		setSessionInfo(createSession());
-
-		clearBoundaryResults();
-		clearBoundary();
-		clearLayers();
-		clearCache();
-
-		setSelectedBoundaryKey('none');
-
-		setBasemap('carto');
-		setDisplayMode('default');
-
-		setActiveModal(null);
-		setActiveDrawer(null);
-		setIsDirty(false);
-	};
+		setActiveModal,
+		setActiveDrawer,
+	});
 
 	const handleNewWorkspace = () => {
 		confirmUnsavedChanges(resetWorkspace);
 	};
 
-	// ─────────────────────────────────────────
+	// ─────────────────────────────────────────x
 	// Projects
 	// ─────────────────────────────────────────
 
 	const {
 		project,
 		setProject,
-
+		projectStatus,
+		projectError,
+		resetProjectStatus,
 		openProject,
 		saveCurrentProject,
 		saveProjectAs,
+		updateProjectMetadata,
 	} = useProjectManager({
 		workspace: {
 			basemap,
 			displayMode,
-
-			selectedBoundaryKey,
-			boundaryData,
-			boundaryGeojson,
-
-			exportLayers,
+			boundaries,
+			layers: exportLayers(featureLayers),
 		},
-
-		session: {
-			sessionInfo,
-			setSessionInfo,
-		},
-
-		restore: {
-			restoreSession,
-			restoreBoundary,
-			restoreLayers,
-		},
-
-		resetWorkspace: resetWorkspace,
-
+		session: { sessionInfo, setSessionInfo },
+		restore: { restoreWorkspace, restoreBoundaries, restoreLayers },
+		resetWorkspace,
 		onDirtyChange: setIsDirty,
 		onSaveAsRequested: () => setActiveModal(MODALS.SAVE_PROJECT),
 	});
 
-	/*
-	 * Confirm unsaved changes and open project
-	 */
-	const handleOpenProject = (projectId) => {
-		confirmUnsavedChanges(() => {
-			openProject(projectId, restoreSession);
-			setActiveModal(null);
-		});
-	};
-
-	/*
-	 * Reset workspace when active project deleted
-	 */
-	async function handleDeleteProject(id) {
-		await deleteProject(id);
-
-		await loadProjects();
-
-		if (project?.metadata.id !== id) return;
-
-		console.log('[DEBUG] Deleted active project');
-
-		resetWorkspace();
-	}
+	useEffect(() => {
+		bindSetProject(setProject);
+		bindResetProjectStatus(resetProjectStatus);
+	}, [
+		setProject,
+		bindSetProject,
+		resetProjectStatus,
+		bindResetProjectStatus,
+	]);
 
 	/*
 	 * Creates a list of projects
 	 */
-	async function loadProjects() {
-		const list = await getAllProjects(); // fetch projects from database
-
-		// sort projects by date last modified
-		const sorted = list.sort((a, b) => {
+	const loadProjects = useCallback(async () => {
+		const list = await getAllProjects();
+		const sorted = [...list].sort((a, b) => {
 			return (
 				new Date(b.metadata.modified) - new Date(a.metadata.modified)
 			);
 		});
 
 		setProjects(sorted);
+	}, []);
+
+	/*
+	 * Confirm unsaved changes and open project
+	 */
+	const handleOpenProject = (projectId) => {
+		confirmUnsavedChanges(async () => {
+			await openProject(projectId);
+			setActiveModal(null);
+			setPreviewBoundary(null);
+		});
+	};
+
+	/*
+	 * Reset workspace when active project deleted
+	 */
+	async function handleUpdateProject(id, changes) {
+		await updateProjectMetadata(id, changes);
+		await loadProjects();
+
+		if (project?.metadata.id !== id) return;
+	}
+
+	/*
+	 * Reset workspace when active project deleted
+	 */
+	async function handleDeleteProject(id) {
+		await deleteProject(id);
+		await loadProjects();
+
+		if (project?.metadata.id !== id) return;
+
+		resetWorkspace();
 	}
 
 	// ─────────────────────────────────────────
@@ -319,21 +267,22 @@ export default function App() {
 	 */
 	const sessionManager = useSession({
 		sessionInfo,
-
 		basemap,
 		displayMode,
-
-		boundary: boundaryState,
-
+		boundaries,
 		layers: exportLayers(),
-
 		onRestore: (session) => {
 			setPendingSession(session);
-			setActiveModal(MODALS.RESTORE_SESSION);
+			setActiveModal(MODALS.RESTORE_WORKSPACE);
 		},
 	});
 
 	const { restoreSavedSession, clearSavedSession } = sessionManager;
+
+	// Point the ref at the real clearSavedSession now that it exists
+	useEffect(() => {
+		bindClearSavedSession(clearSavedSession);
+	}, [clearSavedSession, bindClearSavedSession]);
 
 	/*
 	 * Restore session on refresh or open
@@ -350,12 +299,15 @@ export default function App() {
 	// Derived state
 	// ─────────────────────────────────────────
 
-	const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
 	const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
 	const hasSavedProjects = Object.keys(projects).length > 0;
 	const filteredLayers = useFilteredLayers(featureLayers);
+	const projectName = project?.metadata.name ?? 'None';
 
-	const projectName = project?.metadata.name;
+	const selectedBoundaryIds = useMemo(
+		() => new Set(Array.from(boundaries, (boundary) => boundary.osm_id)),
+		[boundaries]
+	);
 
 	// ─────────────────────────────────────────
 	// Managers
@@ -374,123 +326,116 @@ export default function App() {
 		setActiveModal,
 		modalKey: MODALS.UNSAVED_CHANGES,
 		saveCurrentProject,
+		pendingAction,
+		setPendingAction,
 	});
 
-	/*
-	 * Hook for managing actions within the workspace
-	 */
-	const {
-		handleSelectBoundary,
-		handleClearBoundary,
-		renameLayer,
-		handleAddLayer,
-	} = useWorkspaceActions({
-		selectedBoundaryKey,
-		setSelectedBoundaryKey,
+	const { statusPopup } = useStatusPopup({
+		boundaryStatus: boundaryManager.status,
+		boundaryError: boundaryManager.error,
+		featureStatus: layerManager.status,
+		featureError: layerManager.error,
+		failedFeatureKey: layerManager.failedFeatureKey,
 
-		loadBoundary,
-		clearBoundary,
+		projectStatus,
+		projectError,
+	});
 
-		clearLayers,
-		updateLayer,
-		loadLayer,
-		commitLayer,
+	/* Remove the preview boundary if the user closes the active drawer */
+	useEffect(() => {
+		setPreviewBoundary(null);
+	}, [setPreviewBoundary, activeDrawer]);
 
-		setPendingLayer,
-		setActiveModal,
+	// ─────────────────────────────────────────
+	// Context
+	// ─────────────────────────────────────────
+
+	const boundaryContextValue = useBoundaryContextValue(boundaryManager, {
+		handleClearBoundaries,
+		selectedBoundaryIds,
+	});
+
+	const layerContextValue = useLayerContextValue(layerManager, {
+		filteredLayers,
+		hasFeatures,
+	});
+
+	const workspaceContextValue = useWorkspaceContextValue({
+		basemap,
+		setBasemap,
+		displayMode,
+		setDisplayMode,
+		isDirty,
 		setIsDirty,
+
+		sessionInfo,
+		setSessionInfo,
+
+		handleNewWorkspace,
+		handleSaveAndContinue,
+		handleDiscardAndContinue,
+		handleCancel,
+		restoreWorkspace,
+		resetWorkspace,
+		clearSavedSession,
+		pendingAction,
+		setPendingAction,
+	});
+
+	const projectContextValue = useProjectContextValue({
+		project,
+		projects,
+		projectName,
+		loadProjects,
+		hasSavedProjects,
+		saveCurrentProject,
+		saveProjectAs,
+		handleOpenProject,
+		handleDeleteProject,
+		handleUpdateProject,
+	});
+
+	const uiContextValue = useUIContextValue({
+		activeDrawer,
+		setActiveDrawer,
+		activeLayer,
+		setActiveLayer,
+		activeModal,
+		setActiveModal,
+		focusTrigger,
+		setFocusTrigger,
+		takeScreenshot,
+		handleScreenshotReady,
+		pendingSession,
+		setPendingSession,
+		pendingLayer,
+		setPendingLayer,
 	});
 
 	return (
 		<div className="App">
-			{/* Popups */}
-			<StatusPopup
-				trigger={statusPopup.trigger}
-				type={statusPopup.type}
-				title={statusPopup.title}
-				message={statusPopup.message}
-				drawerOpen={activeDrawer !== null}
-			/>
+			<WorkspaceProvider value={workspaceContextValue}>
+				<BoundaryProvider value={boundaryContextValue}>
+					<LayerProvider value={layerContextValue}>
+						<ProjectProvider value={projectContextValue}>
+							<UIProvider value={uiContextValue}>
+								<StatusPopup
+									trigger={statusPopup.trigger}
+									type={statusPopup.type}
+									title={statusPopup.title}
+									message={statusPopup.message}
+									drawerOpen={activeDrawer !== null}
+								/>
 
-			<ModalManager
-				activeModal={activeModal}
-				setActiveModal={setActiveModal}
-				pendingSession={pendingSession}
-				setPendingSession={setPendingSession}
-				pendingLayer={pendingLayer}
-				setPendingLayer={setPendingLayer}
-				isDirty={isDirty}
-				setIsDirty={setIsDirty}
-				boundaryGeojson={boundaryGeojson}
-				filteredLayers={filteredLayers}
-				sessionManager={sessionManager}
-				restoreSession={restoreSession}
-				resetWorkspace={resetWorkspace}
+								<ModalManager />
 
-				handleSaveAndContinue={handleSaveAndContinue}
-				handleDiscardAndContinue={handleDiscardAndContinue}
-				handleCancel={handleCancel}
-				handleOpenProject={handleOpenProject}
-
-				projects={projects}
-				loadProjects={loadProjects}
-				handleDeleteProject={handleDeleteProject}
-				saveProjectAs={saveProjectAs}
-				hasSavedProjects={hasSavedProjects}
-
-				commitLayer={commitLayer}
-				clearStatus={clearStatus}
-			/>
-
-			{/* Main UI */}
-			<AppLayout
-				// toolbar
-				setActiveModal={setActiveModal}
-				handleNewWorkspace={handleNewWorkspace}
-				hasFeatures={hasFeatures}
-				hasBoundary={hasBoundary}
-				saveCurrentProject={saveCurrentProject}
-				setFocusTrigger={setFocusTrigger}
-				takeScreenshot={takeScreenshot}
-				isDirty={isDirty}
-				boundaryName={boundaryName}
-
-				projectName={projectName}
-
-				// sidebar
-				boundaryData={boundaryData}
-				featureLayers={featureLayers}
-				activeDrawer={activeDrawer}
-				setActiveDrawer={setActiveDrawer}
-
-				// drawer
-				activeLayer={activeLayer}
-				setActiveLayer={setActiveLayer}
-				handleAddLayer={handleAddLayer}
-				updateLayer={updateLayer}
-				toggleLayerVisibility={toggleLayerVisibility}
-				renameLayer={renameLayer}
-				updateLayerFilters={updateLayerFilters}
-				selectedBoundaryKey={selectedBoundaryKey}
-				loadBoundaryResults={loadBoundaryResults}
-				handleSelectBoundary={handleSelectBoundary}
-				boundaryResults={boundaryResults}
-				basemap={basemap}
-				setBasemap={setBasemap}
-				displayMode={displayMode}
-				setDisplayMode={setDisplayMode}
-				clearBoundaryResults={clearBoundaryResults}
-				handleClearBoundary={handleClearBoundary}
-				removeLayer={removeLayer}
-				clearLayers={clearLayers}
-				getCachedFeatures={getCachedFeatures}
-
-				// map
-				boundaryGeojson={boundaryGeojson}
-				filteredLayers={filteredLayers}
-				focusTrigger={focusTrigger}
-				handleScreenshotReady={handleScreenshotReady}
-			/>
+								{/* Main UI */}
+								<AppLayout hasFeatures={hasFeatures} />
+							</UIProvider>
+						</ProjectProvider>
+					</LayerProvider>
+				</BoundaryProvider>
+			</WorkspaceProvider>
 		</div>
 	);
 }

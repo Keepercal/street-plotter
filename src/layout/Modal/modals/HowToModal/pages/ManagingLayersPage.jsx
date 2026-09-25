@@ -122,7 +122,7 @@ export default function ManagingLayersPage() {
 			<p>
 				You can add multiple filters using a join operator. In this
 				example, I am showing all pubs where wheelchair equals yes and
-				an indoor_seating tag exists
+				an outdoor_seating tag exists
 			</p>
 
 			<img

@@ -5,10 +5,10 @@ export default function HeaderButton({
 	label,
 	title,
 	icon,
-	indicator = false,
-	isProject = false,
 	onClick,
 	disabled = false,
+	indicator = false,
+	isProject = false,
 }) {
 	return (
 		<button
@@ -17,8 +17,9 @@ export default function HeaderButton({
 			onClick={onClick}
 			title={title}
 		>
-			{label}
 			{icon}
+			{label}
+
 			{indicator && (
 				<div className="header-button-indicator">
 					<CircleAlert strokeWidth={3} color="red" />

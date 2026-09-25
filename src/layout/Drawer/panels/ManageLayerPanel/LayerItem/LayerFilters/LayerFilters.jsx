@@ -1,5 +1,5 @@
 import './LayerFilters.css';
-import useFilterData from '../useFilterData.js';
+import useFilterData from '../utils/useFilterData.js';
 import FilterRow from '../FilterRow/FilterRow.jsx';
 import FilterJoin from '../FilterJoin/FilterJoin.jsx';
 

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import evaluateFeature from '../utils/evaluateFeatures';
+import evaluateFeature from '@/utils/evaluateFeature';
 
 /**
  * useFilteredLayers

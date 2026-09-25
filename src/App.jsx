@@ -232,6 +232,7 @@ export default function App() {
 		confirmUnsavedChanges(async () => {
 			await openProject(projectId);
 			setActiveModal(null);
+			setPreviewBoundary(null);
 		});
 	};
 

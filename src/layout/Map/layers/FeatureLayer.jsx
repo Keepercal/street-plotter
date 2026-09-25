@@ -8,6 +8,7 @@ import bindFeaturePopup from '../utils/bindFeaturePopup.jsx';
 import { createFeatureMarker, stylePolygon } from '../utils/featureRendering';
 
 import createOverviewFeatures from '../utils/createOverviewFeatures.js';
+import evaluateFeature from '@/utils/evaluateFeature';
 
 // Fields not displayed in the popup
 const EXCLUDE_KEYS = new Set([
@@ -65,9 +66,7 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
 	return (
 		<>
 			{Object.entries(featureLayers)
-
 				.filter(([_, layer]) => layer.visible)
-
 				.map(([featureKey, layer]) => {
 					const features = layer.geojson;
 
@@ -75,43 +74,25 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
 						return null;
 					}
 
-					/*
-					 * Create a new GeoJSON reference.
-					 * This forces React Leaflet to notice filter changes.
-					 */
-					const filteredFeatures = {
-						...features,
+					// Evaluate every feature against the current filters
+					const matchingFeatures = features.features.filter(
+						(feature) =>
+							evaluateFeature(feature, layer.filters ?? [])
+					);
 
-						features: features.features.map((feature) => ({
-							...feature,
-							_matchesFilters: feature._matchesFilters,
-						})),
+					const filteredGeojson = {
+						...features,
+						features: matchingFeatures,
 					};
 
-					/*
-					 * Used to rebuild layers when filters change
-					 */
-					const filterKey = features.features
-						.map(
-							(feature) =>
-								`${feature.id}-${feature._matchesFilters}`
-						)
-						.join('|');
-
-					/*
-					 * Create overview dots only for
-					 * matching small polygons
-					 */
+					// Create overview dots from matching small polygon features
 					const overviewFeatures = createOverviewFeatures(
-						{
-							...filteredFeatures,
-
-							features: filteredFeatures.features.filter(
-								(feature) => feature._matchesFilters !== false
-							),
-						},
+						filteredGeojson,
 						zoom
 					);
+
+					// Used to rebuild layers when filters change
+					const filterKey = JSON.stringify(layer.filters ?? []);
 
 					const handleEachFeature = (feature, layer) => {
 						bindFeaturePopup(feature, layer, EXCLUDE_KEYS);
@@ -123,7 +104,7 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
 						>
 							{/* Main features */}
 							<StyledGeoJSON
-								data={filteredFeatures}
+								data={filteredGeojson}
 								key={`${featureKey}-${filterKey}-${displayMode}-${layer.colour}`}
 								styleFunction={(feature) =>
 									stylePolygon(

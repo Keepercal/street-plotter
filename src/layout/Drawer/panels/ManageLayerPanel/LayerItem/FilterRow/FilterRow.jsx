@@ -9,6 +9,13 @@ export default function FilterRow({
 }) {
 	const values = getValues(filter.key);
 
+	const numericOperators = [
+		'greater_than',
+		'greater_than_or_equal',
+		'less_than',
+		'less_than_or_equal',
+	];
+
 	return (
 		<div className="filter-row">
 			{/* Tag */}
@@ -39,9 +46,17 @@ export default function FilterRow({
 					})
 				}
 			>
-				<option value="equals">EQUALS</option>
+				<option value="equals">=</option>
 
-				<option value="not_equals">NOT EQUALS</option>
+				<option value="not_equals">!=</option>
+
+				<option value="greater_than">&gt;</option>
+
+				<option value="greater_than_or_equal">&gt;=</option>
+
+				<option value="less_than">&lt;</option>
+
+				<option value="less_than_or_equal">&lt;=</option>
 
 				<option value="exists">EXISTS</option>
 
@@ -49,26 +64,38 @@ export default function FilterRow({
 			</select>
 
 			{/* Value */}
-			<select
-				value={filter.value}
-				onChange={(event) =>
-					updateFilter(filter.id, {
-						value: event.target.value,
-					})
-				}
-				disabled={
-					filter.operator === 'exists' ||
-					filter.operator === 'missing'
-				}
-			>
-				<option value="">Select value</option>
+			{numericOperators.includes(filter.operator) ? (
+				<input
+					type="number"
+					value={filter.value}
+					onChange={(event) =>
+						updateFilter(filter.id, {
+							value: event.target.value,
+						})
+					}
+				/>
+			) : (
+				<select
+					value={filter.value}
+					onChange={(event) =>
+						updateFilter(filter.id, {
+							value: event.target.value,
+						})
+					}
+					disabled={
+						filter.operator === 'exists' ||
+						filter.operator === 'missing'
+					}
+				>
+					<option value="">Select value</option>
 
-				{values.map((value) => (
-					<option key={value} value={value}>
-						{value}
-					</option>
-				))}
-			</select>
+					{values.map((value) => (
+						<option key={value} value={value}>
+							{value}
+						</option>
+					))}
+				</select>
+			)}
 
 			{/* Remove */}
 			<button

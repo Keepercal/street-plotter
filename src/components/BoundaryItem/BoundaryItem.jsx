@@ -39,7 +39,7 @@ const BoundaryItem = ({
 			</div>
 			{addButton && (
 				<button
-					className="boundary-action-add"
+					className="boundary-action add"
 					onClick={(event) => {
 						event.stopPropagation();
 						onAdd?.(boundary);
@@ -51,7 +51,7 @@ const BoundaryItem = ({
 			)}
 			{deleteButton && (
 				<button
-					className="boundary-action-delete"
+					className="boundary-action delete"
 					onClick={(event) => {
 						event.stopPropagation();
 						onDelete?.(boundary);

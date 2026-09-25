@@ -46,8 +46,8 @@
 	border-color: rgba(226, 159, 0, 0.55);
 }/*
 
-/* Delete action */
-.boundary-action-delete {
+/* Action button */
+.boundary-action {
 	flex: 0 0 44px;
 
 	display: flex;
@@ -68,34 +68,21 @@
 		border-color 0.2s ease;
 }
 
-.boundary-action-delete:hover {
+.boundary-action.delete:hover {
 	color: #ff645e;
+	border-color: #dc2626;
 }
 
-/* Delete action */
-.boundary-action-add {
-	flex: 0 0 44px;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	border: 2px solid var(--border-colour);
-	border-radius: 10px;
-
-	background: var(--surface-colour);
-	color: var(--text-secondary);
-
-	cursor: pointer;
-
-	transition:
-		background 0.2s ease,
-		color 0.2s ease,
-		border-color 0.2s ease;
-}
-
-.boundary-action-add:hover {
+.boundary-action-add.hover {
 	color: #6fe912;
+}
+
+/*
+ * Delete hover state
+ */
+.boundary-item:has(.boundary-action.delete:hover) .boundary-card {
+	border-color: #dc2626;
+	background: #dc262650;
 }
 
 /* =========================

@@ -8,15 +8,15 @@ export default function OverviewPage() {
 			<p>
 				{__APP_NAME__} is designed for transport planners, engineers,
 				GIS analysts, mapping enthusiasts, and anyone interested in
-				exploring and working with OpenStreetMap data.
+				exploring and working with OpenStreetMap (OSM) data.
 			</p>
 			<p>
-				Users can search, filter, inspect, and export OpenStreetMap
-				features through an intuitive interface. Explore map data by
-				location, tags, and feature types without needing to write
-				complex queries. Display data by when it was last edited on
-				OpenStreetMap, or view the density of features and discover gaps
-				in provision with a heatmap overlay.
+				Display specific OpenStreetMap features in 3 mouse clicks, then
+				filter, inspect, and export the data within your workspace.
+				Explore map data by location, tags, and feature types without
+				typing complex queries. Display data by when it was last edited
+				on OpenStreetMap, or view the density of features and discover
+				gaps in provision with a heatmap overlay.
 			</p>
 			<p>
 				The application makes OpenStreetMap data more accessible for
@@ -28,9 +28,9 @@ export default function OverviewPage() {
 			<p>
 				All data used by this application is sourced from OpenStreetMap,
 				an open map of the world powered by a global community of
-				contributors. Data is extracted using the Overpass API.{' '}
-				{__APP_NAME__} provides access to OpenStreetMap data and does
-				not modify the underlying OSM database.
+				contributors. Data is fetched using the Overpass API and
+				displayed on a Leaflet map. {__APP_NAME__}
+				&nbsp;does not modify the underlying OpenStreetMap database.
 			</p>
 			<p>
 				This application is inspired by

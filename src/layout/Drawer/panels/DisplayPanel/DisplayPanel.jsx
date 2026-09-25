@@ -1,6 +1,5 @@
 import './DisplayPanel.css';
 import RadioItem from '../../../../components/RadioItem/RadioItem.jsx';
-import BasemapSwitcher from './BasemapSwitcher/BasemapSwitcher.jsx';
 
 /* Context */
 import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
@@ -20,17 +19,10 @@ const displayModeLabels = {
  * - Days since last edit
  */
 const DisplayPanel = () => {
-	const { basemap, setBasemap, displayMode, setDisplayMode } =
-		useWorkspaceContext();
+	const { displayMode, setDisplayMode } = useWorkspaceContext();
 
 	return (
 		<div className="panel-body">
-			<section className="display-section">
-				<h3>Basemap</h3>
-
-				<BasemapSwitcher basemap={basemap} setBasemap={setBasemap} />
-			</section>
-
 			<section className="display-section">
 				<h3>Style map content</h3>
 

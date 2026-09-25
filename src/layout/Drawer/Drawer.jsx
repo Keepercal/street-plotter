@@ -5,6 +5,7 @@ import ManageBoundaryPanel from './panels/ManageBoundaryPanel/ManageBoundaryPane
 import AddLayerPanel from './panels/AddLayerPanel/AddLayerPanel';
 import ManageLayerPanel from './panels/ManageLayerPanel/ManageLayerPanel';
 import DisplayPanel from './panels/DisplayPanel/DisplayPanel';
+import BasemapPanel from './panels/BasemapPanel/BasemapPanel';
 
 /* Context */
 import { useUIContext } from '@/contexts/UIContext.jsx';
@@ -31,9 +32,10 @@ function Drawer() {
 	const DRAWER_TITLES = {
 		addBoundary: 'Search for Boundary',
 		manageBoundary: 'Manage Active Boundaries',
-		addLayers: 'Add Layers',
+		addLayers: 'Add Layer',
 		manageLayers: 'Manage Layers',
 		display: 'Display',
+		basemapSwitcher: 'Switch Basemap',
 	};
 
 	return (
@@ -83,6 +85,11 @@ function Drawer() {
 				{activeDrawer === 'display' && (
 					/*context driven */
 					<DisplayPanel />
+				)}
+
+				{activeDrawer === 'basemapSwitcher' && (
+					/*context driven */
+					<BasemapPanel />
 				)}
 			</div>
 		</div>

@@ -26,7 +26,7 @@
 
 	color: white;
 
-	font-size: 14px;
+	font-size: 0.875rem;
 
 	outline: none;
 
@@ -64,7 +64,7 @@
 
 	cursor: pointer;
 
-	font-size: 14px;
+	font-size: 0.875rem;
 	font-family: var(--default-font);
 
 	transition:

@@ -54,7 +54,7 @@
 	justify-content: space-between;
 	align-items: center;
 
-	padding: 8px 14px;
+	padding: 1rem 0.875rem;
 
 	border-bottom: 1px solid #ddd;
 
@@ -83,7 +83,7 @@
 }
 
 .popup-content p {
-	font-size: 14px;
+	font-size: 0.875rem;
 }
 
 /* =========================

@@ -51,7 +51,7 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 
-	font-size: 12px;
+	font-size: 0.75rem;
 	font-weight: 500;
 
 	color: #333;
@@ -153,7 +153,7 @@
 
 	border-top: 1px solid #eeeeee;
 
-	font-size: 12px;
+	font-size: 0.75rem;
 	color: #555;
 
 	cursor: pointer;

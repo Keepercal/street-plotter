@@ -7,13 +7,13 @@
 	--default-font: font-family: 'Google Sans Flex', sans-serif;
 
 	/* Header */
-	--header-height: 60px;
+	--header-height: 3.75rem;
 	--colour-header-bg: #1f2d3d;
 
 	/* Sidebar */
-	--sidebar-width: 160px;
-	--sidebar-collapsed-width: 60px;
-	/* --sidebar-width: 140px; */
+	--sidebar-width: 10rem;
+	--sidebar-collapsed-width: 3.75rem;
+	/* --sidebar-width: 8.75rem; */
 	--colour-sidebar-bg: #223d57;
 
 	/* Drawer */

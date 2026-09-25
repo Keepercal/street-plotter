@@ -1,7 +1,7 @@
 .header-button {
-	height: 36px;
+	height: 2.25rem;
 
-	padding: 0 8px;
+	padding: 0 0.5rem;
 
 	position: relative;
 	display: flex;
@@ -19,7 +19,7 @@
 
 	font-family: var(--default-font);
 
-	font-size: 14px;
+	font-size: 0.85rem;
 	font-weight: 500;
 
 	cursor: pointer;

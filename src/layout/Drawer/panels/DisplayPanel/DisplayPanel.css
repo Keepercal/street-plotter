@@ -10,7 +10,7 @@
 
 	border-radius: 4px;
 
-	font-size: 14px;
+	font-size: 0.875rem;
 	color: #d7e2ea;
 }
 
@@ -26,7 +26,7 @@
 .display-section h3 {
 	margin: 0 0 10px 0;
 
-	font-size: 15px;
+	font-size: 1rem;
 	font-weight: 600;
 
 	color: white;

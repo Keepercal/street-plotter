@@ -40,21 +40,31 @@ const AddLayerPanel = ({ handleAddLayer, cachedFeatures }) => {
 					{/* LEVEL 3 CONTENT */}
 					<div
 						className={`accordion-content ${openCategories[category] ? 'open' : ''}`}
+						style={{
+							gridTemplateRows: `repeat(${Math.ceil(features.length / 2)}, auto)`,
+						}}
 					>
-						{features?.map(({ key, osmKey, osmValue, label }) => {
-							const isCached = cachedFeatures?.includes(osmKey);
+						{[...features]
+							.sort((a, b) => a.label.localeCompare(b.label))
+							.map(({ key, osmKey, osmValue, label }) => {
+								const isCached =
+									cachedFeatures?.includes(osmKey);
 
-							return (
-								<FeatureItem
-									key={key}
-									label={label}
-									onClick={() =>
-										handleAddLayer(osmKey, osmValue, label)
-									}
-									isCached={isCached}
-								/>
-							);
-						})}
+								return (
+									<FeatureItem
+										key={key}
+										label={label}
+										onClick={() =>
+											handleAddLayer(
+												osmKey,
+												osmValue,
+												label
+											)
+										}
+										isCached={isCached}
+									/>
+								);
+							})}
 					</div>
 				</div>
 			))}

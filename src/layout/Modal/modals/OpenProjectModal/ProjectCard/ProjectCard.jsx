@@ -118,6 +118,7 @@ export default function ProjectCard({
 
 					<div className="project-card-meta">
 						<span className="project-boundaries">
+							<strong>Boundaries: </strong>
 							{boundaries[0]?.name}
 							{boundaries[1] && `, ${boundaries[1].name}`}
 							{boundaries[2] && `, ${boundaries[2].name}`}

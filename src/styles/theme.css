@@ -48,9 +48,15 @@
 	/* Inline Text */
 	--colour-text-strong: rgb(161, 84, 84);
 
-	--colour-success: rgb(14, 203, 14);
+	--colour-success: rgba(111, 233, 18);
+	--colour-success-dim: rgba(111, 233, 18, 0.2);
+
 	--colour-alert: rgba(245, 158, 11, 1);
+	--colour-alert-dim: rgba(245, 159, 11, 0.257);
+
 	--colour-danger: #d93025;
+	--colour-danger-light: #fef2f2;
+	--colour-danger-dim: #dc262650;
 
 	/* =========================
         Buttons

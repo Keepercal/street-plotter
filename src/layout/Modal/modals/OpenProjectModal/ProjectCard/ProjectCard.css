@@ -9,20 +9,20 @@
  * Delete hover state
  */
 .project-item:has(.project-card-action.delete:hover) .project-card {
-	background: #fef2f2;
-	border-color: #dc2626;
+	background: var(--colour-danger-light);
+	border-left-color: var(--colour-danger);
 }
 
 .project-item:has(.project-card-action.delete:hover) .project-card h3 {
-	color: #dc2626;
+	color: var(--colour-danger);
 }
 
 .project-item:has(.project-card-action.delete:hover) .project-card p {
-	color: #dc2626;
+	color: var(--colour-danger);
 }
 
 .project-item:has(.project-card-action.delete:hover) .project-card span {
-	color: #dc2626;
+	color: var(--colour-danger);
 }
 
 /*
@@ -55,7 +55,7 @@
 }
 
 .project-card:hover {
-	background: #ebedee;
+	background: var(--colour-button-secondary-hover);
 	border-left-color: var(--colour-button-primary-bg);
 
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -138,12 +138,12 @@
 	gap: 0.2rem;
 
 	width: 100%;
-	margin-top: 0.6rem;
+	margin-top: 0.4rem;
 	padding-top: 0.5rem;
 
 	border-top: 1px solid var(--border-colour);
 
-	font-size: 0.8rem;
+	font-size: 0.75rem;
 	color: var(--text-secondary);
 }
 
@@ -229,9 +229,8 @@
  * Delete button
  */
 .project-card-action.delete:hover {
-	background: #fee2e2;
-	color: #dc2626;
-	border-color: #fca5a5;
+	background-color: var(--colour-danger-light);
+	color: var(--colour-danger);
 }
 
 /*
@@ -261,7 +260,8 @@
 
 .project-description-input {
 	width: 100%;
-	min-height: 1rem;
+	height: 2rem;
+	min-height: 2rem;
 	box-sizing: border-box;
 
 	padding: 0.35rem 0.4rem;

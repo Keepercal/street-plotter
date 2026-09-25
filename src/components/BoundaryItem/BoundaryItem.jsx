@@ -1,21 +1,16 @@
 import './BoundaryItem.css';
 
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Check } from 'lucide-react';
 
 const BoundaryItem = ({
 	boundary,
 	addButton = false,
 	deleteButton = false,
+	selected = false,
 	onPreview,
 	onAdd,
 	onDelete,
 }) => {
-	/*const confirmDelete = (project) => {
-		if (window.confirm(`Delete project "${project.metadata.name}"?`)) {
-			handleDeleteProject(project.metadata.id);
-		}
-	};*/
-
 	const parts = boundary.display_name.split(', ');
 
 	const name = parts[0];
@@ -25,7 +20,7 @@ const BoundaryItem = ({
 		<div className="boundary-item">
 			<div
 				key={boundary.osm_id}
-				className={`boundary-card ${boundary.osm_id ? 'selected' : ''}`}
+				className={`boundary-card ${selected ? 'selected' : ''}`}
 				onClick={(event) => {
 					event.stopPropagation();
 					onPreview?.(boundary);
@@ -39,14 +34,15 @@ const BoundaryItem = ({
 			</div>
 			{addButton && (
 				<button
-					className="boundary-action add"
+					className={`boundary-action add ${selected ? 'selected' : ''}`}
+					disabled={selected}
 					onClick={(event) => {
 						event.stopPropagation();
 						onAdd?.(boundary);
 					}}
 					aria-label={`Delete boundary${boundary.name}?`}
 				>
-					<Plus size={22} />
+					{selected ? <Check size={22} /> : <Plus size={22} />}
 				</button>
 			)}
 			{deleteButton && (

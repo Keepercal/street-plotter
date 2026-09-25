@@ -116,17 +116,18 @@ export default function Header() {
 
 			<div className="header-actions-right">
 				<HeaderButton
-					title="Take screenshot of viewport"
-					icon={<Camera size={18} />}
-					disabled={!takeScreenshot}
-					onClick={() => takeScreenshot?.()}
-				/>
-				<HeaderButton
 					label="Refocus"
 					title="Refocus viewport on boundaries within the workspace"
 					icon={<Focus size={18} />}
 					disabled={!hasBoundary}
 					onClick={() => setFocusTrigger((t) => t + 1)}
+				/>
+				<HeaderButton
+					label="Screenshot"
+					title="Take screenshot of viewport"
+					icon={<Camera size={18} />}
+					disabled={!takeScreenshot}
+					onClick={() => takeScreenshot?.()}
 				/>
 				{/*<a
 					href="https://github.com/Keepercal/street-plotter"

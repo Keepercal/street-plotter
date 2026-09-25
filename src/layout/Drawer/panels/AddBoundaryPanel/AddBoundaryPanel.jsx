@@ -15,6 +15,7 @@ const AddBoundaryPanel = ({
 	boundaryResults,
 	handleSelectBoundary,
 	handlePreviewBoundary,
+	selectedBoundaryIds,
 }) => {
 	const [hasSearched, setHasSearched] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +72,9 @@ const AddBoundaryPanel = ({
 									key={boundary.osm_id}
 									boundary={boundary}
 									addButton={true}
+									selected={selectedBoundaryIds.has(
+										boundary.osm_id
+									)}
 									onPreview={() =>
 										handlePreviewBoundary(boundary)
 									}

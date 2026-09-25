@@ -37,14 +37,12 @@
 .boundary-card:hover {
 	background: rgba(226, 159, 0, 0.12);
 
-	border-color: rgba(226, 159, 0, 0.35);
+	border-color: rgba(226, 159, 0, 0.45);
 }
 
-/*.boundary-card.selected {
+.boundary-card.selected {
 	background: rgba(226, 159, 0, 0.18);
-
-	border-color: rgba(226, 159, 0, 0.55);
-}/*
+}
 
 /* Action button */
 .boundary-action {
@@ -68,21 +66,38 @@
 		border-color 0.2s ease;
 }
 
+/*
+ * Delete hover card state
+ */
 .boundary-action.delete:hover {
-	color: #ff645e;
-	border-color: #dc2626;
+	background-color: var(--colour-danger-dim);
 }
 
-.boundary-action-add.hover {
-	color: #6fe912;
+.boundary-item:has(.boundary-action.delete:hover) .boundary-card {
+	background: var(--colour-danger-dim);
 }
 
 /*
- * Delete hover state
+ * Add boundary hover card state
  */
-.boundary-item:has(.boundary-action.delete:hover) .boundary-card {
-	border-color: #dc2626;
-	background: #dc262650;
+.boundary-action.add.selected {
+	color: white;
+	border: none;
+	background: none;
+	cursor: default;
+	opacity: 1;
+}
+
+.boundary-action.add:disabled {
+	cursor: default;
+}
+
+.boundary-action.add:not(:disabled):hover {
+	background-color: var(--colour-success-dim);
+}
+
+.boundary-item:has(.boundary-action.add:not(:disabled):hover) .boundary-card {
+	background: var(--colour-success-dim);
 }
 
 /* =========================

@@ -62,6 +62,7 @@ function Drawer() {
 						boundaryResults={boundaryResults}
 						handlePreviewBoundary={handlePreviewBoundary}
 						handleSelectBoundary={handleSelectBoundary}
+						selectedBoundaryIds={selectedBoundaryIds}
 					/>
 				)}
 

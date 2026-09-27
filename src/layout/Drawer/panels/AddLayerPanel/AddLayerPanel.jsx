@@ -1,4 +1,5 @@
 import './AddLayerPanel.css';
+import { useState } from 'react';
 import FeatureItem from './components/FeatureItem/FeatureItem.jsx';
 
 /* HOOKS */
@@ -19,6 +20,18 @@ import { FEATURE_OPTIONS } from '@/config/featureOptions.js';
 const AddLayerPanel = ({ handleAddLayer, cachedFeatures }) => {
 	const { categorisedFeatures, openCategories, toggleCategory } =
 		useFeatureCategories(FEATURE_OPTIONS);
+
+	const [loading, setLoading] = useState(false);
+
+	async function onLayerClick(osmKey, osmValue, label) {
+		setLoading(true);
+
+		try {
+			await handleAddLayer(osmKey, osmValue, label);
+		} finally {
+			setLoading(false);
+		}
+	}
 
 	return (
 		<>
@@ -55,13 +68,14 @@ const AddLayerPanel = ({ handleAddLayer, cachedFeatures }) => {
 										key={key}
 										label={label}
 										onClick={() =>
-											handleAddLayer(
+											onLayerClick(
 												osmKey,
 												osmValue,
 												label
 											)
 										}
 										isCached={isCached}
+										disabled={loading}
 									/>
 								);
 							})}

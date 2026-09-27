@@ -130,3 +130,19 @@
 .cached-wrapper:hover .tooltip {
 	opacity: 1;
 }
+
+.add-layer-btn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.add-layer-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	background-color: #e5e5e5;
+	color: #888;
+	transform: none;
+	border: none;
+}

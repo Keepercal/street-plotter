@@ -13,15 +13,7 @@
 	border-left-color: var(--colour-danger);
 }
 
-.project-item:has(.project-card-action.delete:hover) .project-card h3 {
-	color: var(--colour-danger);
-}
-
-.project-item:has(.project-card-action.delete:hover) .project-card p {
-	color: var(--colour-danger);
-}
-
-.project-item:has(.project-card-action.delete:hover) .project-card span {
+.project-item:has(.project-card-action.delete:hover) .project-card h3 p span {
 	color: var(--colour-danger);
 }
 

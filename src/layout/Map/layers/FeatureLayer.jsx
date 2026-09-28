@@ -1,7 +1,7 @@
 // Creates a new feature point to be placed on the map
 // Feature position is derived from Overpass feature's metadata
 
-import { GeoJSON } from 'react-leaflet';
+import { GeoJSON, useMap } from 'react-leaflet';
 import React from 'react';
 
 import bindFeaturePopup from '../utils/bindFeaturePopup.jsx';
@@ -20,6 +20,8 @@ const EXCLUDE_KEYS = new Set([
 	'user',
 	'uid',
 ]);
+
+const BASE_Z_INDEX = 400;
 
 /**
  * Forces Leaflet to refresh polygon styles
@@ -48,6 +50,19 @@ function StyledGeoJSON({ data, styleFunction, ...props }) {
 }
 
 /**
+ * Ensures a named pane exists and keeps its z-index in sync.
+ * Children render inside it via the `pane` prop.
+ */
+function LayerPane({ name, zIndex, children }) {
+	const map = useMap();
+
+	const pane = map.getPane(name) ?? map.createPane(name);
+	pane.style.zIndex = zIndex;
+
+	return children;
+}
+
+/**
  * FeatureLayer
  * ------------
  * Renders OSM geojson features on the map, as polygons or points.
@@ -64,13 +79,12 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
 	return (
 		<>
 			{Object.entries(featureLayers)
-				.filter(([_, layer]) => layer.visible)
-				.map(([featureKey, layer]) => {
+				.map(([featureKey, layer], index) => [featureKey, layer, index])
+				.filter(([, layer]) => layer.visible)
+				.map(([featureKey, layer, index]) => {
 					const features = layer.geojson;
 
-					if (!features?.features) {
-						return null;
-					}
+					if (!features?.features) return null;
 
 					// Evaluate every feature against the current filters
 					const matchingFeatures = features.features.filter(
@@ -96,50 +110,61 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
 						bindFeaturePopup(feature, layer, EXCLUDE_KEYS);
 					};
 
-					return (
-						<React.Fragment
-							key={`${featureKey}-${filterKey}-${zoom < 15}`}
-						>
-							{/* Main features */}
-							<StyledGeoJSON
-								data={filteredGeojson}
-								key={`${featureKey}-${filterKey}-${displayMode}-${layer.colour}`}
-								styleFunction={(feature) =>
-									stylePolygon(
-										feature,
-										displayMode,
-										layer.colour
-									)
-								}
-								pointToLayer={(feature, latlng) =>
-									createFeatureMarker(
-										feature,
-										latlng,
-										displayMode,
-										layer.colour
-									)
-								}
-								onEachFeature={handleEachFeature}
-							/>
+					const paneName = `layer-${featureKey}`;
 
-							{/* Overview dots */}
-							{zoom < 15 && (
-								<GeoJSON
-									data={overviewFeatures}
-									key={`${featureKey}-overview-${filterKey}-${displayMode}-${layer.colour}`}
+					return (
+						<LayerPane
+							key={`${featureKey}-${filterKey}-${zoom < 15}`}
+							name={paneName}
+							zIndex={BASE_Z_INDEX + index}
+						>
+							<React.Fragment
+								key={`${featureKey}-${filterKey}-${zoom < 15}`}
+							>
+								{/* Main features */}
+								<StyledGeoJSON
+									data={filteredGeojson}
+									key={`${featureKey}-${filterKey}-${displayMode}-${layer.colour}`}
+									styleFunction={(feature) =>
+										stylePolygon(
+											feature,
+											displayMode,
+											layer.colour
+										)
+									}
 									pointToLayer={(feature, latlng) =>
 										createFeatureMarker(
 											feature,
 											latlng,
 											displayMode,
 											layer.colour,
-											true
+											false,
+											paneName
 										)
 									}
 									onEachFeature={handleEachFeature}
 								/>
-							)}
-						</React.Fragment>
+
+								{/* Overview dots */}
+								{zoom < 15 && (
+									<GeoJSON
+										data={overviewFeatures}
+										key={`${featureKey}-overview-${filterKey}-${displayMode}-${layer.colour}`}
+										pointToLayer={(feature, latlng) =>
+											createFeatureMarker(
+												feature,
+												latlng,
+												displayMode,
+												layer.colour,
+												true,
+												paneName
+											)
+										}
+										onEachFeature={handleEachFeature}
+									/>
+								)}
+							</React.Fragment>
+						</LayerPane>
 					);
 				})}
 		</>

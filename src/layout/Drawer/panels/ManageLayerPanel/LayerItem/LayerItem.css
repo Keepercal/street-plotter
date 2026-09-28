@@ -1,5 +1,5 @@
 /* =========================
-    LayerItem.css
+    Parent
 ========================= */
 
 .layer-item {
@@ -33,13 +33,17 @@
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
+/* =========================
+    Content
+========================= */
+
 .layer-header {
 	width: 100%;
 
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 12px;
+	gap: 8px;
 }
 
 .layer-name {
@@ -163,4 +167,44 @@
 
 .layer-filter-toggle:hover {
 	background: #f3f3f3;
+}
+
+/* Move buttons */
+.layer-move-buttons {
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+}
+
+.layer-move-btn {
+	width: 1.5rem;
+	height: 1.125rem;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 0;
+
+	border: none;
+	border-radius: 0.25rem;
+
+	background: transparent;
+	color: #888;
+
+	cursor: pointer;
+
+	transition:
+		background 0.15 ease,
+		color 0.15s ease;
+}
+
+.layer-move-btn:hover:not(:disabled) {
+	background: #e9ecef;
+	color: #222;
+}
+
+.layer-move-btn:disabled {
+	opacity: 0.15;
+	cursor: default;
 }

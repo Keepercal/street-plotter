@@ -308,6 +308,34 @@ export default function useLayerManager({
 		markDirty();
 	}
 
+	/* Move a layer up or down in the layer stack */
+	const moveLayer = (layerId, direction) => {
+		setFeatureLayers((prev) => {
+			const entries = Object.entries(prev);
+
+			const index = entries.findIndex(([id]) => id === layerId);
+
+			if (index === -1) return prev;
+
+			const newIndex = index + direction;
+
+			// Already at the top/bottom
+			if (newIndex < 0 || newIndex >= entries.length) {
+				return prev;
+			}
+
+			// Swap the two layers
+			[entries[index], entries[newIndex]] = [
+				entries[newIndex],
+				entries[index],
+			];
+
+			return Object.fromEntries(entries);
+		});
+
+		markDirty();
+	};
+
 	/* Remove a single layer */
 	const removeLayer = (layerId) => {
 		setFeatureLayers((prev) => {
@@ -392,6 +420,7 @@ export default function useLayerManager({
 
 		// data operations
 		updateLayer,
+		moveLayer,
 		removeLayer,
 		clearLayers,
 		updateLayerFilters,

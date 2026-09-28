@@ -15,10 +15,14 @@ export default function ManageLayerPanel() {
 		updateLayerFilters,
 		removeLayer,
 		renameLayer,
+		moveLayer,
 		clearLayers,
 	} = useLayerContext();
 
-	const hasLayers = Object.keys(featureLayers).length > 0;
+	const entries = Object.entries(featureLayers);
+	const renderedEntries = [...entries].reverse();
+
+	const hasLayers = entries.length > 0;
 
 	return (
 		<>
@@ -31,22 +35,29 @@ export default function ManageLayerPanel() {
 			{!hasLayers ? (
 				<div className="empty-state">
 					<Ghost size={180} />
-					<p>No feature layers in workspace</p>
+					<p>
+						No feature layers
+						<br /> in workspace
+					</p>
 				</div>
 			) : (
 				<div className="panel-body">
-					{Object.entries(featureLayers).map(([layerId, layer]) => (
+					{renderedEntries.map(([layerId, layer], index) => (
 						<LayerItem
 							key={layerId}
 							layerId={layerId}
 							layer={layer}
+
 							toggleLayerVisibility={toggleLayerVisibility}
 							updateLayer={updateLayer}
-
 							updateLayerFilters={updateLayerFilters}
 
 							removeLayer={removeLayer}
 							renameLayer={renameLayer}
+
+							moveLayer={moveLayer}
+							isFirst={index === 0}
+							isLast={index === entries.length - 1}
 						/>
 					))}
 				</div>

@@ -1,19 +1,33 @@
 import './LayerItem.css';
-import { Eye, EyeOff, Trash2, Palette, Check, Pencil } from 'lucide-react';
-import debounce from 'lodash.debounce';
 import { useState, useMemo } from 'react';
+import debounce from 'lodash.debounce';
+
 import LayerFilters from './LayerFilters/LayerFilters';
+
+import {
+	Eye,
+	EyeOff,
+	Trash2,
+	Check,
+	Pencil,
+	ChevronUp,
+	ChevronDown,
+} from 'lucide-react';
 
 export default function LayerItem({
 	layerId,
 	layer,
-	toggleLayerVisibility,
-	updateLayer,
 
+	updateLayer,
 	updateLayerFilters,
+	toggleLayerVisibility,
 
 	removeLayer,
 	renameLayer,
+
+	moveLayer,
+	isFirst,
+	isLast,
 }) {
 	const [editing, setEditing] = useState(false);
 	const [name, setName] = useState('');
@@ -61,33 +75,48 @@ export default function LayerItem({
 		<>
 			<div className="layer-item">
 				<div className="layer-header">
-					<div className="layer-name">
-						{editing ? (
-							<input
-								className="layer-name-input"
-								value={name}
-								autoFocus
-								onChange={(event) =>
-									setName(event.target.value)
-								}
-								onKeyDown={(event) => {
-									if (event.key === 'Enter') {
-										saveRename(layerId);
-									}
-									if (event.key === 'Escape') {
-										setEditing(null);
-									}
-								}}
-							/>
-						) : (
-							<span className="layer-name">
-								{console.log(layer)}
-								{layer.displayName ??
-									layer.label ??
-									layer.osmTagValue}
-							</span>
-						)}
+					<div className="layer-move-buttons">
+						<button
+							className="layer-move-btn"
+							onClick={() => moveLayer(layerId, 1)}
+							disabled={isFirst}
+							title={'Move layer up'}
+							alt={'Move layer up'}
+						>
+							<ChevronUp size={18} />
+						</button>
+						<button
+							className="layer-move-btn"
+							onClick={() => moveLayer(layerId, -1)}
+							disabled={isLast}
+							title={'Move layer down'}
+							alt={'Move layer down'}
+						>
+							<ChevronDown size={18} />
+						</button>
 					</div>
+					{editing ? (
+						<input
+							className="layer-name-input"
+							value={name}
+							autoFocus
+							onChange={(event) => setName(event.target.value)}
+							onKeyDown={(event) => {
+								if (event.key === 'Enter') {
+									saveRename(layerId);
+								}
+								if (event.key === 'Escape') {
+									setEditing(null);
+								}
+							}}
+						/>
+					) : (
+						<span className="layer-name">
+							{layer.displayName ??
+								layer.label ??
+								layer.osmTagValue}
+						</span>
+					)}
 
 					<div className="layer-actions">
 						{/* Rename */}

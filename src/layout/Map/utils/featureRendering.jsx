@@ -28,7 +28,7 @@ function getColourByAge(days) {
 }
 
 /* Create point marker */
-function createDotMarker(latlng, colour) {
+function createDotMarker(latlng, colour, pane) {
 	return L.circleMarker(latlng, {
 		radius: 5,
 
@@ -39,6 +39,8 @@ function createDotMarker(latlng, colour) {
 		fillOpacity: 0.9,
 
 		opacity: 1,
+
+		pane: typeof pane === 'string' ? pane : undefined,
 	});
 }
 
@@ -47,8 +49,9 @@ export function createFeatureMarker(
 	feature,
 	latlng,
 	displayMode,
-	colour
-	//overview = false
+	colour,
+	overview = false,
+	pane
 ) {
 	const match = feature._matchesFilters !== false;
 
@@ -66,7 +69,7 @@ export function createFeatureMarker(
 		markerColour = getColourByAge(daysSinceEdit);
 	}
 
-	return createDotMarker(latlng, markerColour);
+	return createDotMarker(latlng, markerColour, pane);
 }
 
 /* Polygon styling based on age + filter state */

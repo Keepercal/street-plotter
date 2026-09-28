@@ -5,6 +5,11 @@ import 'leaflet.heat';
 
 import getFeatureCords from '../utils/getFeatureCoords.js';
 
+/**
+ * HeatmapLayer
+ * ------------
+ * Renders OSM geojson features as a heatmap.
+ */
 export default function HeatmapLayer({ featureLayers }) {
 	const map = useMap();
 

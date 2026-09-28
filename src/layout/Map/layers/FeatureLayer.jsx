@@ -50,12 +50,10 @@ function StyledGeoJSON({ data, styleFunction, ...props }) {
 /**
  * FeatureLayer
  * ------------
- * Renders Overpass features on the map.
+ * Renders OSM geojson features on the map, as polygons or points.
  *
- * Features:
- * - Displays polygons and points
- * - Converts small polygons to overview dots
- * - Updates styling when filters change
+ * - Converts small polygons to points when zoomed out
+ * - Rerenders and unrenders when filters change, or layer is hidden
  * - Binds popup content
  */
 export default function FeatureLayer({ featureLayers, zoom, displayMode }) {

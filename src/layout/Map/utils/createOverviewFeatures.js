@@ -1,8 +1,16 @@
 import L from 'leaflet';
 import area from '@turf/area';
 
+/**
+ * createOverviewFeatures
+ * ------------
+ * Creates a simplified GeoJSON collection for map overviews.
+ *
+ * Small polygon features are represented as points at the centre
+ * of their bounding box. The area threshold changes with zoom,
+ * allowing more polygon detail as the user zooms in.
+ */
 export default function createOverviewFeatures(features, zoom) {
-	// Decide how large a polygon can be before it stays as a polygon
 	const maxArea =
 		zoom < 12
 			? 50000 // Very zoomed out: only large polygons become dots
@@ -20,6 +28,7 @@ export default function createOverviewFeatures(features, zoom) {
 					return false;
 				}
 
+				// Exclude points and lines
 				if (
 					feature.geometry?.type === 'Point' ||
 					feature.geometry?.type === 'LineString' ||
@@ -28,7 +37,7 @@ export default function createOverviewFeatures(features, zoom) {
 					return false;
 				}
 
-				const size = area(feature);
+				const size = area(feature); // Calculate area of polygon
 
 				return size < maxArea;
 			})

@@ -14,10 +14,18 @@ function buildFileName() {
 	return `map_screenshot_${timestamp}`;
 }
 
+/**
+ * MapScreenshot
+ * ---
+ * Provides screenshot functionality for the Leaflet map.
+ * The screenshot captures the current map state, including
+ * rendered features, boundaries, and display modes.
+ */
 function MapScreenshot({ onReady }) {
 	const map = useMap();
 
 	useEffect(() => {
+		// create a screenshot instance
 		const screenshotter = new SimpleMapScreenshoter({
 			hidden: true,
 			mimeType: 'image/png',
@@ -26,6 +34,7 @@ function MapScreenshot({ onReady }) {
 
 		screenshotter.addTo(map);
 
+		// execute screenshot of Leaflet map
 		const takeScreenshot = async () => {
 			try {
 				const blob = await screenshotter.takeScreen('blob');
@@ -46,7 +55,7 @@ function MapScreenshot({ onReady }) {
 			}
 		};
 
-		onReady?.(takeScreenshot);
+		onReady?.(takeScreenshot); // triggers when user clicks screenshot button
 
 		return () => {
 			map.removeControl(screenshotter);

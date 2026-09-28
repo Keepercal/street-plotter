@@ -17,21 +17,18 @@ import { BRISTOL, UK, GLOBE } from './config/mapDefaults.js';
 /**
  * Map
  * ---
- * Main map container that handles:
- * - Basemap switching
- * - Feature rendering
- * - Boundary fitting
- * - Zoom tracking
+ * Main map container, handles:
+ * - Feature and boundary geojson rendering
+ * - Rending of display modes
  */
-
 function Map({
-	boundaries,
-	previewBoundary,
-	previewTrigger,
-	boundaryIDs,
-	featureLayers,
 	displayMode,
 	basemap,
+	boundaries,
+	boundaryIDs,
+	featureLayers,
+	previewBoundary,
+	previewTrigger,
 	focusTrigger,
 	onScreenshot,
 }) {

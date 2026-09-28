@@ -7,7 +7,7 @@ import L from 'leaflet';
  * ---------
  * Automatically adjusts the map view to fit a GeoJSON boundary.
  *
- * Triggers whenever `boundary` changes.
+ * Triggers whenever `boundaries` changes.
  */
 export default function FitBounds({ boundaries, trigger }) {
 	const map = useMap();

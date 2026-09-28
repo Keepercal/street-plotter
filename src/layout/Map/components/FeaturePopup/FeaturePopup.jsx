@@ -29,7 +29,7 @@ export default function FeaturePopup({ feature, exclude }) {
 						href={`https://www.openstreetmap.org/${featureType}/${osmID}`}
 						target="_blank"
 						rel="noopener noreferrer"
-						title="Show in OpenStreetMap"
+						title={`${capitaliseString(featureType)}: ${osmID}`}
 					>
 						{/*capitaliseString(featureType)}: {osmID}*/}
 						View in OSM
@@ -40,9 +40,9 @@ export default function FeaturePopup({ feature, exclude }) {
 						href={`https://www.openstreetmap.org/edit?${featureType}=${osmID}`}
 						target="_blank"
 						rel="noopener noreferrer"
-						title="Edit in OpenStreetMap"
+						title="Edit feature in OpenStreetMap"
 					>
-						<Pencil size={18} />
+						<Pencil size={18} strokeWidth={2.5} />
 					</a>
 				</div>
 

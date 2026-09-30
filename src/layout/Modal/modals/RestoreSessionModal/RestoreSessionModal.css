@@ -1,0 +1,21 @@
+.project-details {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.project-details th,
+.project-details td {
+	padding: 0.5rem;
+	text-align: left;
+	/*border-bottom: 1px solid #ddd;*/
+}
+
+.project-details tr:last-child th,
+.project-details tr:last-child td {
+	border-bottom: none;
+}
+
+.project-details th {
+	width: 120px;
+	font-weight: 600;
+}

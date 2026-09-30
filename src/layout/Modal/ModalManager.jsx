@@ -4,11 +4,11 @@ import ExportModal from '@/layout/Modal/modals/ExportModal/ExportModal.jsx';
 import OpenProjectModal from '@/layout/Modal/modals/OpenProjectModal/OpenProjectModal.jsx';
 import HowToModal from '@/layout/Modal/modals/HowToModal/HowToModal.jsx';
 import AboutModal from '@/layout/Modal/modals/AboutModal/AboutModal.jsx';
+import RestoreSessionModal from '@/layout/Modal/modals/RestoreSessionModal/RestoreSessionModal.jsx';
 
 import UnsavedChangesModal from '@/layout/Modal/modals/UnsavedChangesModal.jsx';
 import SaveModal from '@/layout/Modal/modals/SaveModal.jsx';
 import LargeDatasetModal from '@/layout/Modal/modals/LargeDatasetModal.jsx';
-import RestoreSessionModal from '@/layout/Modal/modals/RestoreSessionModal.jsx';
 
 import MODALS from '@/config/modalTypes.js';
 

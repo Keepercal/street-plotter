@@ -1,4 +1,5 @@
-import Modal from '../Modal';
+import Modal from '../../Modal';
+import './RestoreSessionModal.css';
 
 export default function RestoreSessionModal({
 	isProject,
@@ -23,17 +24,24 @@ export default function RestoreSessionModal({
 				<p>{message}</p>
 
 				{isProject && project && (
-					<div className="project-details">
-						<p>
-							<strong>Name:</strong>{' '}
-							{project.metadata?.name ?? 'Unnamed Project'}
-						</p>
-
-						<p>
-							<strong>Description:</strong>{' '}
-							{project.metadata?.description ?? 'No description'}
-						</p>
-					</div>
+					<table className="project-details">
+						<tbody>
+							<tr>
+								<th scope="row">Name</th>
+								<td>
+									{project.metadata?.name ??
+										'Unnamed Project'}
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Description</th>
+								<td>
+									{project.metadata?.description ??
+										'No description'}
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				)}
 			</section>
 

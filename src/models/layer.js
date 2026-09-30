@@ -1,6 +1,4 @@
 /**
- * createLayer
- * -----------
  * Creates a Layer model from layer-shaped data.
  */
 export function createLayer({
@@ -24,8 +22,6 @@ export function createLayer({
 }
 
 /**
- * applyLayerChanges
- * -----------
  * Updates a Layer model from layer-shaped data.
  */
 

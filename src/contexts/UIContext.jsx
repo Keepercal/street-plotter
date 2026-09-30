@@ -16,6 +16,9 @@ export function useUIContext() {
 	return context;
 }
 
+/**
+ * Builds the UIContext value.
+ */
 export function useUIContextValue(values) {
 	const {
 		activeDrawer,

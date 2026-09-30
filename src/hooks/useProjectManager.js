@@ -13,6 +13,12 @@ import {
 	updateProjectFromWorkspace,
 } from '../models/project';
 
+/**
+ * Manages project loading, saving, and metadata updates.
+ *
+ * Coordinates project persistence with the current workspace
+ * and session state.
+ */
 export default function useProjectManager({
 	workspace,
 	session,
@@ -24,6 +30,9 @@ export default function useProjectManager({
 	const [projectStatus, setProjectStatus] = useState('idle');
 	const [projectError, setProjectError] = useState(null);
 
+	/**
+	 * Orchestrates opening a project into the workspace, handling db request, statues and session
+	 */
 	async function openProject(projectId) {
 		try {
 			const project = await getProject(projectId);
@@ -55,8 +64,8 @@ export default function useProjectManager({
 		}
 	}
 
-	/*
-	 * Saves the current project
+	/**
+	 * Saves the current project.
 	 */
 	async function saveCurrentProject() {
 		if (!project) {
@@ -90,8 +99,8 @@ export default function useProjectManager({
 		}
 	}
 
-	/*
-	 * Creates a brand new project
+	/**
+	 * Creates and saves a new project from workspace.
 	 */
 	async function saveProjectAs(name, description) {
 		setProjectStatus('saving');

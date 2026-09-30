@@ -1,4 +1,6 @@
-/* Generate a colour for feature data, colour will be consistent across projects */
+/**
+ * Generate a colour for feature data, colour will be consistent across projects
+ * */
 const generateLayerColour = (key) => {
 	key = String(key ?? '');
 

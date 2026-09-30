@@ -2,7 +2,7 @@ import { useMemo, useEffect, useState, useCallback } from 'react';
 import {
 	saveSession,
 	loadSession,
-	clearSession,
+	removeSession,
 } from '../services/sessionService';
 import { createSessionFromWorkspace } from '../models/session';
 
@@ -44,10 +44,12 @@ export default function useSession({
 	}
 
 	const clearSavedSession = useCallback(() => {
-		clearSession();
+		removeSession();
 	}, []);
 
-	// Create the current session as an object
+	/**
+	 * Create an object from the current session
+	 */
 	const currentSession = useMemo(() => {
 		if (!sessionInfo && !boundaries && layers.length === 0) {
 			return null;
@@ -64,13 +66,15 @@ export default function useSession({
 		);
 	}, [sessionInfo, basemap, displayMode, boundaries, layers]);
 
-	// Load saved session from storage
+	/**
+	 * Restores a saved session from storage
+	 */
 	const restoreSavedSession = useCallback(() => {
 		const session = loadSession();
 
 		// No session found
 		if (!session || !hasSessionData(session)) {
-			clearSession();
+			removeSession();
 
 			setHydrated(true);
 			return false;
@@ -90,7 +94,9 @@ export default function useSession({
 		return true;
 	}, [onRestore]);
 
-	// Automatically save changes after a short delay
+	/*
+	 * Automatically save workspace as a session after a short delay
+	 */
 	useEffect(() => {
 		if (!hydrated || restoring) return;
 
@@ -105,7 +111,9 @@ export default function useSession({
 		return () => clearTimeout(timer);
 	}, [currentSession, hydrated, restoring]);
 
-	// Manually save current project
+	/**
+	 * Manually save the current session
+	 */
 	const saveCurrentSession = useCallback(() => {
 		if (!hydrated || restoring) return;
 
@@ -116,8 +124,8 @@ export default function useSession({
 		saveSession(currentSession);
 	}, [currentSession, hydrated, restoring]);
 
-	// Export project as a JSON file
-	/*const saveProjectAs = useCallback(() => {
+	/** Export project as a JSON file */
+	/*const exportProjectAsJson = useCallback(() => {
 		const json = JSON.stringify(currentProject, null, 2);
 
 		const blob = new Blob([json], { type: 'application/json' });

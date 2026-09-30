@@ -4,8 +4,6 @@ import {
 } from './projectData';
 
 /**
- * createProject
- * -----------
  * Creates a Project model from project-shaped data.
  */
 export function createProject(overrides = {}) {
@@ -28,8 +26,6 @@ export function createProject(overrides = {}) {
 }
 
 /**
- * createProjectFromWorkspace
- * -----------
  * Creates a Project model from workspace state.
  */
 export function createProjectFromWorkspace(name, description, workspace) {
@@ -43,8 +39,6 @@ export function createProjectFromWorkspace(name, description, workspace) {
 }
 
 /**
- * updateProject
- * -----------
  * Updates a Project model from project-shaped data.
  */
 export function updateProject(project, changes = {}) {
@@ -65,8 +59,6 @@ export function updateProject(project, changes = {}) {
 }
 
 /**
- * updateProjectFromWorkspace
- * -----------
  * Updates a Project model from workspace state.
  */
 export function updateProjectFromWorkspace(project, workspace) {

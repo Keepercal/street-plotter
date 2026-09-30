@@ -1,7 +1,5 @@
 /**
- * createSessionMetadata
- * -----------
- * Creates a standardised SessionMetadata schema
+ * Creates a standardised session metadata object
  */
 export function createSessionMetadata(overrides = {}) {
 	const now = new Date().toISOString();
@@ -15,9 +13,7 @@ export function createSessionMetadata(overrides = {}) {
 }
 
 /**
- * createSessionMetadataFromWorkspace
- * -----------
- * Converts workspace state into standardised ProjectData schema
+ * Converts workspace state into standardised SessionMetadata object
  */
 export function createSessionMetadataFromWorkspace(session) {
 	return createSessionMetadata({

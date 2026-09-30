@@ -1,7 +1,5 @@
 /**
- * createProjectData
- * -----------
- * Creates a standardised ProjectData schema
+ * Creates a standardised ProjectData object
  */
 export function createProjectData(overrides = {}) {
 	return {
@@ -18,9 +16,7 @@ export function createProjectData(overrides = {}) {
 }
 
 /**
- * createProjectDataFromWorkspace
- * -----------
- * Converts workspace state into standardised ProjectData schema
+ * Converts workspace state into standardised ProjectData object
  */
 export function createProjectDataFromWorkspace(workspace) {
 	return createProjectData({

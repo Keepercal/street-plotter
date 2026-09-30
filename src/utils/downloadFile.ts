@@ -1,3 +1,6 @@
+/**
+ * Requests the browser to download given data into a file
+ */
 export function downloadFile(
 	content: string,
 	filename: string,

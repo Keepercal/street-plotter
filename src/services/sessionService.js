@@ -1,14 +1,14 @@
 const SESSION_KEY = 'osm-project-session';
 
 /**
- * Save project to local storage
+ * Saves the session to local storage
  */
 export function saveSession(project) {
 	localStorage.setItem(SESSION_KEY, JSON.stringify(project));
 }
 
 /**
- * Load saved project from local storage
+ * Loads a session from local storage
  */
 export function loadSession() {
 	const json = localStorage.getItem(SESSION_KEY);
@@ -27,8 +27,8 @@ export function loadSession() {
 }
 
 /**
- * Remove saved project
+ * Remove saved session from local storage
  */
-export function clearSession() {
+export function removeSession() {
 	localStorage.removeItem(SESSION_KEY);
 }

@@ -53,37 +53,37 @@ export const OSM_FEATURE_MAP = {
 		trunk_road: {
 			osmKey: 'highway',
 			osmValue: 'trunk',
-			label: 'Trunk',
+			label: 'Trunk Road',
 		},
 		primary_road: {
 			osmKey: 'highway',
 			osmValue: 'primary',
-			label: 'Primary',
+			label: 'Primary Road',
 		},
 		secondary_road: {
 			osmKey: 'highway',
 			osmValue: 'secondary',
-			label: 'Secondary',
+			label: 'Secondary Road',
 		},
 		tertiary_road: {
 			osmKey: 'highway',
 			osmValue: 'tertiary',
-			label: 'Tertiary',
+			label: 'Tertiary Road',
 		},
 		residential_road: {
 			osmKey: 'highway',
 			osmValue: 'residential',
-			label: 'Residential',
+			label: 'Residential Road',
 		},
 		service_road: {
 			osmKey: 'highway',
 			osmValue: 'service',
-			label: 'Service',
+			label: 'Service Road',
 		},
 		unclassified_road: {
 			osmKey: 'highway',
 			osmValue: 'unclassified',
-			label: 'Unclassified',
+			label: 'Unclassified Road',
 		},
 	},
 
@@ -714,22 +714,22 @@ export const OSM_FEATURE_MAP = {
 		landuse_residential: {
 			osmKey: 'landuse',
 			osmValue: 'residential',
-			label: 'Residential',
+			label: 'Residential (Landuse)',
 		},
 		landuse_commercial: {
 			osmKey: 'landuse',
 			osmValue: 'commercial',
-			label: 'Commercial',
+			label: 'Commercial (Landuse)',
 		},
 		landuse_industrial: {
 			osmKey: 'landuse',
 			osmValue: 'industrial',
-			label: 'Industrial',
+			label: 'Industrial (Landuse)',
 		},
 		landuse_retail: {
 			osmKey: 'landuse',
 			osmValue: 'retail',
-			label: 'Retail',
+			label: 'Retail (Landuse)',
 		},
 		recreation_ground: {
 			osmKey: 'landuse',
@@ -784,7 +784,7 @@ export const OSM_FEATURE_MAP = {
 		building_residential: {
 			osmKey: 'building',
 			osmValue: 'residential',
-			label: 'Residential',
+			label: 'Residential (Building)',
 		},
 		building_house: {
 			osmKey: 'building',
@@ -799,17 +799,17 @@ export const OSM_FEATURE_MAP = {
 		building_commercial: {
 			osmKey: 'building',
 			osmValue: 'commercial',
-			label: 'Commercial',
+			label: 'Commercial (Building)',
 		},
 		building_industrial: {
 			osmKey: 'building',
 			osmValue: 'industrial',
-			label: 'Industrial',
+			label: 'Industrial (Building)',
 		},
 		building_retail: {
 			osmKey: 'building',
 			osmValue: 'retail',
-			label: 'Retail',
+			label: 'Retail (Building)',
 		},
 		office: {
 			osmKey: 'building',

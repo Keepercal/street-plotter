@@ -1,8 +1,5 @@
 import './RadioItem.css';
 
-/**
- * Radio item
- */
 const RadioItem = ({ label, value, selected, onChange, className = '' }) => (
 	<div className={`radio-item ${className}`}>
 		<label className={`radio-label ${className}`}>

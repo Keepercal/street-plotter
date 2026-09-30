@@ -1,7 +1,5 @@
 /**
- * countFeature
- * ---------------
- * Counts the number of features returned from the Overpass API by type
+ * Counts the number of nodes, ways and relations in a given payload
  */
 export default function countFeatures(payload) {
 	let nodeCount = 0;

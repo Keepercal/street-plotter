@@ -25,7 +25,7 @@ export default function useWorkspaceActions({
 	setActiveModal,
 	setActiveDrawer,
 }) {
-	/*
+	/**
 	 * Restores a saved workspace, including the project, map settings, boundaries, and layers.
 	 */
 	const restoreWorkspace = useCallback(
@@ -70,8 +70,8 @@ export default function useWorkspaceActions({
 		]
 	);
 
-	/*
-	 * Creates a blank workspace
+	/**
+	 * Resets all states relating to the user workspace, including boundaries, layers, and display config
 	 */
 	const resetWorkspace = useCallback(
 		({ preserveAutosave = false } = {}) => {

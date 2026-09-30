@@ -6,7 +6,7 @@ const CATEGORY_LABELS = {
 	vehicle_highways: 'Vehicle Highways',
 	active_travel_highways: 'Active Travel Highways',
 	crossings: 'Crossings',
-	transport: 'Transport',
+	transport: 'Passenger Transport',
 	driving: 'Driving',
 	cycling: 'Cycling',
 

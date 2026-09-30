@@ -21,6 +21,12 @@ function popupReducer(state, action) {
 	}
 }
 
+/**
+ * Manages the status popup based on feature and project state.
+ *
+ * Builds the active popup, handles automatic dismissal,
+ * and provides a manual dismiss action.
+ */
 export default function useStatusPopup(sourceInputs) {
 	const [popup, dispatch] = useReducer(popupReducer, initialState);
 	const timerRef = useRef(null);

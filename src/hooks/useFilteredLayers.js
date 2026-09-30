@@ -2,15 +2,13 @@ import { useMemo } from 'react';
 import evaluateFeature from '@/utils/evaluateFeature';
 
 /**
- * useFilteredLayers
- * ------------
  * Applies each layer's filters to its GeoJSON features.
  *
- * For each feature, evaluates the configured filters and adds
- * a _matchesFilters flag indicating whether the feature matches.
+ * Adds a `_matchesFilters` flag to each feature indicating
+ * whether it matches the layer's configured filters.
  *
- * The transformed layers are memoized and recalculated when
- * featureLayers changes.
+ * The transformed layers are memoised and recalculated when
+ * `featureLayers` changes.
  */
 export default function useFilteredLayers(featureLayers) {
 	return useMemo(() => {

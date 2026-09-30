@@ -2,6 +2,9 @@ import './BoundaryItem.css';
 
 import { Trash2, Plus, Check } from 'lucide-react';
 
+/**
+ * Displays a boundary with optional preview, add, and delete actions.
+ */
 const BoundaryItem = ({
 	boundary,
 	addButton = false,

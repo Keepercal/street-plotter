@@ -23,9 +23,7 @@ export function useProjectContext() {
 }
 
 /**
- * useProjectontextValue
- * ---------------
- * Assembles the ProjectContext value.
+ * Builds the ProjectContext value.
  */
 export function useProjectContextValue(values) {
 	const {

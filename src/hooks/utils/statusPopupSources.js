@@ -1,6 +1,9 @@
 export const SHORT_DISMISS_MS = 2500;
 export const LONG_DISMISS_MS = 5000;
 
+/**
+ * Builds status notification rules from feature and project state.
+ */
 export function buildStatusSources({
 	featureStatus,
 	featureError,

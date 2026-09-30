@@ -1,6 +1,4 @@
 /**
- * timeAgo
- * -------
  * Converts a time into a human-readable relative time string.
  *
  * Examples:

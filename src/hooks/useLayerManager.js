@@ -14,12 +14,10 @@ import MODALS from '@/config/modalTypes.js';
 const LARGE_DATASET_LIMIT = 5000;
 
 /**
- * useLayerManager
- * ------------
- * Manages loading and display of layers within the application
+ * Manages the application's feature layers.
  *
- * Includes:
- * - Load previously loaded layer from cache
+ * Handles loading layers from Overpass, converting OSM data to GeoJSON,
+ * caching, layer editing, persistence, visibility, ordering, and status.
  */
 export default function useLayerManager({
 	onChange = () => {},
@@ -54,7 +52,9 @@ export default function useLayerManager({
 		clear: clearCache,
 	} = useCache();
 
-	/* Fetches the requested layer from Overpass and prepares it as an object */
+	/**
+	 * Fetches OSM data from Overpass and prepares it as a layer object.
+	 */
 	async function prepareLayer({
 		layerId,
 		cacheKey,
@@ -76,7 +76,7 @@ export default function useLayerManager({
 		});
 
 		// Count the number of features within the the payload
-		const { totalCount } = countFeatures({
+		const totalCount = countFeatures({
 			temp: {
 				data: payload,
 			},
@@ -100,7 +100,9 @@ export default function useLayerManager({
 		};
 	}
 
-	/* Orchestrate loading a new map layer */
+	/**
+	 * Loads and prepares a new layer, handling request state and errors.
+	 */
 	const loadLayer = async ({
 		boundaryIds,
 		osmTagKey,
@@ -176,7 +178,7 @@ export default function useLayerManager({
 		}
 	};
 
-	/* Load a layer from the cache */
+	/** Load a layer from the cache */
 	/*function loadCachedLayer(cached, layerId, osmFeatureLabel) {
 		// Check cache for stored features
 		if (!cached) return false;
@@ -202,7 +204,7 @@ export default function useLayerManager({
 		setStatus('success');
 	}*/
 
-	/* Take prepared layer, store in cache, update state */
+	/** Takes the prepared layer, stores in cache, and updates state */
 	function commitLayer(preparedLayer) {
 		const {
 			layerId,
@@ -269,7 +271,7 @@ export default function useLayerManager({
 		commitLayer(preparedLayer);
 	};
 
-	/* Export layer as an object */
+	/** Export the layer as an object */
 	const exportLayers = () => {
 		return Object.entries(featureLayers).map(([id, layer]) => ({
 			id,
@@ -277,6 +279,7 @@ export default function useLayerManager({
 		}));
 	};
 
+	/** Restores a given set of layers into state */
 	const restoreLayers = (layers) => {
 		if (!layers) {
 			setFeatureLayers({});
@@ -298,7 +301,7 @@ export default function useLayerManager({
 		setError(null);
 	};
 
-	/* Update layer and mark as changed */
+	/** Updates a layer's object with given changes in state */
 	function updateLayer(layerId, changes) {
 		setFeatureLayers((prev) => ({
 			...prev,
@@ -308,7 +311,7 @@ export default function useLayerManager({
 		markDirty();
 	}
 
-	/* Move a layer up or down in the layer stack */
+	/** Move a layer up or down in the state's layer stack */
 	const moveLayer = (layerId, direction) => {
 		setFeatureLayers((prev) => {
 			const entries = Object.entries(prev);
@@ -336,7 +339,7 @@ export default function useLayerManager({
 		markDirty();
 	};
 
-	/* Remove a single layer */
+	/** Removes a single layer from state */
 	const removeLayer = (layerId) => {
 		setFeatureLayers((prev) => {
 			const next = { ...prev };
@@ -351,7 +354,7 @@ export default function useLayerManager({
 		markDirty();
 	};
 
-	/* Clear all layers from map */
+	/** Clear all layers from state */
 	const clearLayers = ({ markDirty = true } = {}) => {
 		setFeatureLayers({});
 
@@ -363,16 +366,14 @@ export default function useLayerManager({
 		setStatus('idle');
 	};
 
-	/**
-	 * Handle renaming features
-	 */
+	/** Updates the displayName in a given layer's object */
 	const renameLayer = (layerId, newLabel) => {
 		updateLayer(layerId, {
 			displayName: newLabel,
 		});
 	};
 
-	/* Show or hide layer on the map */
+	/** Show or hide layer on the map */
 	const toggleLayerVisibility = (layerId) => {
 		setFeatureLayers((prev) => {
 			const layer = prev[layerId];

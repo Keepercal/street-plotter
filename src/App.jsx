@@ -105,7 +105,6 @@ export default function App() {
 	/* Manages states for boundaries */
 	const boundaryManager = useBoundaryManager({
 		onChange: () => setIsDirty(true),
-		setIsDirty,
 	});
 
 	const {

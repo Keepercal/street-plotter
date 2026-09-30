@@ -9,6 +9,12 @@ const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
  *
  * Handles only transport-level concerns (fetch + status logging).
  */
+
+/**
+ * Executes a raw Overpass API query and returns the HTTP response.
+ *
+ * Handles only transport-level concerns (fetch + status logging).
+ */
 async function callOverpass(query) {
 	const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
 
@@ -25,8 +31,6 @@ async function callOverpass(query) {
 }
 
 /**
- * handleOverpassResponse
- * ----------------------
  * Centralised response handler for Overpass API calls.
  *
  * - Handles retries for 504 gateway timeouts
@@ -74,9 +78,11 @@ async function handleOverpassResponse(result, retryFn, retries, context = {}) {
 }
 
 /**
- * fetchOSMBoundary
- * -------------
- * Fetches a boundary relation from Overpass by name.
+ * Fetches an OpenStreetMap boundary relation from Overpass by ID.
+ *
+ * @param {string|number} boundaryIDs - One or more OSM relation IDs.
+ * @param {number} retries - Number of retries remaining after a failed request.
+ * @returns {Promise<*>} The Overpass response, or null when no boundary ID is provided.
  */
 export async function fetchOSMBoundary(boundaryIDs, boundaryType, retries = 3) {
 	if (!boundaryIDs || boundaryIDs === 'none') return null;
@@ -99,9 +105,13 @@ export async function fetchOSMBoundary(boundaryIDs, boundaryType, retries = 3) {
 }
 
 /**
- * fetchOSMFeature
- * ---------------
- * Fetches OSM features inside a boundary area using tag filters.
+ * Fetches an OSM feature inside one or multiple boundaries using a given tag's `Key` and `Value`
+ *
+ * @param {string|number} boundaryIDs - One or more OSM relation IDs
+ * @param {string} osmTagKey - A given OSM feature TagKey e.g. `amenity`
+ * @param {string} osmTagValue - A given OSM feature TagValue e.g. `bicycle_parking`
+ * @param {number} retries - Number of retries remaining after a failed request
+ * @returns {Promise<*>} The Overpass response, or null when no boundary ID is provided
  */
 export async function fetchOSMFeature(
 	boundaryIDs,
@@ -134,7 +144,7 @@ export async function fetchOSMFeature(
 		out tags geom meta;
 	`;
 
-	console.log(query);
+	//console.log(query);
 
 	const result = await callOverpass(query);
 

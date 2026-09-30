@@ -1,3 +1,6 @@
+/**
+ * Identifiers for application modals.
+ */
 const MODALS = {
 	EXPORT: 'export',
 	UNSAVED_CHANGES: 'unsavedChanges',

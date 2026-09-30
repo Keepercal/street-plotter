@@ -1,6 +1,4 @@
 /**
- * evaluateFeature
- * -------------------
  * Evaluates whether a GeoJSON feature matches all provided filter rules.
  *
  * Each filter is applied using an AND condition.

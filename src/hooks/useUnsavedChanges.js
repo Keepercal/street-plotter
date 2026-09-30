@@ -1,3 +1,9 @@
+/**
+ * Manages actions that require confirmation when there are unsaved changes.
+ *
+ * Defers the pending action until the user chooses to save, discard,
+ * or cancel.
+ */
 export default function useUnsavedChanges({
 	isDirty,
 	setActiveModal,
@@ -25,7 +31,7 @@ export default function useUnsavedChanges({
 
 	const handleDiscardAndContinue = async () => {
 		await pendingAction?.();
-		await clearPendingAction();
+		clearPendingAction();
 	};
 
 	const handleCancel = () => {

@@ -1,9 +1,6 @@
 import './CheckboxItem.css';
 import { useRef, useEffect } from 'react';
 
-/**
- * CheckboxItem
- */
 const CheckboxItem = ({
 	label,
 	checked,

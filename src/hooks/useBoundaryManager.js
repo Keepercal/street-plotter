@@ -6,20 +6,16 @@ import searchNomiBoundaries from '../services/nominatim/searchNomiBoundaries';
 
 /**
  * useBoundaryManager
- * -----------
- * Fetches and manages OSM boundary data and its GeoJSON conversion.
+ * ------------------
+ * Manages OSM boundary data and its GeoJSON representation.
  *
  * Handles:
- * - search Nominatim for list of boundaies, clear boundaries
- * - loading boundary using a service from the Overpass API
- * - clearing boundaries
- * - resetting state
- * - exporting and restoring boundaries
+ * - Searching Nominatim for boundaries
+ * - Loading boundary data via Overpass
+ * - Clearing and resetting boundary state
+ * - Exporting and restoring boundaries
  */
-export default function useBoundaryManager({
-	onChange = () => {},
-	setIsDirty,
-} = {}) {
+export default function useBoundaryManager({ onChange = () => {} } = {}) {
 	const [boundaryResults, setBoundaryResults] = useState([]);
 
 	const [boundaries, setBoundaries] = useState([]); // stores the current boundaries in the application as an array
@@ -37,7 +33,7 @@ export default function useBoundaryManager({
 
 	useEffect(() => {}, [boundaries]);
 
-	/* Produce a list of boundaries from Nominatim from a given input */
+	/** Produce a list of boundaries from Nominatim from a given input */
 	const fetchBoundaryResults = async (userInput) => {
 		setBoundaryResults(null);
 
@@ -63,7 +59,7 @@ export default function useBoundaryManager({
 		}
 	};
 
-	/* Remove all Nominatim results from array */
+	/** Remove all Nominatim results from array */
 	const clearBoundaryResults = () => {
 		setBoundaryResults([]);
 	};
@@ -112,7 +108,7 @@ export default function useBoundaryManager({
 		}
 	};*/
 
-	/* Add a boundary into array */
+	/** Add a boundary into array */
 	const setBoundary = (boundary) => {
 		if (!boundary || boundary.osm_id === 'none') {
 			return;
@@ -129,27 +125,27 @@ export default function useBoundaryManager({
 		setStatus('success');
 	};
 
-	/* Remove singular boundary from array */
+	/** Remove singular boundary from array */
 	const removeBoundary = (osmId) => {
 		setBoundaries((prev) =>
 			prev.filter((boundary) => boundary.osm_id !== osmId)
 		);
 
 		setPreviewBoundary(null);
-		setIsDirty(true);
+		markDirty();
 	};
 
-	/* Clear all boundaries from array */
+	/** Clear all boundaries from array */
 	const clearBoundaries = () => {
 		setBoundaries([]);
 		setPreviewBoundary(null);
 
 		setStatus('idle');
 		setError(null);
-		setIsDirty(true);
+		markDirty();
 	};
 
-	/* Restore a given boundary to state */
+	/** Restore a given boundary to state */
 	const restoreBoundaries = (value) => {
 		requestId.current++;
 
@@ -172,29 +168,23 @@ export default function useBoundaryManager({
 		setError(null);
 	};
 
-	/**
-	 * Rerenders the map to focus on the chosen boundary
-	 */
+	/** Rerenders the map to focus on the chosen boundary */
 	const handlePreviewBoundary = (boundary) => {
 		setPreviewBoundary(boundary);
 		setPreviewTrigger((t) => t + 1);
 	};
 
-	/**
-	 * Handle input for boundary search
-	 */
+	/** Handle input for boundary search */
 	const handleSelectBoundary = (boundaryData) => {
 		setBoundary(boundaryData);
 		handlePreviewBoundary(null);
-		setIsDirty(true);
+		markDirty();
 	};
 
-	/**
-	 * Removes a single boundary from the workspace
-	 */
+	/** Removes a single boundary from the workspace */
 	const handleRemoveBoundary = (osmId) => {
 		removeBoundary(osmId);
-		setIsDirty(true);
+		markDirty();
 	};
 
 	return {

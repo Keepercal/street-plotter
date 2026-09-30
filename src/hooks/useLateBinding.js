@@ -1,21 +1,15 @@
 import { useRef, useCallback } from 'react';
 
 /**
- * useLateBinding
- * ---------------
- * Returns a stable function that can be called immediately, even
- * though the "real" function it should call doesn't exist yet.
- * Bind the real function once it becomes available via `bind`.
+ * Returns a stable function whose implementation can be
+ * bound later via `bind`.
  *
- * Useful for breaking circular dependencies between hooks that
- * each need the other's return value (e.g. useWorkspaceActions
- * needs setProject from useProjectManager, but useProjectManager
- * needs resetWorkspace from useWorkspaceActions).
+ * Useful for breaking circular dependencies between hooks
+ * that need each other's return values.
  *
- * IMPORTANT: call `bind` inside a useEffect, never during render —
- * refs must not be written synchronously in the render body.
+ * IMPORTANT: Call `bind` inside a useEffect, never during render.
+ * The ref must not be written synchronously during render.
  */
-
 export default function useLateBinding() {
 	const ref = useRef(() => {});
 

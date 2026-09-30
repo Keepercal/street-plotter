@@ -48,7 +48,7 @@
 	/* Inline Text */
 	--colour-text-strong: rgb(161, 84, 84);
 
-	--colour-success: rgba(111, 233, 18);
+	--colour-success: rgb(103, 202, 28);
 	--colour-success-dim: rgba(111, 233, 18, 0.2);
 
 	--colour-alert: rgba(245, 158, 11, 1);

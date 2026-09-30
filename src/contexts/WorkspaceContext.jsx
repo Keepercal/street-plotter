@@ -23,13 +23,7 @@ export function useWorkspaceContext() {
 }
 
 /**
- * useWorkspaceContextValue
- * ---------------
- * Assembles the WorkspaceContext value. Unlike Boundary/Layer,
- * this one draws from several different hooks (useState,
- * useProjectManager, useSession, useWorkspaceActions,
- * useUnsavedChanges) rather than one manager object, so it takes
- * a flat bag of values rather than a single manager + extras.
+ * Assembles the WorkspaceContext value. Draws from several different hooks rather than one manager object.
  */
 export function useWorkspaceContextValue(values) {
 	const {

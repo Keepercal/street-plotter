@@ -16,8 +16,6 @@ const legendItems = [
 ];
 
 /**
- * Legend
- * ------
  * Displays a map legend explaining dot colours based on "last edited" age.
  */
 function Legend() {

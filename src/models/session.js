@@ -11,8 +11,6 @@ import {
 const VERSION = 1;
 
 /**
- * createSession
- * -----------
  * Creates a Session model from session-shaped data.
  */
 export function createSession(overrides = {}) {
@@ -25,8 +23,6 @@ export function createSession(overrides = {}) {
 }
 
 /**
- * createSessionFromWorkspace
- * -----------
  * Creates a Session model from workspace state.
  */
 export function createSessionFromWorkspace(workspace, metadata = {}) {
@@ -37,8 +33,6 @@ export function createSessionFromWorkspace(workspace, metadata = {}) {
 }
 
 /**
- * updateSession
- * -----------
  * Updates a Session model from session-shaped data.
  */
 export function updateSession(session, changes = {}) {

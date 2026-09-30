@@ -23,10 +23,8 @@ export function useBoundaryContext() {
 }
 
 /**
- * useBoundaryContextValue
- * ---------------
- * Assembles the BoundaryContext value from useBoundaryManager's
- * return value plus a couple of App-level extras.
+ * Builds the BoundaryContext value from the boundary manager
+ * and additional app-level state.
  */
 export function useBoundaryContextValue(boundaryManager, extras) {
 	const {

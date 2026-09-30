@@ -19,10 +19,8 @@ export function useLayerContext() {
 }
 
 /**
- * useLayerContextValue
- * ---------------
- * Assembles the LayerContext value from useLayerManager's return
- * value plus derived/App-level extras.
+ * Builds the LayerContext value from the layer manager
+ * and additional derived/app-level state.
  */
 export function useLayerContextValue(layerManager, extras) {
 	const {

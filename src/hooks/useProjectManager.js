@@ -16,8 +16,7 @@ import {
 /**
  * Manages project loading, saving, and metadata updates.
  *
- * Coordinates project persistence with the current workspace
- * and session state.
+ * Coordinates project persistence with the current workspace and session state.
  */
 export default function useProjectManager({
 	workspace,
@@ -65,7 +64,7 @@ export default function useProjectManager({
 	}
 
 	/**
-	 * Saves the current project.
+	 * Updates the currently open project in db
 	 */
 	async function saveCurrentProject() {
 		if (!project) {
@@ -100,7 +99,7 @@ export default function useProjectManager({
 	}
 
 	/**
-	 * Creates and saves a new project from workspace.
+	 * Creates and saves a new project from workspace to db
 	 */
 	async function saveProjectAs(name, description) {
 		setProjectStatus('saving');

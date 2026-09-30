@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 import ExportModal from '@/layout/Modal/modals/ExportModal/ExportModal.jsx';
 import OpenProjectModal from '@/layout/Modal/modals/OpenProjectModal/OpenProjectModal.jsx';
 import HowToModal from '@/layout/Modal/modals/HowToModal/HowToModal.jsx';
@@ -16,6 +18,7 @@ import { useWorkspaceContext } from '@/contexts/WorkspaceContext.jsx';
 import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
 import { useLayerContext } from '@/contexts/LayerContext.jsx';
 import { useProjectContext } from '../../contexts/ProjectContext';
+import { getProject } from '../../db/projectDB';
 
 /**
  * ModalManager
@@ -58,11 +61,27 @@ export default function ModalManager() {
 	const { boundaries } = useBoundaryContext();
 	const { filteredLayers, commitLayer, clearStatus } = useLayerContext();
 
+	const isProject = Boolean(pendingSession?.metadata?.projectId);
+	const [project, setProject] = useState();
+
+	useEffect(() => {
+		if (!isProject) return;
+
+		const projectId = pendingSession?.metadata?.projectId;
+
+		if (!projectId) return;
+
+		getProject(projectId).then((project) => {
+			setProject(project);
+		});
+	}, [isProject, pendingSession?.metadata?.projectId]);
+
 	return (
 		<>
 			{activeModal === MODALS.RESTORE_WORKSPACE && (
 				<RestoreSessionModal
 					isProject={Boolean(pendingSession?.metadata?.projectId)}
+					project={project}
 					onRestore={() => {
 						if (!pendingSession) return;
 

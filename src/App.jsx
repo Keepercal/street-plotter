@@ -132,7 +132,7 @@ export default function App() {
 	} = layerManager;
 
 	/**
-	 * Removes all boundaries from the workspace
+	 * Removes all boundaries and layers from the workspace
 	 */
 	const handleClearBoundaries = () => {
 		clearBoundaries();
@@ -210,8 +210,8 @@ export default function App() {
 		bindResetProjectStatus,
 	]);
 
-	/*
-	 * Creates a list of projects
+	/**
+	 * Requests all projects from db and sorts them by when they were last edited
 	 */
 	const loadProjects = useCallback(async () => {
 		const list = await getAllProjects();
@@ -224,8 +224,8 @@ export default function App() {
 		setProjects(sorted);
 	}, []);
 
-	/*
-	 * Confirm unsaved changes and open project
+	/**
+	 * Checks if workspace has unsaved changes before opening a project from db
 	 */
 	const handleOpenProject = (projectId) => {
 		confirmUnsavedChanges(async () => {
@@ -235,8 +235,8 @@ export default function App() {
 		});
 	};
 
-	/*
-	 * Reset workspace when active project deleted
+	/**
+	 * Refreshes project list when a project's information is updated
 	 */
 	async function handleUpdateProject(id, changes) {
 		await updateProjectMetadata(id, changes);
@@ -245,8 +245,8 @@ export default function App() {
 		if (project?.metadata.id !== id) return;
 	}
 
-	/*
-	 * Reset workspace when active project deleted
+	/**
+	 * Reset workspace when active project deleted and reload projects list
 	 */
 	async function handleDeleteProject(id) {
 		await deleteProject(id);
@@ -261,9 +261,6 @@ export default function App() {
 	// Session
 	// ─────────────────────────────────────────
 
-	/*
-	 *	Handles the management of the current working session
-	 */
 	const sessionManager = useSession({
 		sessionInfo,
 		basemap,
@@ -283,9 +280,7 @@ export default function App() {
 		bindClearSavedSession(clearSavedSession);
 	}, [clearSavedSession, bindClearSavedSession]);
 
-	/*
-	 * Restore session on refresh or open
-	 */
+	// Restore session on refresh or open
 	useEffect(() => {
 		if (didRestore.current) return;
 
@@ -312,9 +307,6 @@ export default function App() {
 	// Managers
 	// ─────────────────────────────────────────
 
-	/*
-	 * Hook for managing any unsaved changes changes within the session
-	 */
 	const {
 		confirmUnsavedChanges,
 		handleSaveAndContinue,
@@ -340,7 +332,7 @@ export default function App() {
 		projectError,
 	});
 
-	/* Remove the preview boundary if the user closes the active drawer */
+	// Remove the preview boundary if the user closes the active drawer
 	useEffect(() => {
 		setPreviewBoundary(null);
 	}, [setPreviewBoundary, activeDrawer]);

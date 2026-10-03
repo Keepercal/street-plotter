@@ -1,31 +1,9 @@
 import L from 'leaflet';
 
 import getDaysSinceEdit from './getDaysSinceEdit';
+import getColourByAge from './getColourByAge';
 
 const defaultBlue = '#3388ff';
-
-const green = '#5ba328';
-const yellow = '#e7bb2d';
-const red = '#dd351b';
-
-/* Choose dot colour based on feature age */
-function getColourByAge(days) {
-	if (days == null) {
-		return red;
-	}
-
-	if (days <= 183) {
-		// Less than 6 months
-		return green;
-	}
-
-	if (days <= 365) {
-		// Less than 1 year
-		return yellow;
-	}
-
-	return red; // greater than 1 year
-}
 
 /* Create point marker */
 function createDotMarker(latlng, colour, pane) {

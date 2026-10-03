@@ -1,19 +1,5 @@
+import { ageCategories } from '@/config/ageCatagories';
 import './Legend.css';
-
-const legendItems = [
-	{
-		label: '< 6 months',
-		color: '#5ba328',
-	},
-	{
-		label: '6-12 months',
-		color: '#e7bb2d',
-	},
-	{
-		label: '+1 years',
-		color: '#dd351b',
-	},
-];
 
 /**
  * Displays a map legend explaining dot colours based on "last edited" age.
@@ -24,7 +10,7 @@ function Legend() {
 			<div className="legend-content">
 				<h4>Last Edited</h4>
 
-				{legendItems.map((item) => (
+				{ageCategories.map((item) => (
 					<div key={item.label} className="legend-item">
 						<div
 							className="legend-dot"

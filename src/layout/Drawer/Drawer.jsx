@@ -35,7 +35,7 @@ function Drawer() {
 		addLayers: 'Add Layer',
 		manageLayers: 'Manage Layers',
 		display: 'Display',
-		basemapSwitcher: 'Switch Basemap',
+		basemapSwitcher: 'Change Basemap',
 	};
 
 	return (

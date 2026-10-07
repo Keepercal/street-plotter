@@ -18,7 +18,7 @@ const BasemapPanel = () => {
 	return (
 		<div className="panel-body">
 			<section className="display-section">
-				<h3>Basemap</h3>
+				{/*<h3>Basemap</h3>*/}
 
 				<BasemapSwitcher basemap={basemap} setBasemap={setBasemap} />
 			</section>

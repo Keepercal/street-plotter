@@ -24,8 +24,15 @@ export function createLayer({
 /**
  * Updates a Layer model from layer-shaped data.
  */
-
 export function applyLayerChanges(layer, changes = {}) {
+	const hasChanges = Object.entries(changes).some(
+		([key, value]) => layer[key] !== value
+	);
+
+	if (!hasChanges) {
+		return layer;
+	}
+
 	return {
 		...layer,
 		...changes,

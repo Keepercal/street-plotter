@@ -7,8 +7,6 @@ import {
 import { createSessionFromWorkspace } from '../models/session';
 
 /**
- * useSession
- * -----------
  * Handles session saving and loading.
  *
  * Includes:

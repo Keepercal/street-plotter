@@ -271,7 +271,7 @@ export default function useLayerManager({
 		commitLayer(preparedLayer);
 	};
 
-	/** Export the layer as an object */
+	/** Export all layers as an object */
 	const exportLayers = () => {
 		return Object.entries(featureLayers).map(([id, layer]) => ({
 			id,
@@ -303,12 +303,21 @@ export default function useLayerManager({
 
 	/** Updates a layer's object with given changes in state */
 	function updateLayer(layerId, changes) {
-		setFeatureLayers((prev) => ({
-			...prev,
-			[layerId]: applyLayerChanges(prev[layerId], changes),
-		}));
+		setFeatureLayers((prev) => {
+			const currentLayer = prev[layerId];
+			const updatedLayer = applyLayerChanges(currentLayer, changes);
 
-		markDirty();
+			if (updatedLayer === currentLayer) {
+				return prev;
+			}
+
+			markDirty();
+
+			return {
+				...prev,
+				[layerId]: updatedLayer,
+			};
+		});
 	}
 
 	/** Move a layer up or down in the state's layer stack */
@@ -378,6 +387,8 @@ export default function useLayerManager({
 		setFeatureLayers((prev) => {
 			const layer = prev[layerId];
 
+			console.log(layer);
+
 			if (!layer) return prev;
 
 			return {
@@ -392,12 +403,16 @@ export default function useLayerManager({
 		markDirty();
 	};
 
+	const duplicateLayer = (layerId) => {
+		setFeatureLayers((prev) => {});
+	};
+
 	/* Update layer filter */
 	const updateLayerFilters = (layerId, filters) => {
 		updateLayer(layerId, { filters });
 	};
 
-	/* Array indicating what features are in the cache */
+	/** Array indicating what features are in the cache */
 	// Used in the UI to indicate cached features
 	const getCachedFeatures = (boundaryIds) => {
 		return getCacheEntries()

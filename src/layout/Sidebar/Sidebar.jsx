@@ -9,9 +9,8 @@ import {
 	MapPlus,
 	LayersPlus,
 	Layers,
+	Monitor,
 	MonitorCog,
-	ArrowLeftFromLine,
-	ArrowRightFromLine,
 	PanelLeftClose,
 	PanelLeftOpen,
 	LayoutDashboard,
@@ -20,11 +19,13 @@ import {
 	LayerArrowDown,
 	SquareDashed,
 	SquareDashedPlus,
+	GalleryHorizontalEnd,
 } from 'lucide-react';
 
 /* Context */
 import { useUIContext } from '@/contexts/UIContext.jsx';
 import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
+import { useLayerContext } from '@/contexts/LayerContext.jsx';
 
 /**
  * Sidebar.jsx
@@ -38,6 +39,12 @@ import { useBoundaryContext } from '@/contexts/BoundaryContext.jsx';
 const Sidebar = ({ collapsed, setCollapsed }) => {
 	const { activeDrawer, setActiveDrawer } = useUIContext();
 	const { hasBoundary } = useBoundaryContext();
+
+	const { featureLayers } = useLayerContext();
+
+	const entries = Object.entries(featureLayers);
+
+	const hasLayers = entries.length > 0;
 
 	const openDrawer = (name) => {
 		setActiveDrawer((prev) => (prev === name ? null : name));
@@ -62,7 +69,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 					label="Manage Boundaries"
 					alt="Manage boundaries within workspace"
 					title="Manage boundaries within workspace"
-					icon={<SquareDashed />}
+					icon={<GalleryHorizontalEnd />}
 					isCollapsed={collapsed}
 					disabled={!hasBoundary}
 					active={activeDrawer === 'manageBoundary'}
@@ -70,7 +77,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 				/>
 
 				<SidebarButton
-					label="Add Layers"
+					label="Add Layer"
 					alt="Load an OSM feature onto the map"
 					title="Load an OSM feature onto the map"
 					icon={<LayerArrowDown />}
@@ -95,11 +102,12 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 					}}
 				/>
 				<SidebarButton
-					label="Display"
-					alt="Alter the display settings of the project"
-					title="Alter the display settings of the project"
-					icon={<MonitorCog />}
+					label="Display Mode"
+					alt="Alter the display mode of map data"
+					title="Alter the display mode of map data"
+					icon={<Monitor />}
 					isCollapsed={collapsed}
+					disabled={!hasLayers}
 					active={activeDrawer === 'display'}
 					onClick={() => openDrawer('display')}
 				/>

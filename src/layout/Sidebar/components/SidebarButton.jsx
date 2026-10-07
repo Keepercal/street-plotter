@@ -20,11 +20,7 @@ const SidebarButton = ({
 	>
 		{icon && <span className="sidebar-button-icon">{icon}</span>}
 
-		{!isCollapsed ? (
-			<span className="sidebar-button-label">{label}</span>
-		) : (
-			<span className="sidebar-button-label"></span>
-		)}
+		{!isCollapsed && <span className="sidebar-button-label">{label}</span>}
 	</button>
 );
 

@@ -16,7 +16,6 @@
 	border-radius: 6px;
 
 	background: transparent;
-
 	color: #ecf0f1;
 
 	cursor: pointer;
@@ -27,6 +26,16 @@
 	transition:
 		background 0.2s ease,
 		color 0.2s ease;
+}
+
+.sidebar-button-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-button {
+	justify-content: center;
 }
 
 .sidebar-button-label {

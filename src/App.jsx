@@ -191,7 +191,7 @@ export default function App() {
 			basemap,
 			displayMode,
 			boundaries,
-			layers: exportLayers(featureLayers),
+			layers: exportLayers(),
 		},
 		session: { sessionInfo, setSessionInfo },
 		restore: { restoreWorkspace, restoreBoundaries, restoreLayers },

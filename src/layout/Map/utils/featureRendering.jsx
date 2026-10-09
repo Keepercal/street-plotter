@@ -22,7 +22,7 @@ function createDotMarker(latlng, colour, pane) {
 	});
 }
 
-/* Create marker for point features */
+/** Create marker for point features */
 export function createFeatureMarker(
 	feature,
 	latlng,

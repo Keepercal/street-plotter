@@ -52,12 +52,9 @@ export default function useLayerManager({
 		clear: clearCache,
 	} = useCache();
 
-	/**
-	 * Fetches OSM data from Overpass and prepares it as a layer object.
-	 */
+	/** Prepares data returned from Overpass as Layer object */
 	async function prepareLayer({
 		layerId,
-		cacheKey,
 		boundaryIds,
 		osmTagKey,
 		osmTagValue,
@@ -82,6 +79,22 @@ export default function useLayerManager({
 			},
 		});
 
+		// Create a cache key for the layer
+		const cacheKey = JSON.stringify([
+			boundaryIds,
+			osmTagKey,
+			osmTagValue,
+			//osmFeatureLabel,
+		]);
+
+		//const cached = getCachedLayer(cacheKey);
+
+		// Check layer to see if copy stored in cache
+		/*if (cached) {
+			loadCachedLayer(cached, layerId, osmFeatureLabel);
+			return;
+		}*/
+
 		return {
 			layerId, // layer UUID
 			cacheKey,
@@ -100,9 +113,7 @@ export default function useLayerManager({
 		};
 	}
 
-	/**
-	 * Loads and prepares a new layer, handling request state and errors.
-	 */
+	/** Loads and prepares a new layer, handling request state and errors */
 	const loadLayer = async ({
 		boundaryIds,
 		osmTagKey,
@@ -117,26 +128,18 @@ export default function useLayerManager({
 
 		const currentId = ++requestId.current;
 
-		if (osmTagValue === null) {
+		// Validate if osmTagKey and osmTagValue are strings
+		if (
+			typeof osmTagKey !== 'string' ||
+			typeof osmTagValue !== 'string' ||
+			!osmTagKey.trim() ||
+			!osmTagValue.trim()
+		) {
 			setStatus('idle');
-			return;
+			throw new Error(
+				'osmTagKey and osmTagValue must be non-empty strings'
+			);
 		}
-
-		// Create a cache key for the layer
-		const cacheKey = JSON.stringify([
-			boundaryIds,
-			osmTagKey,
-			osmTagValue,
-			osmFeatureLabel,
-		]);
-
-		//const cached = getCachedLayer(cacheKey);
-
-		// Check layer to see if copy stored in cache
-		/*if (cached) {
-			loadCachedLayer(cached, layerId, osmFeatureLabel);
-			return;
-		}*/
 
 		setFeatureLayers((prev) => {
 			const next = { ...prev };
@@ -151,7 +154,6 @@ export default function useLayerManager({
 		try {
 			const preparedLayer = await prepareLayer({
 				layerId,
-				cacheKey,
 				boundaryIds,
 				osmTagKey,
 				osmTagValue,
@@ -249,9 +251,7 @@ export default function useLayerManager({
 		markDirty();
 	}
 
-	/**
-	 * Handle adding feature to project
-	 */
+	/** Handle adding feature to project */
 	const handleAddLayer = async (osmTagKey, osmTagValue, osmFeatureLabel) => {
 		const preparedLayer = await loadLayer({
 			boundaryIds: selectedBoundaryIds,
@@ -342,10 +342,10 @@ export default function useLayerManager({
 				entries[index],
 			];
 
+			markDirty();
+
 			return Object.fromEntries(entries);
 		});
-
-		markDirty();
 	};
 
 	/** Removes a single layer from state */
@@ -403,11 +403,45 @@ export default function useLayerManager({
 		markDirty();
 	};
 
+	/** Create a duplicate object from a given layer */
 	const duplicateLayer = (layerId) => {
-		setFeatureLayers((prev) => {});
+		setFeatureLayers((prev) => {
+			const layer = prev[layerId];
+
+			if (!layer) {
+				return prev;
+			}
+
+			// Strip any existing copy suffix
+			const baseLabel = layer.label.replace(/ \(Copy(?: \d+)?\)$/, '');
+
+			let count = 1;
+			let label = `${baseLabel} (Copy ${count})`;
+
+			while (Object.values(prev).some((l) => l.label === label)) {
+				count++;
+				label = `${baseLabel} (Copy ${count})`;
+			}
+
+			const newId = crypto.randomUUID();
+
+			const duplicatedLayer = createLayer({
+				...layer,
+				label,
+				data: layer.data,
+				geojson: layer.geojson,
+			});
+
+			markDirty();
+
+			return {
+				...prev,
+				[newId]: duplicatedLayer,
+			};
+		});
 	};
 
-	/* Update layer filter */
+	/** Update a layer with given filters */
 	const updateLayerFilters = (layerId, filters) => {
 		updateLayer(layerId, { filters });
 	};
@@ -424,6 +458,7 @@ export default function useLayerManager({
 			.map(([, layer]) => layer.osmTagValue);
 	};
 
+	/** Reset popup status */
 	const clearStatus = () => {
 		setStatus('idle');
 		setError(null);
@@ -436,8 +471,9 @@ export default function useLayerManager({
 
 		// data operations
 		updateLayer,
-		moveLayer,
 		removeLayer,
+		moveLayer,
+		duplicateLayer,
 		clearLayers,
 		updateLayerFilters,
 		commitLayer,

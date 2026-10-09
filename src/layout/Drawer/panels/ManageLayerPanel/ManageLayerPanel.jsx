@@ -12,6 +12,7 @@ export default function ManageLayerPanel() {
 		featureLayers,
 		toggleLayerVisibility,
 		updateLayer,
+		duplicateLayer,
 		updateLayerFilters,
 		removeLayer,
 		renameLayer,
@@ -53,6 +54,7 @@ export default function ManageLayerPanel() {
 							updateLayerFilters={updateLayerFilters}
 
 							removeLayer={removeLayer}
+							duplicateLayer={duplicateLayer}
 							renameLayer={renameLayer}
 
 							moveLayer={moveLayer}

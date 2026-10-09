@@ -12,6 +12,7 @@ import {
 	Pencil,
 	ChevronUp,
 	ChevronDown,
+	CopyPlus,
 } from 'lucide-react';
 
 export default function LayerItem({
@@ -23,6 +24,7 @@ export default function LayerItem({
 	toggleLayerVisibility,
 
 	removeLayer,
+	duplicateLayer,
 	renameLayer,
 
 	moveLayer,
@@ -143,6 +145,15 @@ export default function LayerItem({
 								<Pencil size={22} />
 							</button>
 						)}
+
+						{/* Rename */}
+						<button
+							className="layer-action-btn  duplicate-layer"
+							onClick={() => duplicateLayer(layerId)}
+							title="Duplicate layer"
+						>
+							<CopyPlus size={22} />
+						</button>
 
 						{/* Visibility */}
 						<button

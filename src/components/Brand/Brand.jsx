@@ -4,7 +4,7 @@ const Brand = () => (
 	<div className="brand" href="/">
 		<img
 			className="brand-logo"
-			src="./favicon.svg"
+			src="./street_plotter_icon.svg"
 			alt={`${__APP_NAME__} logo`}
 		/>
 		<div className="brand-text">

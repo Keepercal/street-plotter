@@ -3,7 +3,7 @@ import FeatureLayerItem from './FeatureLayerItem';
 const BASE_Z_INDEX = 400;
 
 /**
- * Renders visible feature layers on the Leaflet map.
+ * Renders multiple visible feature layers on the Leaflet map.
  *
  * - Iterates over workspace feature layers
  * - Skips hidden layers

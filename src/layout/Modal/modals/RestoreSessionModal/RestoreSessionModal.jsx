@@ -33,13 +33,13 @@ export default function RestoreSessionModal({
 										'Unnamed Project'}
 								</td>
 							</tr>
-							<tr>
-								<th scope="row">Description</th>
-								<td>
-									{project.metadata?.description ??
-										'No description'}
-								</td>
-							</tr>
+							{project.metadata?.description && (
+								<tr>
+									<th scope="row">Description</th>
+
+									<td>{project.metadata.description}</td>
+								</tr>
+							)}
 						</tbody>
 					</table>
 				)}

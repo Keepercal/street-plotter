@@ -17,7 +17,7 @@ export default function SaveModal({ onClose, onSaveAs }) {
 		}
 
 		const name = projectName.trim() || 'Untitled Project';
-		const description = projectDescription || '';
+		const description = projectDescription || null;
 
 		setHasTitle(true);
 

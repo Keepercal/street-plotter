@@ -8,7 +8,7 @@
 import './App.css';
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 
-/* High level components */
+/* High level UI managers */
 import AppLayout from './layout/AppLayout.jsx';
 import ModalManager from './layout/Modal/ModalManager.jsx';
 
@@ -21,8 +21,8 @@ import MODALS from '@/config/modalTypes.js';
 /* Hooks */
 import useBoundaryManager from './hooks/useBoundaryManager.js';
 import useLayerManager from './hooks/useLayerManager.js';
-import useWorkspaceActions from './hooks/useWorkspaceActions.js';
 import useProjectManager from './hooks/useProjectManager.js';
+import useWorkspaceActions from './hooks/useWorkspaceActions.js';
 
 import useLateBinding from './hooks/useLateBinding.js';
 import useFilteredLayers from './hooks/useFilteredLayers.js';
@@ -115,7 +115,7 @@ export default function App() {
 		restoreBoundaries,
 	} = boundaryManager;
 
-	/* Manages states for data displayed on map */
+	/** Manages states for data displayed on map */
 	const layerManager = useLayerManager({
 		onChange: () => setIsDirty(true),
 		boundaries,
@@ -138,7 +138,6 @@ export default function App() {
 		clearBoundaries();
 		clearLayers();
 		setActiveDrawer(null);
-
 		setIsDirty(false);
 	};
 
@@ -172,7 +171,7 @@ export default function App() {
 		confirmUnsavedChanges(resetWorkspace);
 	};
 
-	// ─────────────────────────────────────────x
+	// ─────────────────────────────────────────
 	// Projects
 	// ─────────────────────────────────────────
 
@@ -225,7 +224,8 @@ export default function App() {
 	}, []);
 
 	/**
-	 * Checks if workspace has unsaved changes before opening a project from db
+	 * Checks if workspace has unsaved changes before opening a project from db,
+	 * and resets modal and preview states
 	 */
 	const handleOpenProject = (projectId) => {
 		confirmUnsavedChanges(async () => {
@@ -236,23 +236,23 @@ export default function App() {
 	};
 
 	/**
-	 * Refreshes project list when a project's information is updated
+	 * Updates project metadata, refreshes project list on update
 	 */
-	async function handleUpdateProject(id, changes) {
-		await updateProjectMetadata(id, changes);
+	async function handleUpdateProject(projectId, changes) {
+		await updateProjectMetadata(projectId, changes);
 		await loadProjects();
 
-		if (project?.metadata.id !== id) return;
+		if (project?.metadata.id !== projectId) return;
 	}
 
 	/**
-	 * Reset workspace when active project deleted and reload projects list
+	 * Delete project from db, reload projects list and reset workspace
 	 */
-	async function handleDeleteProject(id) {
-		await deleteProject(id);
+	async function handleDeleteProject(projectId) {
+		await deleteProject(projectId);
 		await loadProjects();
 
-		if (project?.metadata.id !== id) return;
+		if (project?.metadata.id !== projectId) return;
 
 		resetWorkspace();
 	}

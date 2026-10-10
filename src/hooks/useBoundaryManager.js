@@ -5,15 +5,16 @@ import { useState, useRef, useEffect } from 'react';
 import searchNomiBoundaries from '../services/nominatim/searchNomiBoundaries';
 
 /**
- * useBoundaryManager
- * ------------------
- * Manages OSM boundary data and its GeoJSON representation.
+ * Manages boundary selection and state.
  *
- * Handles:
- * - Searching Nominatim for boundaries
- * - Loading boundary data via Overpass
- * - Clearing and resetting boundary state
- * - Exporting and restoring boundaries
+ * Handles searching Nominatim for boundaries, selecting and removing
+ * boundaries, managing map previews, restoring saved boundaries,
+ * and tracking boundary operation status.
+ *
+ * @param {Object} [options={}] Configuration options
+ * @param {Function} [options.onChange] Callback invoked when boundaries change
+ * @returns {Object} Boundary state, search results, management functions,
+ * preview controls, and status information
  */
 export default function useBoundaryManager({ onChange = () => {} } = {}) {
 	const [boundaryResults, setBoundaryResults] = useState([]);
@@ -33,7 +34,11 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 
 	useEffect(() => {}, [boundaries]);
 
-	/** Produce a list of boundaries from Nominatim API from a given input */
+	/**
+	 * Produce a list of boundaries from Nominatim API from a given input
+	 * @param {string} userInput The bounday the user is searching for
+	 * @returns {Promise<void>} Updates the state if API call successful, resets if not
+	 */
 	const fetchBoundaryResults = async (userInput) => {
 		setBoundaryResults(null);
 
@@ -108,7 +113,11 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 		}
 	};*/
 
-	/** Add a single boundary into state */
+	/**
+	 *  Add a single boundary into state
+	 * @param {Object} boundary An object containing data of a OSM boundary
+	 * @returns {void}
+	 */
 	const setBoundary = (boundary) => {
 		if (!boundary || boundary.osm_id === 'none') {
 			return;
@@ -125,7 +134,11 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 		setStatus('success');
 	};
 
-	/** Remove singular boundary from state */
+	/**
+	 * Remove singular boundary from state
+	 * @param {string} osmId The OSM ID of the boundary to remove
+	 * @returns {void}
+	 */
 	const removeBoundary = (osmId) => {
 		setBoundaries((prev) =>
 			prev.filter((boundary) => boundary.osm_id !== osmId)
@@ -135,7 +148,9 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 		markDirty();
 	};
 
-	/** Clear all boundaries from state */
+	/**
+	 * Clear all boundaries from state
+	 */
 	const clearBoundaries = () => {
 		setBoundaries([]);
 		setPreviewBoundary(null);
@@ -145,7 +160,11 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 		markDirty();
 	};
 
-	/** Restore a given boundary to state */
+	/**
+	 * Restore a given boundary to state
+	 * @param {Object} boundaries An object containing the boundaies to restore
+	 * @returns {void}
+	 */
 	const restoreBoundaries = (boundaries) => {
 		requestId.current++;
 
@@ -168,20 +187,29 @@ export default function useBoundaryManager({ onChange = () => {} } = {}) {
 		setError(null);
 	};
 
-	/** Rerenders the map to focus on the chosen boundary */
+	/**
+	 * Rerenders the map to focus on the chosen boundary
+	 * @param {Object} boundary An object of the boundary to focus on
+	 */
 	const handlePreviewBoundary = (boundary) => {
 		setPreviewBoundary(boundary);
 		setPreviewTrigger((t) => t + 1); // trigger map to rerender
 	};
 
-	/** Handle boundary selection */
+	/**
+	 * Handles boundary selection, adding it to state, resetting preview and marking workspace dirty
+	 * @param {Object} boundary An object of the boundary to add to state
+	 */
 	const handleSelectBoundary = (boundary) => {
 		setBoundary(boundary);
 		handlePreviewBoundary(null);
 		markDirty();
 	};
 
-	/** Handle removing a single boundary from state */
+	/**
+	 * Handle removing a single boundary from state and marking workspace as dirty
+	 * @param {Object} boundary An object of the boundary to remove from state
+	 */
 	const handleRemoveBoundary = (boundary) => {
 		removeBoundary(boundary);
 		markDirty();

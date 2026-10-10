@@ -1,13 +1,15 @@
 import * as Sentry from '@sentry/react';
 
 /**
- * Report an error to Sentry with optional context.
- * @param {Error|string} error - The error object or message
- * @param {Object} [options]
- * @param {Object} [options.extra] - Extra debugging data (objects, state, etc.)
- * @param {Object} [options.tags] - Searchable key-value tags (e.g. { feature: "checkout" })
- * @param {string} [options.level] - 'fatal' | 'error' | 'warning' | 'info' | 'debug'
- * @param {Object} [options.user] - { id, email, username } if you want to attach user context
+ * Reports an error to Sentry with optional debugging context.
+ *
+ * @param {Error|string} error The error object or message to report
+ * @param {Object} [options={}] Optional reporting configuration
+ * @param {Object} [options.extra] Additional debugging context
+ * @param {Object} [options.tags] Searchable key-value tags
+ * @param {'fatal'|'error'|'warning'|'info'|'debug'} [options.level='error'] Severity level
+ * @param {Object} [options.user] User context to attach to the report
+ * @returns {void}
  */
 export function reportError(error, options = {}) {
 	const { extra, tags, level = 'error', user } = options;

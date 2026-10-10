@@ -17,6 +17,14 @@ import {
  * Manages project loading, saving, and metadata updates.
  *
  * Coordinates project persistence with the current workspace and session state.
+ *
+ * @param {Object} params The dependencies required to manage projects
+ * @param {Object} params.workspace The current workspace data
+ * @param {Object} params.session The current session and session state updater
+ * @param {Object} params.restore The workspace restoration utilities
+ * @param {Function} [params.onSaveAsRequested] Callback to request opening the Save As modal
+ * @param {Function} params.onDirtyChange Callback to update the workspace dirty state
+ * @returns {Object} Project state, status, and project management functions
  */
 export default function useProjectManager({
 	workspace,
@@ -31,6 +39,8 @@ export default function useProjectManager({
 
 	/**
 	 * Orchestrates opening a project into the workspace, handling db request, statues and session
+	 * @param {string} projectId The ID of the project to update
+	 * @returns {Promise<void>} Resolves when the operation completes
 	 */
 	async function openProject(projectId) {
 		try {
@@ -65,6 +75,7 @@ export default function useProjectManager({
 
 	/**
 	 * Updates the currently open project in db
+	 * @returns {Promise<Boolean>} True if successful, false if unsuccessful
 	 */
 	async function saveCurrentProject() {
 		if (!project) {
@@ -93,13 +104,22 @@ export default function useProjectManager({
 			setProjectStatus('error');
 			setProjectError(error);
 
-			console.error('Failed to save project:', error);
+			reportError(error, {
+				tags: {
+					feature: 'projects',
+					operation: 'save',
+				},
+			});
+
 			return false;
 		}
 	}
 
 	/**
 	 * Creates and saves a new project from workspace to db
+	 * @param {string} name The project name, from user input
+	 * @param {string} description The project description, from user input
+	 * @returns {Promise<Object|null>} The saved project if successful, or null if saving fails
 	 */
 	async function saveProjectAs(name, description) {
 		setProjectStatus('saving');
@@ -138,12 +158,19 @@ export default function useProjectManager({
 		}
 	}
 
+	/**
+	 * Updates the metadata of a stored project.
+	 * @param {string} projectId The ID of the project to update
+	 * @param {Object} changes The metadata fields to update
+	 * @returns {Promise<Object>} The updated project
+	 */
 	const updateProjectMetadata = (projectId, changes) => {
 		return updateStoredProject(projectId, {
 			metadata: changes,
 		});
 	};
 
+	/** Resets popup status for projects */
 	function resetProjectStatus() {
 		setProjectStatus('idle');
 		setProjectError(null);

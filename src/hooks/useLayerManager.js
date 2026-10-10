@@ -18,6 +18,14 @@ const LARGE_DATASET_LIMIT = 5000;
  *
  * Handles loading layers from Overpass, converting OSM data to GeoJSON,
  * caching, layer editing, persistence, visibility, ordering, and status.
+ *
+ * @param {Object} options The configuration options for the layer manager
+ * @param {Function} [options.onChange] Callback invoked when layers change
+ * @param {Array<Object>} [options.boundaries=[]] The selected boundary objects
+ * @param {Function} options.setPendingLayer Sets the layer pending confirmation
+ * @param {Function} options.setActiveModal Sets the active modal
+ * @returns {Object} The layer state, layer management functions, cache operations,
+ * and status information
  */
 export default function useLayerManager({
 	onChange = () => {},
@@ -52,7 +60,15 @@ export default function useLayerManager({
 		clear: clearCache,
 	} = useCache();
 
-	/** Prepares data returned from Overpass as Layer object */
+	/**
+	 * Prepares data returned from Overpass as Layer object
+	 * @param {string} layerId The ID of the layer to prepare
+	 * @param {string} boundaryIds The IDs of all selected boundaries in the workspace
+	 * @param {string} osmTagKey The TagKey of the OSM feature to query
+	 * @param {string} osmTagValue The TagValue of the OSM feature to query
+	 * @param {string} osmFeatureLabel The user readable label of the OSM feature
+	 * @returns {Object} The layer data, including its identifiers, metadata,
+	 */
 	async function prepareLayer({
 		layerId,
 		boundaryIds,
@@ -113,7 +129,14 @@ export default function useLayerManager({
 		};
 	}
 
-	/** Loads and prepares a new layer, handling request state and errors */
+	/**
+	 * Loads and prepares a new layer, handling request state and errors
+	 * @param {string} boundaryIds The IDs of all selected boundaries in the workspace
+	 * @param {string} osmTagKey The TagKey of the OSM feature to query
+	 * @param {string} osmTagValue The TagValue of the OSM feature to query
+	 * @param {string} osmFeatureLabel The user readable label of the OSM feature
+	 * @returns {Promise<Object|undefined>} The prepared layer, or undefined if the request is superseded or fails
+	 */
 	const loadLayer = async ({
 		boundaryIds,
 		osmTagKey,
@@ -206,7 +229,10 @@ export default function useLayerManager({
 		setStatus('success');
 	}*/
 
-	/** Takes the prepared layer, stores in cache, and updates state */
+	/**
+	 * Commits a prepared layer to the cache and workspace, then updates the status and marks the workspace as dirty.
+	 * @param {Object} preparedLayer The prepared layer data to commit
+	 */
 	function commitLayer(preparedLayer) {
 		const {
 			layerId,
@@ -251,7 +277,16 @@ export default function useLayerManager({
 		markDirty();
 	}
 
-	/** Handle adding feature to project */
+	/**
+	 * Handles adding an OSM feature layer to the project.
+	 * Loads the layer and either prompts for confirmation if the dataset is large
+	 * or commits it directly to the workspace.
+	 *
+	 * @param {string} osmTagKey The tag key of the OSM feature
+	 * @param {string} osmTagValue The tag value of the OSM feature
+	 * @param {string} osmFeatureLabel The user-readable label of the OSM feature
+	 * @returns {Promise<void>} Resolves when the operation completes
+	 */
 	const handleAddLayer = async (osmTagKey, osmTagValue, osmFeatureLabel) => {
 		const preparedLayer = await loadLayer({
 			boundaryIds: selectedBoundaryIds,
@@ -279,7 +314,10 @@ export default function useLayerManager({
 		}));
 	};
 
-	/** Restores a given set of layers into state */
+	/**
+	 * Restores a given set of layers into state.
+	 * @param {Array<Object>|null|undefined} layers The layers to restore
+	 */
 	const restoreLayers = (layers) => {
 		if (!layers) {
 			setFeatureLayers({});
@@ -301,7 +339,11 @@ export default function useLayerManager({
 		setError(null);
 	};
 
-	/** Updates a layer's object with given changes in state */
+	/**
+	 * Updates a layer's object with the given changes in state.
+	 * @param {string} layerId The ID of the layer to update
+	 * @param {Object} changes The changes to apply to the layer
+	 */
 	function updateLayer(layerId, changes) {
 		setFeatureLayers((prev) => {
 			const currentLayer = prev[layerId];
@@ -320,7 +362,11 @@ export default function useLayerManager({
 		});
 	}
 
-	/** Move a layer up or down in the state's layer stack */
+	/**
+	 * Moves a layer up or down in the state's layer stack.
+	 * @param {string} layerId The ID of the layer to move
+	 * @param {number} direction The direction to move the layer (-1 for up, 1 for down)
+	 */
 	const moveLayer = (layerId, direction) => {
 		setFeatureLayers((prev) => {
 			const entries = Object.entries(prev);
@@ -348,7 +394,9 @@ export default function useLayerManager({
 		});
 	};
 
-	/** Removes a single layer from state */
+	/** Removes a single layer from state
+	 * @param {string} layerId The ID of the layer to remove
+	 */
 	const removeLayer = (layerId) => {
 		setFeatureLayers((prev) => {
 			const next = { ...prev };
@@ -363,7 +411,11 @@ export default function useLayerManager({
 		markDirty();
 	};
 
-	/** Clear all layers from state */
+	/**
+	 * Clears all layers from state and resets the status and error.
+	 * @param {Object} [options={}] Options for clearing layers
+	 * @param {boolean} [options.markDirty=true] Whether to notify that the workspace has changed
+	 */
 	const clearLayers = ({ markDirty = true } = {}) => {
 		setFeatureLayers({});
 
@@ -375,14 +427,21 @@ export default function useLayerManager({
 		setStatus('idle');
 	};
 
-	/** Updates the displayName in a given layer's object */
+	/**
+	 * Updates the display name in a given layer's object
+	 * @param {string} layerId The ID of the layer to rename
+	 * @param {string} newLabel The new label for the layer
+	 */
 	const renameLayer = (layerId, newLabel) => {
 		updateLayer(layerId, {
 			displayName: newLabel,
 		});
 	};
 
-	/** Show or hide layer on the map */
+	/**
+	 * Show or hide layer on the map
+	 * @param {string} layerId The ID of the layer to show/hide
+	 */
 	const toggleLayerVisibility = (layerId) => {
 		setFeatureLayers((prev) => {
 			const layer = prev[layerId];
@@ -403,7 +462,10 @@ export default function useLayerManager({
 		markDirty();
 	};
 
-	/** Create a duplicate object from a given layer */
+	/**
+	 * Create a duplicate object from a given layer
+	 * @param {string} layerId The ID of the layer to duplicate
+	 */
 	const duplicateLayer = (layerId) => {
 		setFeatureLayers((prev) => {
 			const layer = prev[layerId];
@@ -442,12 +504,23 @@ export default function useLayerManager({
 	};
 
 	/** Update a layer with given filters */
+
+	/**
+	 *
+	 * @param {string} layerId The ID of the layer to apply filters to
+	 * @param {Object} filters An object containing the key, value and operator of the filter
+	 */
 	const updateLayerFilters = (layerId, filters) => {
 		updateLayer(layerId, { filters });
 	};
 
-	/** Array indicating what features are in the cache */
-	// Used in the UI to indicate cached features
+	/**
+	 * Gets the OSM tag values of features cached for the given boundary.
+	 * Used in the UI to indicate which features are cached.
+	 *
+	 * @param {string} boundaryIds The ID of the boundary to check
+	 * @returns {string[]} The OSM tag values of cached features
+	 */
 	const getCachedFeatures = (boundaryIds) => {
 		return getCacheEntries()
 			.filter(([cacheKey]) => {

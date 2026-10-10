@@ -11,7 +11,7 @@ import countFeatures from '../utils/countFeatures';
 
 import MODALS from '@/config/modalTypes.js';
 
-const LARGE_DATASET_LIMIT = 5000;
+const LARGE_DATASET_LIMIT = 3000;
 
 /**
  * Manages the application's feature layers.

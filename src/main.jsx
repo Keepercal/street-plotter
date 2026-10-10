@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import App from './App.jsx';
 import './styles/theme.css';
 
@@ -19,10 +20,14 @@ Sentry.init({
 		Sentry.replayIntegration(),
 	],
 
-	allowUrls: [/https:\/\/keepercal\.github\.io\/street-plotter/],
+	allowUrls: [
+		/https:\/\/keepercal\.github\.io\/street-plotter/,
+		/https:\/\/streetplotter\.app\//,
+		/https:\/\/www\.streetplotter\.app\//,
+	],
 
 	// Tracing
-	tracesSampleRate: 1.0, //  capture 100% of the transactions
+	tracesSampleRate: 0.2, //  1.0 captures 100% of the transactions
 	tracePropagationTargets: ['localhost', /^https:\/\/yourserver\.io\/api/], // set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
 
 	// Session Replay
@@ -33,5 +38,6 @@ Sentry.init({
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
 		<App />
+		<Analytics />
 	</StrictMode>
 );

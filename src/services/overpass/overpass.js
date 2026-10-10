@@ -1,14 +1,6 @@
 import { reportError } from '@/utils/errorReporting';
 
-const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
-
-/**
- * callOverpass
- * ------------
- * Executes a raw Overpass API query and returns the HTTP response.
- *
- * Handles only transport-level concerns (fetch + status logging).
- */
+const OVERPASS_URL = import.meta.env.VITE_OVERPASS_URL;
 
 /**
  * Executes a raw Overpass API query and returns the HTTP response.
@@ -50,7 +42,8 @@ async function handleOverpassResponse(result, retryFn, retries, context = {}) {
 	if (!result.ok) {
 		if (result.status === 429) {
 			const err = new Error(
-				`HTTP ${result.status}: Too Many Requests - wait before retrying`
+				//`HTTP ${result.status}: Too Many Requests - wait before retrying`
+				'Too many requests to Overpass API, please wait before retrying'
 			);
 			throw err;
 		}
@@ -143,8 +136,6 @@ export async function fetchOSMFeature(
 
 		out tags geom meta;
 	`;
-
-	//console.log(query);
 
 	const result = await callOverpass(query);
 
